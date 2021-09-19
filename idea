@@ -1,0 +1,27 @@
+3 data structures:
+	- num (int)
+	- str: (char[])
+	- bool (bool)
+
+1 line is one command
+
+gotos instead of for loops
+ex.:
+
+num:i:0:
+str:5:papiez:polak:
+str:1:newline:\n:
+
+_loop:
+	print:str:papiez
+	print:num:i
+	print:str:newline
+
+	add:1:a
+	
+	if:(eq:a:2137):(goto:_loop):NULL
+
+str:6:info:koniec:
+print:str:info
+
+return:0
