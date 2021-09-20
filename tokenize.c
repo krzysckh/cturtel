@@ -41,17 +41,24 @@ void tokenize(char* info) {
 
 	char lines[howManyLines] [longestLine];
 
+	/*for (i = 0; i < howManyLines; i++) {*/
+		/*int j = 0;*/
+		/*for (j = 0; j < longestLine; j++) {*/
+			/*lines[i][j] = ' ';*/
+		/*}*/
+	/*}*/
+
 	if (DEBUG) { printf("DEBUG: counted %d lines. longest line is %d chars\n", howManyLines, longestLine); }
 
 	int whichLineAmiOn = 0, place = 0; /* im really creative */
 	
 	for (i = 0; i < strlen(info); i++) {
-		if (info[i] == '\n' || info[i] == '\0') {
+		if (info[i] == '\n') {
 			whichLineAmiOn++;
 			place = 0;
 		} else {
 			lines[whichLineAmiOn] [place] = info[i];
-			if (DEBUG) { printf("DEBUG: put char %c in line %d at place %d from place %d. it gives %s\n", info[i], whichLineAmiOn, place, i, lines[whichLineAmiOn]); }
+			if (DEBUG) { printf("DEBUG: put char %c in line %d at place %d from place %d. it gives %s, btw strlen is %ld\n", info[i], whichLineAmiOn, place, i, lines[whichLineAmiOn], strlen(info)); }
 			place++;
 		}
 	}
