@@ -13,15 +13,15 @@ str:5:papiez:polak:
 str:1:newline:\n:
 
 _loop:
-	print:str:papiez
-	print:num:i
-	print:str:newline
+	print:str:papiez:
+	print:num:i:
+	print:str:newline:
 
-	add:1:a
+	add:1:a:
 	
-	if:(eq:a:2137):(goto:_loop):NULL
+	if:(eq:a:2137):(goto:_loop):NULL:
 
 str:6:info:koniec:
-print:str:info
+print:str:info:
 
-return:0
+return:0:

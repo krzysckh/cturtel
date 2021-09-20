@@ -11,9 +11,10 @@ typedef int bool;
 #define true 1
 #define false 0
 
-#define DEBUG false
+#define DEBUG true
 
 #include "stdturtel.h"
+#include "tokenize.c"
 
 typedef struct TurtelString {
 	int len;
@@ -60,7 +61,10 @@ int main (int argc, char *argv[]) {
 		printf("%c", '\0');
 		/* program crashes without this line what the fuck */
 
-		fgets(line, LINE_LEN_MAX, inpt); 
+		int i = 0;
+		/*fgets(line, LINE_LEN_MAX, inpt); */
+		line[i] = fgetc(inpt);
+
 
 		tmp = malloc(sizeof(full));
 		if (DEBUG) { printf("DEBUG: allocated for *tmp with sizeof(): %ld\n", sizeof(tmp)) ; }
@@ -93,6 +97,8 @@ int main (int argc, char *argv[]) {
 		}
 	}
 
+	/* ↑ this loop stored whole code to *full, and now comes the hard part */
+
 	int newlines = 0, localnewlines = 0;
 	int i;
 
@@ -106,19 +112,21 @@ int main (int argc, char *argv[]) {
 		if (full[i] == '\n') {
 			localnewlines++;
 		}
-		if (localnewlines == newlines-1) {
+		if (localnewlines == newlines) {
 			int j;
 			for (j = i; j < strlen(full); i++) {
 				full[i] = '\0';
 			}
 		}
 	}
+	
+	/* this newline crap needs to stay here, because the whole program dies if it gets deleted, or replaced with something better -_- */
 
-	printf("\"%s\"", full);
+	/* and the hard part comes now, i lied */
 
+	if (DEBUG) {printf("\"%s\"", full); }
 
-	/* ↑ this loop stored whole code to *full, and now comes the hard part */
-
+	tokenize(full);
 
 	return 0;
 }
