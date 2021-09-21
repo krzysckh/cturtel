@@ -58,13 +58,10 @@ int main (int argc, char *argv[]) {
 	
 	bool read = true;
 	while (read) {
-		printf("%c", '\0');
-		/* program crashes without this line what the fuck */
-
-		int i = 0;
+		/*int i = 0;*/
 		/*fgets(line, LINE_LEN_MAX, inpt); */
-		line[i] = fgetc(inpt);
-
+		/*line[i] = fgetc(inpt);*/
+		/*fscanf(inpt, "%s", line);*/
 
 		tmp = malloc(sizeof(full));
 		if (DEBUG) { printf("DEBUG: allocated for *tmp with sizeof(): %ld\n", sizeof(tmp)) ; }
@@ -124,9 +121,9 @@ int main (int argc, char *argv[]) {
 
 	/* and the hard part comes now, i lied */
 
-	if (DEBUG) {printf("\"%s\"", full); }
+	/*if (DEBUG) {printf("\"%s\"", full); }*/
 
-	tokenize(full);
+	/*tokenize(full);*/
 
 	return 0;
 }
