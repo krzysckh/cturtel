@@ -1,5 +1,5 @@
 CFLAGS=-Wall -std=c89
 
-all: turtel
+all: turtel turtel_lex
 clean:
-	rm turtel
+	rm turtel turtel_lex

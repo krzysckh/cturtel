@@ -1,34 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <malloc.h>
-
-#define turtel
-
-#define VAR_MAX 100
-#define LINE_LEN_MAX 1024
-
-typedef int bool;
-#define true 1
-#define false 0
-
-#define DEBUG true
-
-#include "stdturtel.h"
-#include "tokenize.c"
-
-typedef struct TurtelString {
-	int len;
-	char content[];
-} TurtelString;
-
-typedef struct TurtelNum {
-	int content;
-} TurtelNum;
-
-typedef struct TurtelBool {
-	bool content;
-} TurtelBool;
-
+#include "turtel.h"
 
 int main (int argc, char *argv[]) {
 	FILE *inpt = stdin, *outpt = stdout;
@@ -48,54 +18,50 @@ int main (int argc, char *argv[]) {
 	printf("%s\n", StringInfo[0].content);
 	*/
 	
-	char *full = (char*)malloc(10*(sizeof(char))); /* initializing char pointer. full code will be stored here */
-	strcpy(full, "");
-	char *tmp;
+	char *full = (char*) malloc(1); /* initializing char pointer. full code will be stored here */
 
 	/*if (DEBUG) { printf("DEBUG: initialized *full with size of %ld\n", sizeof(full)) ; }*/
 
-	char line[LINE_LEN_MAX]; /* initializing linebuffer. it's a temporary buffer for lines */
+	char sizeInChars = 1;
+	char c;
 	
-	bool read = true;
-	while (read) {
-		/*int i = 0;*/
-		/*fgets(line, LINE_LEN_MAX, inpt); */
-		/*line[i] = fgetc(inpt);*/
-		/*fscanf(inpt, "%s", line);*/
+	while (c != EOF) {
+		c = fgetc(inpt);
 
-		tmp = malloc(sizeof(full));
-		if (DEBUG) { printf("DEBUG: allocated for *tmp with sizeof(): %ld\n", sizeof(tmp)) ; }
-		strcpy(tmp, full);
-		if (DEBUG) { printf("DEBUG: copied from full* to tmp*\n") ; }
-		free(full);
-		if (DEBUG) { printf("DEBUG: freed full\n") ; }
-		full = malloc(sizeof(tmp) + sizeof(strlen(line)));
-		if (DEBUG) { printf("DEBUG: alocated for full*\n") ; }
-		strcpy(full, tmp);
-		if (DEBUG) { printf("DEBUG: copied tmp into full\n") ; }
-		strcat(full, line);
-		if (DEBUG) { printf("DEBUG: added line to full\n") ; }
-		free(tmp);
-		if (DEBUG) { printf("DEBUG: freed tmp\n") ; }
+		if (DEBUG) { printf("DEBUG: got char %c from in\n", c); }
 
-		/* 0. input string from file to linebuffer */
-		/* 1. create temporary char pointer with a size of full (char ptr) */
-		/* 2. copy full to tmp, so it can be later resized */
-		/* 3. freeing memory of full, so it's not goin' anywhere B) */
-		/* 4. allocating memory for full with size of tmp (itself a while ago) + line string size */
-		/* 5. full = tmp (full = full) */
-		/* 6. full += line */
-		/* 7. freeing tmp so it's not wasted */
+		/*tmp = malloc(sizeof(full));*/
+		/*strcpy(tmp, full);*/
+		/*free(full);*/
+		/*full = NULL;*/
+		/*full = malloc(sizeof(tmp) + sizeof(char));*/
+		/*strcpy(full, tmp);*/
+		/*full[strlen(full)+1] = c;*/
+		/*free(tmp);*/
+		/*tmp = NULL;*/
 
-		if (DEBUG) { printf("DEBUG: full is: \"%s\"", full) ; }
+		sizeInChars++;
+		full = (char*) realloc(full, (size_t) sizeInChars*sizeof(char));
 
-		if (feof(inpt)) {
-			read = false;
+		if (DEBUG) { printf("DEBUG: reallocated full with size (ic chars) of %d\n", sizeInChars); }
+		full[strlen(full)] = c;
+
+		if (DEBUG) { printf("DEBUG: full is now \"%s\"\n", full); }
+		if (DEBUG) { printf("DEBUG: last char of full is %c (%d)\n", full[strlen(full)+1], full[strlen(full)+1]); }
+		if (DEBUG) {
+			printf("======= DEBUG =======\n");
+			int i;
+			for (i = 0; i < strlen(full)+1; i++) {
+				printf("char %d in full is '%c' (%d)\n", i, full[i], full[i]);
+			}
+			printf("==== END DEBUG ======\n");
 		}
 	}
 
-	/* ↑ this loop stored whole code to *full, and now comes the hard part */
+	if (DEBUG) { printf("full is \"%s\"\n", full); }
 
+	/* ↑ this loop stored whole code to *full, and now comes the hard part */
+/*
 	int newlines = 0, localnewlines = 0;
 	int i;
 
@@ -116,7 +82,7 @@ int main (int argc, char *argv[]) {
 			}
 		}
 	}
-	
+	*/
 	/* this newline crap needs to stay here, because the whole program dies if it gets deleted, or replaced with something better -_- */
 
 	/* and the hard part comes now, i lied */
@@ -124,6 +90,6 @@ int main (int argc, char *argv[]) {
 	/*if (DEBUG) {printf("\"%s\"", full); }*/
 
 	/*tokenize(full);*/
-
+	free(full);
 	return 0;
 }
