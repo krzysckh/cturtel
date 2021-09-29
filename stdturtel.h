@@ -22,6 +22,12 @@
 char *NEWLINE[] = {"__newline", "\n"};
 char *SPACE[] = {"__space", " "};
 
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+char *OS[] = {"__OS", "1"};
+#else
+char *OS[] = {"__OS", "0"};
+#endif
+
 /* data structures */
 #define NUM "num"
 /* a */
