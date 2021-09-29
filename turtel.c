@@ -9,11 +9,12 @@ void err(char *errm) {
 }
 
 int main (int argc, char *argv[]) {
-	FILE *inpt = stdin, *outpt = stdout;
+	FILE *inpt = stdin;
+	/*FILE *outpt = stdout;*/
 
-	 TurtelString StringInfo[VAR_MAX];
-	 TurtelNum NumInfo[VAR_MAX];
-	 TurtelBool TofInfo[VAR_MAX];
+	TurtelString StringInfo[VAR_MAX];
+	TurtelNum NumInfo[VAR_MAX];
+	TurtelBool TofInfo[VAR_MAX];
 
 	/*
 	int l = 5;
@@ -106,7 +107,7 @@ int main (int argc, char *argv[]) {
 							for (i = 0; i < TOF_COUNT; i++) {
 								if (TofInfo[i].name != NULL) {
 									if (strcmp(varName, TofInfo[i].name) == 0) {
-										printf("%s", TofInfo[i].content);
+										printf("%d", TofInfo[i].content);
 										found = true;
 									}
 								}
