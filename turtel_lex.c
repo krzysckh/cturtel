@@ -1,8 +1,13 @@
 #include "turtel.h"
 
 char *getArg(char *arguments, int linenn) {
-	char *arg = malloc(sizeof(char) * strlen(arguments));
+	char *arg = NULL;
+	arg = malloc(sizeof(char) * strlen(arguments));
 	int i;
+
+	for (i = 0; i < strlen(arguments); i++) {
+		arg[i] = '\0';
+	}
 
 	for (i = 0; i < strlen(arguments); i++) {
 		if (arguments[i] == SEPARATOR) {
@@ -12,7 +17,7 @@ char *getArg(char *arguments, int linenn) {
 		}
 	}
 	
-	fprintf(stderr, "fatal err: SEPARATOR (%c) not found in line %d\n\t/\\-- around %s\n", SEPARATOR, linenn, arguments);
+	fprintf(stderr, "turtel_lex: fatal err: SEPARATOR (%c) not found in line %d\n\t/\\-- around \"%s\"\n", SEPARATOR, linenn, arguments);
 	return NULL;
 }
 
@@ -23,7 +28,6 @@ char *getRest(char *full, int from, int linenn) {
 		ret[j] = full[i];
 		j++;
 	}
-	printf("rest is %s\n", ret);
 	return ret;
 }
 
@@ -61,38 +65,137 @@ int startswith(char* what, char* withwhat) {
 }
 
 
-int tokenize(char* info, int linenn) {
+int tokenize(char* info, int linenn, FILE *out) {
 	if (startswith(info, PRINT)) {
-		printf("0");
+		fprintf(out, "0");
 		/* print the type for interpreter */
 		char *rest = getRest(info, strlen(PRINT)+1, linenn);
 		
-		char rArgs[strlen(rest)];
+		char *type = getArg(rest, linenn);
 
-		char *type = getArg(rArgs, linenn);
+		if (type == NULL) {
+			return 1;
+		}
 		
 		if (strlen(type) > 3) {
-			fprintf(stderr, "fatal err: expected data structure, got %s. on line %d, near %s\n", type, linenn, rest);
+			fprintf(stderr, "turtel_lex: fatal err: expected data structure, got %s. on line %d, near \"%s\"\n", type, linenn, info);
+			return 1;
 		}
 
-		printf("type: %s\n", type);
-		free(rest);
+		if (startswith(type, NUM)) {
+			fprintf(out, "a");
+		} else if (startswith(type, STR)) {
+			fprintf(out, "b");
+		} else if (startswith(type, TOF)) {
+			fprintf(out, "c");
+		} else {
+			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure. got \"%s\" on line %d near \"%s\"\n"
+					"expected NUM (%s) / STR (%s) / TOF (%s)\n",
+					type, linenn, info, NUM, STR, TOF
+			       );
+			return 1;
+		}
 
+		free(rest);
+		rest = NULL;
+		rest = getRest(info, strlen(PRINT) + 4 + 1, linenn);
+
+		char *varn = getArg(rest, linenn);
+		if (varn == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "%s;", varn);
+
+		/* free vars at end */
+		free(type);
+		free(varn);
+	} else if (startswith(info, READ)) {
+		fprintf(out, "1");
+		/* print the type for interpreter */
+		char *rest = getRest(info, strlen(READ)+1, linenn);
+		
+		char *type = getArg(rest, linenn);
+
+		if (type == NULL) {
+			return 1;
+		}
+		
+		if (strlen(type) > 3) {
+			fprintf(stderr, "turtel_lex: fatal err: expected data structure, got %s. on line %d, near \"%s\"\n", type, linenn, rest);
+			return 1;
+		}
+
+		if (startswith(type, NUM)) {
+			fprintf(out, "a");
+		} else if (startswith(type, STR)) {
+			fprintf(out, "b");
+		} else if (startswith(type, TOF)) {
+			fprintf(out, "c");
+		} else {
+			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure. got \"%s\" on line %d near \"%s\"\n"
+					"expected NUM (%s) / STR (%s) / TOF (%s)\n",
+					type, linenn, info, NUM, STR, TOF
+			       );
+			return 1;
+		}
+
+		free(rest);
+		rest = NULL;
+		rest = getRest(info, strlen(READ) + 4 + 1, linenn);
+
+		char *varn = getArg(rest, linenn);
+		if (varn == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "%s;", varn);
+
+		/* free vars at end */
+		free(type);
+		free(varn);
 	} else {
 		/* declaration */
 		printf("DECLARATION NOT IMPLEMENTED\n");
 	}
+	return 0;
 }
 
 
 int main (int argc, char *argv[]) {
-	FILE *in = stdin;
-	FILE *out = stdout;
+	FILE *inpt = stdin;
+	FILE *outpt = stdout;
 	char line[LINE_LEN_MAX];
+	int line_n = 1;
 
-	fgets(line, LINE_LEN_MAX, in);
-	if ( tokenize(line, 1) ) {
-		return 1;
+	int opt;
+
+	while ((opt = getopt(argc, argv, "f:o:h")) != -1) {
+		switch(opt) {
+			case 'f':
+				inpt = fopen(optarg, "r");
+				if (inpt == NULL) {
+					fprintf(stderr, "file %s doesn't exist\n", optarg);
+					return 1;
+				}
+				break;
+			case 'o':
+				outpt = fopen(optarg, "w");
+				break;
+			case 'h':
+				printf(
+						"turtel_lex - lexical analiser for turtel\n"
+						"usage: turtel_lex [-o outfile] [-f infile] [-h]\n"
+				      );
+				return 0;
+		}
+	}
+
+	while (fgets(line, LINE_LEN_MAX, inpt)) {
+		if ( tokenize(line, line_n, outpt) ) {
+			return 1;
+		}
+		line_n++;
 	}
 
 	return 0;

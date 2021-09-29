@@ -1,5 +1,3 @@
-#define stdturtel
-
 /* standard functions (keywords) */
 
 #define PRINT "print"
@@ -19,9 +17,10 @@
 #define SUB "sub"
 /* 8 */
 
+
 /* standard constants */
-#define NEWLINE {"__newline", '\n'}
-#define SPACE {"__space", ' '}
+char *NEWLINE[] = {"__newline", "\n"};
+char *SPACE[] = {"__space", " "};
 
 /* data structures */
 #define NUM "num"

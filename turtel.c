@@ -1,11 +1,19 @@
 #include "turtel.h"
 
+int NUM_COUNT = 0;
+int STR_COUNT = 0;
+int TOF_COUNT = 0;
+
+void err(char *errm) {
+	fprintf(stderr, "turtel: fatal error while interpreting. error message is \"%s\"\n", errm);
+}
+
 int main (int argc, char *argv[]) {
 	FILE *inpt = stdin, *outpt = stdout;
 
-	TurtelString StringInfo[VAR_MAX];
-	TurtelNum NumInfo[VAR_MAX];
-	TurtelBool BoolInfo[VAR_MAX];
+	 TurtelString StringInfo[VAR_MAX];
+	 TurtelNum NumInfo[VAR_MAX];
+	 TurtelBool BoolInfo[VAR_MAX];
 
 	/*
 	int l = 5;
@@ -17,79 +25,61 @@ int main (int argc, char *argv[]) {
 	}
 	printf("%s\n", StringInfo[0].content);
 	*/
-	
-	char *full = (char*) malloc(1); /* initializing char pointer. full code will be stored here */
 
-	/*if (DEBUG) { printf("DEBUG: initialized *full with size of %ld\n", sizeof(full)) ; }*/
-
-	char sizeInChars = 1;
 	char c;
+	while ((c = fgetc(inpt)) != EOF) {
+		switch (c) {
+			case '0': ;
+				char tmpc = fgetc(inpt);
+				switch (tmpc) {
+					case 'a':
+						
+						break;
+					case 'b': ;
+						char vtmpc;
+						char varName[LINE_LEN_MAX];
+						int i = 0;
+						while ((vtmpc = fgetc(inpt)) != ';') {
+							varName[i] = vtmpc;
+							i++;
+						}
+
+						varName[i] = '\0';
+						
+						if (strcmp(varName, NEWLINE[0]) == 0) {
+							printf(NEWLINE[1]);
+						} else if (strcmp(varName, SPACE[0]) == 0) {
+							printf(SPACE[1]);
+						} else {
+							bool found = false;
+							for (i = 0; i < STR_COUNT; i++) {
+								if (StringInfo[i].name != NULL) {
+									if (strcmp(varName, StringInfo[i].name) == 0) {
+										puts(StringInfo[i].content);
+										found = true;
+									}
+								}
+							}
+							if (found == false) {
+								err("string was not defined");
+								return 1;
+							}
+						}
+						break;
+					case 'c':
+
+						break;
+				}
+				break;
+			case '1':
+
+				break;
+			default:
+				err("null");
+				return 1;
+				break;
+		}
+	}
 	
-	while (c != EOF) {
-		c = fgetc(inpt);
-
-		if (DEBUG) { printf("DEBUG: got char %c from in\n", c); }
-
-		/*tmp = malloc(sizeof(full));*/
-		/*strcpy(tmp, full);*/
-		/*free(full);*/
-		/*full = NULL;*/
-		/*full = malloc(sizeof(tmp) + sizeof(char));*/
-		/*strcpy(full, tmp);*/
-		/*full[strlen(full)+1] = c;*/
-		/*free(tmp);*/
-		/*tmp = NULL;*/
-
-		sizeInChars++;
-		full = (char*) realloc(full, (size_t) sizeInChars*sizeof(char));
-
-		if (DEBUG) { printf("DEBUG: reallocated full with size (ic chars) of %d\n", sizeInChars); }
-		full[strlen(full)] = c;
-
-		if (DEBUG) { printf("DEBUG: full is now \"%s\"\n", full); }
-		if (DEBUG) { printf("DEBUG: last char of full is %c (%d)\n", full[strlen(full)+1], full[strlen(full)+1]); }
-		if (DEBUG) {
-			printf("======= DEBUG =======\n");
-			int i;
-			for (i = 0; i < strlen(full)+1; i++) {
-				printf("char %d in full is '%c' (%d)\n", i, full[i], full[i]);
-			}
-			printf("==== END DEBUG ======\n");
-		}
-	}
-
-	if (DEBUG) { printf("full is \"%s\"\n", full); }
-
-	/* ↑ this loop stored whole code to *full, and now comes the hard part */
-/*
-	int newlines = 0, localnewlines = 0;
-	int i;
-
-	for (i = 0; i < strlen(full); i++) {
-		if (full[i] == '\n') {
-			newlines++;
-		}
-	}
-
-	for (i = 0; i < strlen(full); i++) {
-		if (full[i] == '\n') {
-			localnewlines++;
-		}
-		if (localnewlines == newlines) {
-			int j;
-			for (j = i; j < strlen(full); i++) {
-				full[i] = '\0';
-			}
-		}
-	}
-	*/
-	/* this newline crap needs to stay here, because the whole program dies if it gets deleted, or replaced with something better -_- */
-
-	/* and the hard part comes now, i lied */
-
-	/*if (DEBUG) {printf("\"%s\"", full); }*/
-
-	/*tokenize(full);*/
-	free(full);
 	return 0;
 }

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
+#include <getopt.h>
 
 #define turtel
 
@@ -17,14 +18,17 @@ typedef int bool;
 #include "stdturtel.h"
 
 typedef struct TurtelString {
+	char *name;
 	int len;
 	char content[];
 } TurtelString;
 
 typedef struct TurtelNum {
+	char *name;
 	int content;
 } TurtelNum;
 
 typedef struct TurtelBool {
+	char *name;
 	bool content;
 } TurtelBool;

@@ -1,4 +1,4 @@
-CFLAGS=-Wall -std=c89
+CFLAGS=-std=c89
 
 all: turtel turtel_lex
 clean:
