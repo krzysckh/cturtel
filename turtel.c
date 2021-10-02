@@ -10,7 +10,6 @@ void err(char *errm) {
 
 int main (int argc, char *argv[]) {
 	FILE *inpt = stdin;
-	/*FILE *outpt = stdout;*/
 
 	TurtelString StringInfo[VAR_MAX];
 	TurtelNum NumInfo[VAR_MAX];
