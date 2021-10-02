@@ -172,6 +172,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 		free(type);
 		free(varn);
 		free(rest);
+	} else if (startswith(info, "\n")) {
 	} else {
 		/* declaration */
 		fprintf(out, "N");
