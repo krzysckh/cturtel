@@ -1,3 +1,5 @@
-print:tof:__OS:
 print:str:__newline:
+print:str:__newline:
+print:str:__space:
+print:tof:__OS:
 print:str:__newline:
