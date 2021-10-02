@@ -8,20 +8,18 @@
 gotos instead of for loops
 ex.:
 
-num:i:0:
-str:5:papiez:polak:
-str:1:newline:\n:
+	i:num:0:
+	papiez:str:polak:
 
-_loop:
-	print:str:papiez:
-	print:num:i:
-	print:str:newline:
+	gototag:_loop:
+		print:str:papiez:
+		print:str:__space:
+		print:num:i:
+		print:str:__newline:
 
-	add:1:a:
-	
-	if:(eq:a:2137):(goto:_loop):NULL:
+		add:a:1:
+		
+		if:[eq:a:2137]:[goto:_loop]:[]:
 
-str:6:info:koniec:
-print:str:info:
-
-return:0:
+	info:str:koniec:
+	print:str:info:
