@@ -16,6 +16,10 @@
 /* 7 */
 #define SUB "sub"
 /* 8 */
+#define GOTO "goto"
+/* 9 */
+#define GOTOTAG "gototag"
+/* A */
 
 
 /* standard constants */
