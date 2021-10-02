@@ -37,3 +37,8 @@ char *OS[] = {"__OS", "0"};
 /* c */
 
 #define SEPARATOR ':'
+
+
+/* (for interpreter):
+ * new: N
+ */

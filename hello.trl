@@ -1,2 +1,1 @@
-hello:str:14:Hello, World!:
-print:str:hello:
+hello:str:Hello, World!:

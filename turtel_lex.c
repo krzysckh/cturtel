@@ -1,5 +1,21 @@
 #include "turtel.h"
 
+int argLen(char *full, int linenn) {
+	int i, ret = 0;
+	for (i = 0; i < strlen(full); i++) {
+		if (full[i] != SEPARATOR) {
+			ret ++;
+		} else {
+			return ret;
+		}
+	}
+	
+	fprintf(stderr, "turtel_lex: fatal err: SEPARATOR (%c) not found in line %d\n\t/\\-- around \"%s\"\n", SEPARATOR, linenn, full);
+	return -1;
+}
+
+
+
 char *getArg(char *arguments, int linenn) {
 	char *arg = NULL;
 	arg = malloc(sizeof(char) * strlen(arguments));
@@ -110,6 +126,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 		/* free vars at end */
 		free(type);
 		free(varn);
+		free(rest);
 	} else if (startswith(info, READ)) {
 		fprintf(out, "1");
 		/* print the type for interpreter */
@@ -154,10 +171,52 @@ int tokenize(char* info, int linenn, FILE *out) {
 		/* free vars at end */
 		free(type);
 		free(varn);
+		free(rest);
 	} else {
 		/* declaration */
-		printf("DECLARATION NOT IMPLEMENTED\n");
-		return 1;
+		fprintf(out, "N");
+		char *rest = getRest(info, argLen(info, linenn)+1, linenn);
+		char *type = getArg(rest, linenn);
+
+		if (type == NULL) {
+			return 1;
+		}
+
+		if (strlen(type) > 3) {
+			fprintf(stderr, "turtel_lex: fatal err: expected data structure, got %s. on line %d, near \"%s\"\n", type, linenn, rest);
+			return 1;
+		}
+
+		
+		if (startswith(type, NUM)) {
+			fprintf(out, "a");
+		} else if (startswith(type, STR)) {
+			fprintf(out, "b");
+		} else if (startswith(type, TOF)) {
+			fprintf(out, "c");
+		} else {
+			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure. got \"%s\" on line %d near \"%s\"\n"
+					"expected NUM (%s) / STR (%s) / TOF (%s)\n",
+					type, linenn, info, NUM, STR, TOF
+			       );
+			return 1;
+		}
+
+		free(rest);
+		rest = NULL;
+		rest = getRest(info, argLen(info, linenn) + 1 + 4, linenn);
+		char *val = getArg(rest, linenn);
+		if (val == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "%s;", val);
+
+		/* free memory */
+		free(type);
+		free(rest);
+		free(val);
+
 	}
 	return 0;
 }

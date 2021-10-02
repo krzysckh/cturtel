@@ -9,3 +9,10 @@ turtel is an interpreted programming language.
 this implementation is written in C (as the name suggests)
 
 send help please
+
+example "hello world" turtel program
+	
+	hello:str:Hello, World!:
+	print:str:hello:
+
+

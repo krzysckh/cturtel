@@ -12,4 +12,4 @@ make &>/dev/null
 #done
 #echo "test failed with $i"
 
-./turtel_lex < "test.trl" | ./turtel
+./turtel_lex -f "test.trl" | ./turtel

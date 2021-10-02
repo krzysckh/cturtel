@@ -125,6 +125,10 @@ int main (int argc, char *argv[]) {
 			case '1':
 
 				break;
+			case 'N':
+				err("declaring not implemented yet");
+				return 2;
+				break;
 			default:
 				err("null");
 				return 1;
