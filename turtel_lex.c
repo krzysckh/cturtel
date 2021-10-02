@@ -157,6 +157,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 	} else {
 		/* declaration */
 		printf("DECLARATION NOT IMPLEMENTED\n");
+		return 1;
 	}
 	return 0;
 }
