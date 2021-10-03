@@ -176,6 +176,9 @@ int tokenize(char* info, int linenn, FILE *out) {
 	} else {
 		/* declaration */
 		fprintf(out, "N");
+		char *name = getArg(info, linenn);
+		fprintf(out, "%s:", name);
+		free(name);
 		char *rest = getRest(info, argLen(info, linenn)+1, linenn);
 		char *type = getArg(rest, linenn);
 

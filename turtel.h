@@ -21,7 +21,7 @@ typedef int bool;
 typedef struct TurtelString {
 	char *name;
 	int len;
-	char content[];
+	char *content;
 } TurtelString;
 
 typedef struct TurtelNum {

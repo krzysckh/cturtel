@@ -60,6 +60,7 @@ int main (int argc, char *argv[]) {
 						}
 						if (found == false) {
 							err("num was not defined");
+							printf("varName is %s\n", varName);
 							return 1;
 						}
 					
@@ -86,7 +87,7 @@ int main (int argc, char *argv[]) {
 								}
 							}
 							if (found == false) {
-								err("string was not defined");
+								err("str was not defined");
 								printf("varName is %s\n", varName);
 								return 1;
 							}
@@ -124,9 +125,87 @@ int main (int argc, char *argv[]) {
 			case '1':
 
 				break;
-			case 'N':
-				err("declaring not implemented yet");
-				return 2;
+			case 'N': /*;*/
+				/*
+				 *err("declaring not implemented yet");
+				 *return 2;
+				 */
+				char newVarName[LINE_LEN_MAX];
+				for (i = 0; i < LINE_LEN_MAX; i++) {
+					newVarName[i] = ' ';
+				}
+				char ntmpc;
+				int tmpi = 0;
+				while ((ntmpc = fgetc(inpt)) != ':') {
+					newVarName[tmpi] = ntmpc;
+					tmpi ++;
+				}
+				
+				/* ↑ get var name */
+
+				newVarName[tmpi] = '\0';
+				
+				ntmpc = fgetc(inpt);
+				/* get the type */
+
+				char val[LINE_LEN_MAX];
+				char valc;
+				int vali = 0;
+				bool exists = false;
+				switch (ntmpc) {
+					case 'a':
+						while ((valc = fgetc(inpt)) != ';') {
+							val[vali] = valc;
+							vali ++;
+						}
+						val[vali] = '\0';
+
+						for (i = 0; i < NUM_COUNT; i++) {
+							if (strcmp(NumInfo[i].name, newVarName) == 0) {
+								NumInfo[i].content = atoi(val);
+								exists = true;
+							}
+						}
+
+						if (!exists) {
+							NumInfo[NUM_COUNT].name = newVarName;
+							
+							NumInfo[NUM_COUNT].content = atoi(val);
+							NUM_COUNT ++;
+						}
+						break;
+					case 'b':
+						while ((valc = fgetc(inpt)) != ';') {
+							val[vali] = valc;
+							vali ++;
+						}
+						val[vali] = '\0';
+
+						for (i = 0; i < STR_COUNT; i++) {
+							if (strcmp(StringInfo[i].name, newVarName) == 0) {
+								if (StringInfo[i].len < strlen(val)) {
+									err("new string won't fit in adressed space");
+									printf("\t↑ (adressed = %d, needed = %d)\n", StringInfo[i].len, (int)strlen(val));
+									return 1;
+								}
+								StringInfo[i].content = val;
+								exists = true;
+							}
+						}
+
+						if (!exists) {
+							StringInfo[STR_COUNT].name = newVarName;
+							StringInfo[STR_COUNT].len = strlen(val);
+							StringInfo[STR_COUNT].content = val;
+							printf("added new str, val is %s\n", val);
+							STR_COUNT ++;
+						}
+						break;
+					default:
+						err("not yet");
+						return 1;
+						break;
+				}
 				break;
 			default:
 				err("null");
