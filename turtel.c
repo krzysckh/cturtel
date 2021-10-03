@@ -11,6 +11,14 @@ void err(char *errm) {
 int main (int argc, char *argv[]) {
 	FILE *inpt = stdin;
 
+	if (argv[1] != NULL) {
+		inpt = fopen(argv[1], "r");
+		if (inpt == NULL) {
+			fprintf(stderr, "turtel: couldn't open file %s\n", argv[1]);
+			return 2;
+		}
+	}
+
 	TurtelString StringInfo[VAR_MAX];
 	TurtelNum NumInfo[VAR_MAX];
 	TurtelBool TofInfo[VAR_MAX];
@@ -36,7 +44,7 @@ int main (int argc, char *argv[]) {
 				int i;
 				bool found = false;
 				for (i = 0; i < LINE_LEN_MAX; i++) {
-					varName[i] = ' ';
+					varName[i] = '\0';
 				}
 
 				i = 0;
@@ -125,14 +133,10 @@ int main (int argc, char *argv[]) {
 			case '1':
 
 				break;
-			case 'N': /*;*/
-				/*
-				 *err("declaring not implemented yet");
-				 *return 2;
-				 */
+			case 'N': ;
 				char newVarName[LINE_LEN_MAX];
 				for (i = 0; i < LINE_LEN_MAX; i++) {
-					newVarName[i] = ' ';
+					newVarName[i] = '\0';
 				}
 				char ntmpc;
 				int tmpi = 0;
@@ -197,7 +201,6 @@ int main (int argc, char *argv[]) {
 							StringInfo[STR_COUNT].name = newVarName;
 							StringInfo[STR_COUNT].len = strlen(val);
 							StringInfo[STR_COUNT].content = val;
-							printf("added new str, val is %s\n", val);
 							STR_COUNT ++;
 						}
 						break;
