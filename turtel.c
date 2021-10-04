@@ -213,9 +213,27 @@ int main (int argc, char *argv[]) {
 							STR_COUNT ++;
 						}
 						break;
-					default:
-						err("not yet");
-						return 1;
+					case 'c':
+						while ((valc = fgetc(inpt)) != ';') {
+							val[vali] = valc;
+							vali ++;
+						}
+						val[vali] = '\0';
+
+						for (i = 0; i < TOF_COUNT; i++) {
+							if (strcmp(TofInfo[i].name, newVarName) == 0) {
+								TofInfo[i].content = (atoi(val) == 0) ? false : true;
+								exists = true;
+							}
+						}
+
+						if (!exists) {
+							TofInfo[TOF_COUNT].name = malloc(sizeof(char) * (strlen(newVarName)+1));
+							strncpy(TofInfo[TOF_COUNT].name, newVarName, strlen(newVarName)+1);
+							
+							TofInfo[TOF_COUNT].content = (atoi(val) == 0) ? false : true;
+							TOF_COUNT ++;
+						}
 						break;
 				}
 				break;

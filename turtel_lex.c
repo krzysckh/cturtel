@@ -82,7 +82,7 @@ int startswith(char* what, char* withwhat) {
 
 
 int tokenize(char* info, int linenn, FILE *out) {
-	if (startswith(info, PRINT)) {
+	if (strcmp(getArg(info, linenn), PRINT) == 0) {
 		fprintf(out, "0");
 		/* print the type for interpreter */
 		char *rest = getRest(info, strlen(PRINT)+1, linenn);
@@ -127,7 +127,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 		free(type);
 		free(varn);
 		free(rest);
-	} else if (startswith(info, READ)) {
+	} else if (strcmp(getArg(info, linenn), READ) == 0) {
 		fprintf(out, "1");
 		/* print the type for interpreter */
 		char *rest = getRest(info, strlen(READ)+1, linenn);
@@ -172,6 +172,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 		free(type);
 		free(varn);
 		free(rest);
+	} else if (strcmp(getArg(info, linenn), IF) == 0) {
 	} else if (startswith(info, "\n")) {
 	} else {
 		/* declaration */

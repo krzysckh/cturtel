@@ -6,18 +6,12 @@
 /* 1 */
 #define IF "if"
 /* 2 */
-#define EQ "eq"
-/* 3 */
-#define LESSTHAN "lt"
-/* 4 */
-#define GREATERTHAN "gt"
-/* 6 */
 #define ADD "add"
-/* 7 */
+/* 3 */
 #define SUB "sub"
-/* 8 */
+/* 4 */
 #define GOTO "goto"
-/* 9 */
+/* 5 */
 #define GOTOTAG "gototag"
 /* A */
 
@@ -46,3 +40,11 @@ char *OS[] = {"__OS", "0"};
 /* (for interpreter):
  * new: N
  */
+
+/* statements for if */
+#define EQ "eq"
+/* E */
+#define LESSTHAN "lt"
+/* L */
+#define GREATERTHAN "gt"
+/* G */

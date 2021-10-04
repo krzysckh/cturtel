@@ -9,6 +9,7 @@ gotos instead of for loops
 ex.:
 
 	i:num:0:
+	max:num:2137:
 	papiez:str:polak:
 
 	gototag:_loop:
@@ -19,7 +20,7 @@ ex.:
 
 		add:a:1:
 		
-		if:[eq:a:2137]:[goto:_loop]:[]:
+		if:a eq max:[goto:_loop]:[]:
 
 	info:str:koniec:
 	print:str:info:
