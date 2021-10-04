@@ -87,6 +87,7 @@ int main (int argc, char *argv[]) {
 							printf(SPACE[1]);
 						} else {
 							for (i = 0; i < STR_COUNT; i++) {
+								printf("an. string %d, where name = %s, content = %s\n", i, StringInfo[i].name, StringInfo[i].content);
 								if (StringInfo[i].name != NULL) {
 									if (strcmp(varName, StringInfo[i].name) == 0) {
 										printf("%s", StringInfo[i].content);
@@ -152,8 +153,14 @@ int main (int argc, char *argv[]) {
 				ntmpc = fgetc(inpt);
 				/* get the type */
 
-				char val[LINE_LEN_MAX];
-				char valc;
+				char *val = NULL;
+				val = malloc(sizeof(char) * LINE_LEN_MAX);
+
+				for (i = 0; i < LINE_LEN_MAX; i++) {
+					val[i] = '\0';
+				}
+
+				char valc = 0;
 				int vali = 0;
 				bool exists = false;
 				switch (ntmpc) {
@@ -200,9 +207,12 @@ int main (int argc, char *argv[]) {
 						if (!exists) {
 							StringInfo[STR_COUNT].name = newVarName;
 							StringInfo[STR_COUNT].len = strlen(val);
-							StringInfo[STR_COUNT].content = val;
+							/*StringInfo[STR_COUNT].content = val;*/
+							StringInfo[STR_COUNT].content = malloc(sizeof(char) * (strlen(val)+1));
+							strncpy(StringInfo[STR_COUNT].content, val, strlen(val));
 							STR_COUNT ++;
 						}
+						free(val);
 						break;
 					default:
 						err("not yet");
