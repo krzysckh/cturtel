@@ -1,3 +1,13 @@
-hello:str:Hello, World!:
-print:str:hello:
-print:str:__newline:
+goto:main:
+
+gototag:__def_hello:
+	hello:str:Hello, World!:
+	goto:__run_rest:
+
+
+gototag:main:
+	goto:__def_hello:
+	gototag:__run_rest:
+
+	print:str:hello:
+	print:str:__newline:
