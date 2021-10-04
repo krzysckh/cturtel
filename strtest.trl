@@ -1,6 +1,0 @@
-str1:str:wartosc 1:
-str2:str:wartosc 2:
-print:str:str1:
-print:str:__newline:
-print:str:str2:
-print:str:__newline:
