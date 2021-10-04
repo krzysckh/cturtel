@@ -13,7 +13,7 @@
 #define GOTO "goto"
 /* 5 */
 #define GOTOTAG "gototag"
-/* A */
+/* 6 */
 
 
 /* standard constants */
@@ -43,8 +43,10 @@ char *OS[] = {"__OS", "0"};
 
 /* statements for if */
 #define EQ "eq"
-/* E */
+/* = */
 #define LESSTHAN "lt"
-/* L */
+/* < */
 #define GREATERTHAN "gt"
-/* G */
+/* > */
+#define NOTEQ "ne"
+/* ! */

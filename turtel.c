@@ -9,15 +9,23 @@ void err(char *errm) {
 }
 
 int main (int argc, char *argv[]) {
-	FILE *inpt = stdin;
+	FILE *finpt = stdin;
 
 	if (argv[1] != NULL) {
-		inpt = fopen(argv[1], "r");
-		if (inpt == NULL) {
+		finpt = fopen(argv[1], "rb+");
+		if (finpt == NULL) {
 			fprintf(stderr, "turtel: couldn't open file %s\n", argv[1]);
 			return 2;
 		}
 	}
+
+	FILE *inpt = tmpfile();
+
+	char fc;
+	while ((fc = fgetc(finpt)) != EOF) {
+		fputc(fc, inpt);
+	}
+	rewind(inpt);
 
 	TurtelString StringInfo[VAR_MAX];
 	TurtelNum NumInfo[VAR_MAX];
@@ -237,8 +245,66 @@ int main (int argc, char *argv[]) {
 						break;
 				}
 				break;
+			case '6': ;
+				while (fgetc(inpt) != ';') {}
+				break;
+			case '5': ;
+				char gotoWhere[LINE_LEN_MAX];
+				for (i = 0; i < LINE_LEN_MAX; i++) {
+					gotoWhere[i] = '\0';
+				}
+
+				int goto_tmpi = 0;
+
+				char goto_tmpc = 0;
+				while ((goto_tmpc = fgetc(inpt)) != ';') {
+					gotoWhere[goto_tmpi] = goto_tmpc;
+					goto_tmpi ++;
+				}
+
+				char goto_nameBuff[LINE_LEN_MAX];
+				int goto_nameBuff_cptr = 0;
+				bool goto_found = false;
+
+				for (i = 0; i < LINE_LEN_MAX; i++) {
+					goto_nameBuff[i] = '\0';
+				}
+
+				rewind(inpt);
+				/* rewinds input back to 0, so it can search for gototag from start */
+				while ((goto_tmpc = fgetc(inpt)) != '\n' && goto_found == false) {
+					if (goto_tmpc == '6') {
+						while ((goto_tmpc = fgetc(inpt)) != ';') {
+							goto_nameBuff[goto_nameBuff_cptr] = goto_tmpc;
+							goto_nameBuff_cptr ++;
+						}
+						goto_nameBuff[goto_nameBuff_cptr] = '\0';
+
+						if (strcmp(goto_nameBuff, gotoWhere) == 0) {
+							fseek(inpt, -1L, SEEK_CUR);
+							goto_found = true;
+						} else {
+							/* clear vars so they can be reused */
+							goto_tmpc = 0;
+							for (i = 0; i < LINE_LEN_MAX; i++) {
+								goto_nameBuff[i] = '\0';
+							}
+							goto_nameBuff_cptr = 0;
+						}
+					}
+				}
+				
+
+				if (goto_found == false) {
+					err("gototag not defined");
+					fprintf(stderr, "\t↑ %s\n", gotoWhere);
+					return 1;
+				}
+
+				break;
 			default:
-				err("null");
+				err("not implemended");
+				fprintf(stderr, "died on char %c\n", c);
 				return 1;
 				break;
 		}

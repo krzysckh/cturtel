@@ -174,8 +174,52 @@ int tokenize(char* info, int linenn, FILE *out) {
 		free(varn);
 		free(rest);
 	} else if (strcmp(getArg(info, linenn), IF) == 0) {
+		/*
+		 * ex.
+		 * 	a:num:5:
+		 * 	b:num:6:
+		 *
+		 * 	if:a:eq:b:__aeqb:__aneqb:
+		 *
+		 * 	gototag:__aeqb:
+		 * 	info:str:a is equal to b:
+		 * 	goto:__ret:
+		 *
+		 * 	gototag:__aneqb:
+		 * 	info:str:a is not equal to b:
+		 * 	goto:__ret:
+		 *
+		 * 	gototag:__ret:
+		 * 	print:str:__ret:
+		 * 	print:str:__newline:
+		 *
+		 *	syntax:
+		 *		if:num eq/lt/gt/ne num:goto_if_true:goto_if_false:
+		 */
 		printf("if not added yet\n");
 		return 1;
+	} else if (strcmp(getArg(info, linenn), GOTO) == 0) {
+		char *rest = getRest(info, strlen(GOTO)+1, linenn);
+		char *where = getArg(rest, linenn);
+		if (where == NULL) {
+			return 1;
+		}
+
+		printf("5");
+		printf("%s;", where);
+		free(where);
+		free(rest);
+	} else if (strcmp(getArg(info, linenn), GOTOTAG) == 0) {
+		char *rest = getRest(info, strlen(GOTOTAG)+1, linenn);
+		char *tag = getArg(rest, linenn);
+		if (tag == NULL) {
+			return 1;
+		}
+
+		printf("6");
+		printf("%s;", tag);
+		free(tag);
+		free(rest);
 	} else {
 		/* declaration */
 		fprintf(out, "N");
