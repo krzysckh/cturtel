@@ -82,7 +82,8 @@ int startswith(char* what, char* withwhat) {
 
 
 int tokenize(char* info, int linenn, FILE *out) {
-	if (strcmp(getArg(info, linenn), PRINT) == 0) {
+	if (startswith(info, "\n")) {
+	} else if (strcmp(getArg(info, linenn), PRINT) == 0) {
 		fprintf(out, "0");
 		/* print the type for interpreter */
 		char *rest = getRest(info, strlen(PRINT)+1, linenn);
@@ -173,7 +174,8 @@ int tokenize(char* info, int linenn, FILE *out) {
 		free(varn);
 		free(rest);
 	} else if (strcmp(getArg(info, linenn), IF) == 0) {
-	} else if (startswith(info, "\n")) {
+		printf("if not added yet\n");
+		return 1;
 	} else {
 		/* declaration */
 		fprintf(out, "N");
