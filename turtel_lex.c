@@ -220,6 +220,47 @@ int tokenize(char* info, int linenn, FILE *out) {
 		printf("%s;", tag);
 		free(tag);
 		free(rest);
+	} else if (
+			strcmp(getArg(info, linenn), ADD) == 0 ||
+			strcmp(getArg(info, linenn), SUB) == 0 ||
+			strcmp(getArg(info, linenn), MUL) == 0 ||
+			strcmp(getArg(info, linenn), DIV) == 0
+			) {
+
+		/* adding, subtracting, multiplying, dividing */
+
+		if (strcmp(getArg(info, linenn), ADD) == 0) {
+			fprintf(out, "7");
+		} else if (strcmp(getArg(info, linenn), SUB) == 0) {
+			fprintf(out, "8");
+		} else if (strcmp(getArg(info, linenn), MUL) == 0) {
+			fprintf(out, "9");
+		} else if (strcmp(getArg(info, linenn), DIV) == 0) {
+			fprintf(out, "a");
+		}
+
+		/* ↑ print what is needed to do, so the interpreter knows co jest sześć B)) */
+
+		char *rest = getRest(info, strlen(ADD)+1, linenn);
+		char *dest = getArg(rest, linenn);
+		
+		if (dest == NULL) {
+			return 1;
+		}
+
+		printf("%s:", dest);
+
+		free(rest);
+		rest = NULL;
+		rest = getRest(info, strlen(ADD) + 1 + strlen(dest) + 1, linenn);
+		char *from = getArg(rest, linenn);
+		if (from == NULL) {
+			return 1;
+		}
+
+		printf("%s;", from);
+		free(from);
+		free(dest);
 	} else {
 		/* declaration */
 		fprintf(out, "N");

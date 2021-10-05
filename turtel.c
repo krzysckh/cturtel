@@ -272,7 +272,7 @@ int main (int argc, char *argv[]) {
 
 				rewind(inpt);
 				/* rewinds input back to 0, so it can search for gototag from start */
-				while ((goto_tmpc = fgetc(inpt)) != '\n' && goto_found == false) {
+				while ((goto_tmpc = fgetc(inpt)) != EOF && goto_found == false) {
 					if (goto_tmpc == '6') {
 						while ((goto_tmpc = fgetc(inpt)) != ';') {
 							goto_nameBuff[goto_nameBuff_cptr] = goto_tmpc;

@@ -1,0 +1,9 @@
+hello:str:Hello, World!:
+
+goto:main:
+
+gototag:main:
+	gototag:___loop:
+	print:str:hello:
+	print:str:__space:
+	goto:___loop:

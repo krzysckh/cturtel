@@ -6,15 +6,22 @@
 /* 1 */
 #define IF "if"
 /* 2 */
-#define ADD "add"
+#define SRUN "srun"
 /* 3 */
-#define SUB "sub"
+#define EXIT "exit"
 /* 4 */
 #define GOTO "goto"
 /* 5 */
 #define GOTOTAG "gototag"
 /* 6 */
-
+#define ADD "add"
+/* 7 */
+#define SUB "sub"
+/* 8 */
+#define MUL "mul"
+/* 9 */
+#define DIV "div"
+/* a */
 
 /* standard constants */
 char *NEWLINE[] = {"__newline", "\n"};

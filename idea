@@ -20,7 +20,8 @@ ex.:
 
 		add:a:1:
 		
-		if:a eq max:[goto:_loop]:[]:
+		if:a:eq:max:_loop:_end:
 
+	gototag:_end:
 	info:str:koniec:
 	print:str:info:
