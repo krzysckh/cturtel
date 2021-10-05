@@ -205,8 +205,8 @@ int tokenize(char* info, int linenn, FILE *out) {
 			return 1;
 		}
 
-		printf("5");
-		printf("%s;", where);
+		fprintf(out, "5");
+		fprintf(out, "%s;", where);
 		free(where);
 		free(rest);
 	} else if (strcmp(getArg(info, linenn), GOTOTAG) == 0) {
@@ -216,8 +216,8 @@ int tokenize(char* info, int linenn, FILE *out) {
 			return 1;
 		}
 
-		printf("6");
-		printf("%s;", tag);
+		fprintf(out, "6");
+		fprintf(out, "%s;", tag);
 		free(tag);
 		free(rest);
 	} else if (
@@ -248,7 +248,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 			return 1;
 		}
 
-		printf("%s:", dest);
+		fprintf(out, "%s:", dest);
 
 		free(rest);
 		rest = NULL;
@@ -258,7 +258,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 			return 1;
 		}
 
-		printf("%s;", from);
+		fprintf(out, "%s;", from);
 		free(from);
 		free(dest);
 	} else {

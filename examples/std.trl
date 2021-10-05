@@ -1,0 +1,19 @@
+true:num:1:
+false:num:0:
+TRUE:num:1:
+FALSE:num:0:
+
+NULL:str::
+NULL:num::
+
+__SPACE:str: :
+
+_TURTEL_VERSION:str:TURTEL0:
+_TURTEL_VERSION:num:0:
+_TRL_SYNTAX:str:TURTEL-TRL-0:
+_TRL_SYNTAX:num:0:
+
+
+STD_IS_DEFINED:tof:1:
+STD_IS_DEFINED:num:1:
+STD_IS_DEFINED:str:true:
