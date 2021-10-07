@@ -196,8 +196,65 @@ int tokenize(char* info, int linenn, FILE *out) {
 		 *	syntax:
 		 *		if:num eq/lt/gt/ne num:goto_if_true:goto_if_false:
 		 */
-		printf("if not added yet\n");
-		return 1;
+		fprintf(out, "2");
+
+		char *rest = getRest(info, strlen(IF)+1, linenn);
+		char *tmpArg = getArg(rest, linenn);
+		int restLen = strlen(rest) + 1;
+
+		if (tmpArg == NULL) {
+			return 1;
+		}
+		
+		fprintf(out, "%s:", tmpArg);
+
+		rest = getRest(info, strlen(info) - restLen + strlen(IF) + 1, linenn);
+		restLen = strlen(rest) + 1;
+
+		free(tmpArg);
+		tmpArg = NULL;
+
+		tmpArg = getArg(rest, linenn);
+		if (tmpArg == NULL) {
+			return 1;
+		}
+
+		if (strcmp(tmpArg, EQ) == 0) {
+			fprintf(out, "=:");
+		} else if (strcmp(tmpArg, LESSTHAN) == 0) {
+			fprintf(out, "<:");
+		} else if (strcmp(tmpArg, GREATERTHAN) == 0) {
+			fprintf(out, ">:");
+		} else if (strcmp(tmpArg, NOTEQ) == 0) {
+			fprintf(out, "!:");
+		} else {
+			fprintf(
+					stderr, 
+					"turtel: fatal err at line %d near %s\n"
+					"\t↑ expected %s / %s / %s / %s -- got %s\n",
+					linenn, info,
+					EQ, LESSTHAN, GREATERTHAN, NOTEQ, tmpArg
+			       );
+			return 1;
+		}
+
+		free(rest);
+		rest = NULL;
+
+		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + strlen(IF), linenn);
+
+		free(tmpArg);
+		tmpArg = NULL;
+
+		tmpArg = getArg(rest, linenn);
+
+		if (tmpArg == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "%s:", tmpArg);
+		
+
 	} else if (strcmp(getArg(info, linenn), GOTO) == 0) {
 		char *rest = getRest(info, strlen(GOTO)+1, linenn);
 		char *where = getArg(rest, linenn);

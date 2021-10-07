@@ -22,6 +22,8 @@
 /* 9 */
 #define DIV "div"
 /* a */
+#define NOW_EQU "nowequ"
+/* b */
 
 /* standard constants */
 char *NEWLINE[] = {"__newline", "\n"};
