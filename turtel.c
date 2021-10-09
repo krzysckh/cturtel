@@ -302,6 +302,10 @@ int main (int argc, char *argv[]) {
 				}
 
 				break;
+			case '2':
+				err("IF NOT ImPLEMETED YEEET");
+				return 1;
+				break;
 			default:
 				err("not implemended");
 				fprintf(stderr, "died on char %c\n", c);

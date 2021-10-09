@@ -59,3 +59,9 @@ char *OS[] = {"__OS", "0"};
 /* > */
 #define NOTEQ "ne"
 /* ! */
+
+
+/* lexer definitions */
+/* lexer statements start with @, so they can be easily distinguished */
+
+#define LEX_INCLUDE "@include"

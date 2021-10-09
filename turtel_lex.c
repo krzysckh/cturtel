@@ -85,6 +85,35 @@ int tokenize(char* info, int linenn, FILE *out) {
 	if (startswith(info, "\n")) {
 	} else if (startswith(info, "#")) {
 		/* a comment */
+	} else if (strcmp(getArg(info, linenn), LEX_INCLUDE) == 0) {
+		char *rest = getRest(info, strlen(LEX_INCLUDE)+1, linenn);
+		char *name = getArg(rest, linenn);
+		if (name == NULL) {
+			return 1;
+		}
+		
+		FILE *TMP_INCFILE = fopen(name, "r");
+		char TMP_INCLINE[LINE_LEN_MAX];
+		int TMP_INCN = 0;
+
+		if (TMP_INCFILE == NULL) {
+			fprintf(stderr, "turtel: fatal err: could not open file %s\n"\
+					"\t↑ near \"%s\" at line %d\n",
+					name, info, linenn
+			       );
+			return 1;
+		}
+
+		while (fgets(TMP_INCLINE, LINE_LEN_MAX, TMP_INCFILE)) {
+			if ( tokenize(TMP_INCLINE, TMP_INCN, out) ) {
+				return 1;
+			}
+			TMP_INCN ++;
+		}
+
+		fclose(TMP_INCFILE);
+		free(name);
+		free(rest);
 	} else if (strcmp(getArg(info, linenn), PRINT) == 0) {
 		fprintf(out, "0");
 		/* print the type for interpreter */
@@ -281,18 +310,15 @@ int tokenize(char* info, int linenn, FILE *out) {
 		rest = NULL;
 
 		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + 1, linenn);
-		restLen = strlen(rest);
-
-		free(tmpArg);
-		tmpArg = NULL;
 
 		if (tmpArg == NULL) {
 			return 1;
 		}
 
 		fprintf(out, "%s;", tmpArg);
-		free(rest);
 
+		free(rest);
+		free(tmpArg);
 	} else if (strcmp(getArg(info, linenn), GOTO) == 0) {
 		char *rest = getRest(info, strlen(GOTO)+1, linenn);
 		char *where = getArg(rest, linenn);
