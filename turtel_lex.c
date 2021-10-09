@@ -230,36 +230,33 @@ int tokenize(char* info, int linenn, FILE *out) {
 		fprintf(out, "2");
 
 		char *rest = getRest(info, strlen(IF)+1, linenn);
-		char *tmpArg = getArg(rest, linenn);
-		int restLen = strlen(rest);
+		char *arg1, *arg2, *op, *goto1, *goto2;
 
-		if (tmpArg == NULL) {
+		arg1 = getArg(rest, linenn);
+
+		if (arg1 == NULL) {
 			return 1;
 		}
 		
-		fprintf(out, "%s:", tmpArg);
+		fprintf(out, "%s:", arg1);
 
 		free(rest);
 		rest = NULL;
 
-		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + 1, linenn);
-		restLen = strlen(rest);
+		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1, linenn);
 
-		free(tmpArg);
-		tmpArg = NULL;
-
-		tmpArg = getArg(rest, linenn);
-		if (tmpArg == NULL) {
+		op = getArg(rest, linenn);
+		if (op == NULL) {
 			return 1;
 		}
 
-		if (strcmp(tmpArg, EQ) == 0) {
+		if (strcmp(op , EQ) == 0) {
 			fprintf(out, "=:");
-		} else if (strcmp(tmpArg, LESSTHAN) == 0) {
+		} else if (strcmp(op, LESSTHAN) == 0) {
 			fprintf(out, "<:");
-		} else if (strcmp(tmpArg, GREATERTHAN) == 0) {
+		} else if (strcmp(op, GREATERTHAN) == 0) {
 			fprintf(out, ">:");
-		} else if (strcmp(tmpArg, NOTEQ) == 0) {
+		} else if (strcmp(op, NOTEQ) == 0) {
 			fprintf(out, "!:");
 		} else {
 			fprintf(
@@ -267,7 +264,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 					"turtel: fatal err at line %d near %s"
 					"\t↑ expected %s / %s / %s / %s → got \"%s\"\n",
 					linenn, info,
-					EQ, LESSTHAN, GREATERTHAN, NOTEQ, tmpArg
+					EQ, LESSTHAN, GREATERTHAN, NOTEQ, op
 			       );
 			return 1;
 		}
@@ -275,50 +272,47 @@ int tokenize(char* info, int linenn, FILE *out) {
 		free(rest);
 		rest = NULL;
 
-		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + 1, linenn);
-		restLen = strlen(rest);
+		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1 + strlen(op) + 1, linenn);
 
-		free(tmpArg);
-		tmpArg = NULL;
+		arg2 = getArg(rest, linenn);
 
-		tmpArg = getArg(rest, linenn);
-
-		if (tmpArg == NULL) {
+		if (arg2 == NULL) {
 			return 1;
 		}
 
-		fprintf(out, "%s:", tmpArg);
+		fprintf(out, "%s:", arg2);
 		
 		free(rest);
 		rest = NULL;
 
-		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + 1, linenn);
-		restLen = strlen(rest);
+		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1 + strlen(op) + 1 + strlen(arg2) + 1, linenn);
 
-		free(tmpArg);
-		tmpArg = NULL;
+		goto1 = getArg(rest, linenn);
 
-		tmpArg = getArg(rest, linenn);
-
-		if (tmpArg == NULL) {
+		if (goto1 == NULL) {
 			return 1;
 		}
 
-		fprintf(out, "%s:", tmpArg);
+		fprintf(out, "5%s;", goto1);
 
 		free(rest);
 		rest = NULL;
 
-		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + 1, linenn);
+		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1 + strlen(op) + 1 + strlen(arg2) + 1 + strlen(goto1) + 1, linenn);
+		goto2 = getArg(rest, linenn);
 
-		if (tmpArg == NULL) {
+		if (goto2 == NULL) {
 			return 1;
 		}
 
-		fprintf(out, "%s;", tmpArg);
+		fprintf(out, "5%s;", goto2);
 
 		free(rest);
-		free(tmpArg);
+		free(arg1);
+		free(arg2);
+		free(op);
+		free(goto1);
+		free(goto2);
 	} else if (strcmp(getArg(info, linenn), GOTO) == 0) {
 		char *rest = getRest(info, strlen(GOTO)+1, linenn);
 		char *where = getArg(rest, linenn);

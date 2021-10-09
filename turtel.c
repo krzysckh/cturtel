@@ -302,9 +302,104 @@ int main (int argc, char *argv[]) {
 				}
 
 				break;
-			case '2':
-				err("IF NOT ImPLEMETED YEEET");
-				return 1;
+			case '2': ;
+				char if_tmpc = 0;
+				int if_i = 0;
+				bool ifarg1_exists = false, ifarg2_exists = false;
+
+				int arg1 = 0, arg2 = 0;
+				char arg1Name[LINE_LEN_MAX], arg2Name[LINE_LEN_MAX];
+				for (if_i = 0; if_i < LINE_LEN_MAX; if_i ++) {
+					arg1Name[if_i] = arg2Name[if_i] = '\0';
+				}
+
+				char operation;
+				bool if_isStatementTrue;
+
+				if_i = 0;
+
+				while ((if_tmpc = fgetc(inpt)) != ':') {
+					arg1Name[if_i] = if_tmpc;
+					if_i ++;
+				}
+
+				operation = fgetc(inpt);
+
+				fgetc(inpt); /* to get rid of ':' from fpointer */
+
+				if_i = 0;
+
+				while ((if_tmpc = fgetc(inpt)) != ':') {
+					arg2Name[if_i] = if_tmpc;
+					if_i ++;
+				}
+				
+				
+				for (if_i = 0; if_i < NUM_COUNT; if_i++) {
+					if (strcmp(NumInfo[if_i].name, arg1Name) == 0) {
+						arg1 = NumInfo[if_i].content;
+						ifarg1_exists = true;
+					}
+				}
+
+				for (if_i = 0; if_i < NUM_COUNT; if_i++) {
+					if (strcmp(NumInfo[if_i].name, arg2Name) == 0) {
+						arg2 = NumInfo[if_i].content;
+						ifarg2_exists = true;
+					}
+				}
+
+				if (ifarg1_exists == false || ifarg2_exists == false) {
+					err("num not defined");
+					fprintf(stderr, "\t↑ %s or %s\n", arg1Name, arg2Name);
+					return 1;
+				}
+
+				switch (operation) {
+					case '=':
+						if (arg1 == arg2) {
+							if_isStatementTrue = true;
+						} else {
+							if_isStatementTrue = false;
+						}
+						break;
+					case '<':
+						if (arg1 < arg2) {
+							if_isStatementTrue = true;
+						} else {
+							if_isStatementTrue = false;
+						}
+						break;
+					case '>':
+						if (arg1 > arg2) {
+							if_isStatementTrue = true;
+						} else {
+							if_isStatementTrue = false;
+						}
+						break;
+					case '!':
+						if (arg1 != arg2) {
+							if_isStatementTrue = true;
+						} else {
+							if_isStatementTrue = false;
+						}
+						break;
+					default:
+						err("what");
+						return 1;
+						break;
+				}
+
+				if (if_isStatementTrue) {
+					break;
+				} else {
+					while ((if_tmpc = fgetc(inpt)) != ';') {}
+					/* move fpointer to second gototag */
+					break;
+				}
+
+
+
 				break;
 			default:
 				err("not implemended");

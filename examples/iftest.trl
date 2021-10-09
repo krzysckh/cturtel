@@ -1,1 +1,22 @@
-if:TEST_A:eq:TEST_B:A:B:
+goto:main:
+
+gototag:_A:
+	bruh:str:AAAAAAA:
+	print:str:bruh:
+	print:str:__newline:
+	goto:end:
+
+gototag:_B:
+	bruh:str:BBBBBBB:
+	print:str:bruh:
+	print:str:__newline:
+	goto:end:
+
+gototag:main:
+	a:num:1:
+	b:num:1:
+
+	if:a:eq:b:_A:_B:
+
+gototag:end:
+
