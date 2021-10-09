@@ -25,3 +25,23 @@ ex.:
 	gototag:_end:
 	info:str:koniec:
 	print:str:info:
+
+
+=====
+LATER
+change 'if' a little
+now:
+	if:a:eq:b:_add1:_add2:
+	gototag:_add1:
+	
+	add:a:1:
+	goto:end:
+	gototag:_add2:
+	
+	add:a:2:
+	goto:end:
+
+	gototag:end:
+
+need to add:
+	if:a:eq:b:(add:a:1:):(add:a:2:):
