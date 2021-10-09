@@ -139,7 +139,8 @@ int main (int argc, char *argv[]) {
 				}
 				break;
 			case '1':
-
+				err("read not yet");
+				return 1;
 				break;
 			case 'N': ;
 				char newVarName[LINE_LEN_MAX];
