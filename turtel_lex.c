@@ -341,6 +341,17 @@ int tokenize(char* info, int linenn, FILE *out) {
 		fprintf(out, "%s;", tag);
 		free(tag);
 		free(rest);
+	} else if (strcmp(getArg(info, linenn), NOW_EQU) == 0) {
+		printf("nowequ not implemented\n");
+		/*
+		 * NOWEQU - usage
+		 * nowequ:type:destvar:type:var:
+		 * ex.
+		 * nowequ:num:bruh:tof:moment:
+		 *
+		 * interpreter WILL convert all types to all types
+		 */
+
 	} else if (
 			strcmp(getArg(info, linenn), ADD) == 0 ||
 			strcmp(getArg(info, linenn), SUB) == 0 ||
