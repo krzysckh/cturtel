@@ -2,7 +2,7 @@
 
 int argLen(char *full, int linenn) {
 	int i, ret = 0;
-	for (i = 0; i < strlen(full); i++) {
+	for (i = 0; i < (int)strlen(full); i++) {
 		if (full[i] != SEPARATOR) {
 			ret ++;
 		} else {
@@ -21,11 +21,11 @@ char *getArg(char *arguments, int linenn) {
 	arg = malloc(sizeof(char) * strlen(arguments));
 	int i;
 
-	for (i = 0; i < strlen(arguments); i++) {
+	for (i = 0; i < (int)strlen(arguments); i++) {
 		arg[i] = '\0';
 	}
 
-	for (i = 0; i < strlen(arguments); i++) {
+	for (i = 0; i < (int)strlen(arguments); i++) {
 		if (arguments[i] == SEPARATOR) {
 			return arg;
 		} else {
@@ -40,7 +40,7 @@ char *getArg(char *arguments, int linenn) {
 char *getRest(char *full, int from, int linenn) {
 	char *ret = malloc(sizeof(char)*strlen(full));
 	int i, j = 0;
-	for (i = from; i < strlen(full); i++) {
+	for (i = from; i < (int)strlen(full); i++) {
 		ret[j] = full[i];
 		j++;
 	}
@@ -52,14 +52,14 @@ int startswith(char* what, char* withwhat) {
 	bool doesIt = true, shouldSkip = false;
 	int i;
 
-	if (strlen(what) < strlen(withwhat)) {
+	if ((int)strlen(what) < (int)strlen(withwhat)) {
 		return false;
 	}
 
-	for (i = 0; i < strlen(what) && shouldSkip == false; i++) {
+	for (i = 0; i < (int)strlen(what) && shouldSkip == false; i++) {
 		if (what[i] == '\t' || what[i] == 32) {
 			int j;
-			for (j = i; j < strlen(what); j++) {
+			for (j = i; j < (int)strlen(what); j++) {
 				what[j] = what[j+1];
 			}
 			what[j] = '\0';
@@ -70,7 +70,7 @@ int startswith(char* what, char* withwhat) {
 
 	/* delete all tabs and spaces from line, so it wont get counted as a char */
 
-	for (i = 0; i < strlen(withwhat); i++) {
+	for (i = 0; i < (int)strlen(withwhat); i++) {
 		if (what[i] != withwhat[i]) {
 			doesIt = false;
 			continue;
@@ -83,6 +83,8 @@ int startswith(char* what, char* withwhat) {
 
 int tokenize(char* info, int linenn, FILE *out) {
 	if (startswith(info, "\n")) {
+	} else if (startswith(info, "#")) {
+		/* a comment */
 	} else if (strcmp(getArg(info, linenn), PRINT) == 0) {
 		fprintf(out, "0");
 		/* print the type for interpreter */
@@ -200,7 +202,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 
 		char *rest = getRest(info, strlen(IF)+1, linenn);
 		char *tmpArg = getArg(rest, linenn);
-		int restLen = strlen(rest) + 1;
+		int restLen = strlen(rest);
 
 		if (tmpArg == NULL) {
 			return 1;
@@ -208,8 +210,11 @@ int tokenize(char* info, int linenn, FILE *out) {
 		
 		fprintf(out, "%s:", tmpArg);
 
-		rest = getRest(info, strlen(info) - restLen + strlen(IF) + 1, linenn);
-		restLen = strlen(rest) + 1;
+		free(rest);
+		rest = NULL;
+
+		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + 1, linenn);
+		restLen = strlen(rest);
 
 		free(tmpArg);
 		tmpArg = NULL;
@@ -230,8 +235,8 @@ int tokenize(char* info, int linenn, FILE *out) {
 		} else {
 			fprintf(
 					stderr, 
-					"turtel: fatal err at line %d near %s\n"
-					"\t↑ expected %s / %s / %s / %s -- got %s\n",
+					"turtel: fatal err at line %d near %s"
+					"\t↑ expected %s / %s / %s / %s → got \"%s\"\n",
 					linenn, info,
 					EQ, LESSTHAN, GREATERTHAN, NOTEQ, tmpArg
 			       );
@@ -241,7 +246,8 @@ int tokenize(char* info, int linenn, FILE *out) {
 		free(rest);
 		rest = NULL;
 
-		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + strlen(IF), linenn);
+		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + 1, linenn);
+		restLen = strlen(rest);
 
 		free(tmpArg);
 		tmpArg = NULL;
@@ -254,6 +260,38 @@ int tokenize(char* info, int linenn, FILE *out) {
 
 		fprintf(out, "%s:", tmpArg);
 		
+		free(rest);
+		rest = NULL;
+
+		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + 1, linenn);
+		restLen = strlen(rest);
+
+		free(tmpArg);
+		tmpArg = NULL;
+
+		tmpArg = getArg(rest, linenn);
+
+		if (tmpArg == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "%s:", tmpArg);
+
+		free(rest);
+		rest = NULL;
+
+		rest = getRest(info, strlen(info) - restLen + strlen(tmpArg) + 1, linenn);
+		restLen = strlen(rest);
+
+		free(tmpArg);
+		tmpArg = NULL;
+
+		if (tmpArg == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "%s;", tmpArg);
+		free(rest);
 
 	} else if (strcmp(getArg(info, linenn), GOTO) == 0) {
 		char *rest = getRest(info, strlen(GOTO)+1, linenn);
@@ -379,6 +417,8 @@ int main (int argc, char *argv[]) {
 
 	int opt;
 
+	FILE *tmpf = tmpfile();
+
 	while ((opt = getopt(argc, argv, "f:o:h")) != -1) {
 		switch(opt) {
 			case 'f':
@@ -401,10 +441,16 @@ int main (int argc, char *argv[]) {
 	}
 
 	while (fgets(line, LINE_LEN_MAX, inpt)) {
-		if ( tokenize(line, line_n, outpt) ) {
+		if ( tokenize(line, line_n, tmpf) ) {
 			return 1;
 		}
 		line_n++;
+	}
+
+	char c;
+	rewind(tmpf);
+	while ((c = fgetc(tmpf)) != EOF) {
+		fputc(c, outpt);
 	}
 
 	return 0;
