@@ -6,7 +6,7 @@
 ===============================
 
 turtel is an interpreted programming language.
-this implementation is written in C (as the name suggests)
+this implementation is written in C89 (as the name suggests)
 
 send help please
 
@@ -15,4 +15,11 @@ example "hello world" turtel program
 	hello:str:Hello, World!:
 	print:str:hello:
 
+example loop
+	
+	message:str:oi! im in a loop..!:
+	gototag:_loop:
+		print:str:message:
+		print:str:__newline:
+		goto:_loop:
 
