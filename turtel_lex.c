@@ -15,7 +15,6 @@ int argLen(char *full, int linenn) {
 }
 
 
-
 char *getArg(char *arguments, int linenn) {
 	char *arg = NULL;
 	arg = malloc(sizeof(char) * strlen(arguments));
@@ -29,11 +28,32 @@ char *getArg(char *arguments, int linenn) {
 		if (arguments[i] == SEPARATOR) {
 			return arg;
 		} else {
-			arg[i] = arguments[i];
+			arg[i] = (arguments[i] == '\t') ? 0 : arguments[i];
 		}
 	}
 	
 	fprintf(stderr, "turtel_lex: fatal err: SEPARATOR (%c) not found in line %d\n\t/\\-- around \"%s\"\n", SEPARATOR, linenn, arguments);
+	return NULL;
+}
+
+char *getLexerArg(char *arguments, int linenn) {
+	char *arg = NULL;
+	arg = malloc(sizeof(char) * strlen(arguments));
+	int i;
+
+	for (i = 0; i < (int)strlen(arguments); i++) {
+		arg[i] = '\0';
+	}
+
+	for (i = 0; i < (int)strlen(arguments); i++) {
+		if ((arguments[i] == ' ') || (arguments[i] == '\n')) {
+			return arg;
+		} else {
+			arg[i] = (arguments[i] == '\t') ? 0 : arguments[i];
+		}
+	}
+	
+	fprintf(stderr, "turtel_lex: fatal err: man. i don't unnderstand this lexer definition\n");
 	return NULL;
 }
 
@@ -85,9 +105,9 @@ int tokenize(char* info, int linenn, FILE *out) {
 	if (startswith(info, "\n")) {
 	} else if (startswith(info, "#")) {
 		/* a comment */
-	} else if (strcmp(getArg(info, linenn), LEX_INCLUDE) == 0) {
+	} else if (strcmp(getLexerArg(info, linenn), LEX_INCLUDE) == 0) {
 		char *rest = getRest(info, strlen(LEX_INCLUDE)+1, linenn);
-		char *name = getArg(rest, linenn);
+		char *name = getLexerArg(rest, linenn);
 		if (name == NULL) {
 			return 1;
 		}
