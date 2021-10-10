@@ -1,4 +1,4 @@
-@include:std.trl:
+@include std.trl
 
 max:num:2137:
 i:num:0:
