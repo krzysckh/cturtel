@@ -1,4 +1,8 @@
 1. rest of the functions
+	- read (interpreter)
+	- srun (interpreter & lexer)
+	- exit (interpreter & lexer)
+	- nowequ (interpreter & lexer)
 2. repair code for deleting \t and ' ' at the start of line 'cause it doesnt work properly now
 3. ...
 4. profit
