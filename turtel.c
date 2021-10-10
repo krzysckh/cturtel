@@ -399,7 +399,76 @@ int main (int argc, char *argv[]) {
 					break;
 				}
 
+				break;
+			case '7': ;
+			case '8': ;
+			case '9': ;
+			case 'a': ;
+				int op_arg1, op_arg2, op_i = 0;
+				char op_arg1Name[LINE_LEN_MAX], op_arg2Name[LINE_LEN_MAX];
+				for (op_i = 0; op_i < LINE_LEN_MAX; op_i ++) {
+					op_arg1Name[op_i] = '\0';
+					op_arg2Name[op_i] = '\0';
+				}
+				op_i = 0;
 
+				bool op_arg1_exists = false, op_arg2_exists = false;
+				char op_tmpc;
+
+				while ((op_tmpc = fgetc(inpt)) != ':') { 
+					op_arg1Name[op_i] = op_tmpc;
+					op_i ++;
+				}
+
+				op_i = 0;
+
+				while ((op_tmpc = fgetc(inpt)) != ';') { 
+					op_arg2Name[op_i] = op_tmpc;
+					op_i ++;
+				}
+
+				for (op_i = 0; op_i < NUM_COUNT; op_i++) {
+					if (strcmp(NumInfo[op_i].name, op_arg1Name) == 0) {
+						op_arg1 = NumInfo[op_i].content;
+						op_arg1_exists = true;
+					}
+				}
+
+				for (op_i = 0; op_i < NUM_COUNT; op_i++) {
+					if (strcmp(NumInfo[op_i].name, op_arg2Name) == 0) {
+						op_arg2 = NumInfo[op_i].content;
+						op_arg2_exists = true;
+					}
+				}
+
+				if (op_arg1_exists == false || op_arg2_exists == false) {
+					err("num not defined");
+					fprintf(stderr, "\t↑ %s or %s\n", op_arg1Name, op_arg2Name);
+					return 1;
+				}
+				
+				switch (c) {
+					case '7':
+						op_arg1 = op_arg1 + op_arg2;
+						break;
+					case '8':
+						op_arg1 = op_arg1 - op_arg2;
+						break;
+					case '9':
+						op_arg1 = op_arg1 * op_arg2;
+						break;
+					case 'a':
+						op_arg1 = op_arg1 / op_arg2;
+						break;
+				}
+
+
+				for (op_i = 0; op_i < NUM_COUNT; op_i++) {
+					if (strcmp(NumInfo[op_i].name, op_arg1Name) == 0) {
+						NumInfo[op_i].content = op_arg1;
+						break;
+					}
+				}
 
 				break;
 			default:

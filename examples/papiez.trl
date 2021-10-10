@@ -1,0 +1,18 @@
+@include:std.trl:
+
+max:num:2137:
+i:num:0:
+adder:num:1:
+mess:str:papiezak:
+
+gototag:_loop:
+	print:str:mess:
+	print:str:__SPACE:
+	print:num:i:
+	print:str:__newline:
+	
+	add:i:adder:
+	if:i:gt:max:_end:_loop:
+
+gototag:_end:
+
