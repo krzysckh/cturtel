@@ -69,7 +69,7 @@ int main (int argc, char *argv[]) {
 						for (i = 0; i < NUM_COUNT; i++) {
 							if (NumInfo[i].name != NULL) {
 								if (strcmp(varName, NumInfo[i].name) == 0) {
-									printf("%d", NumInfo[i].content);
+									printf("%lld", NumInfo[i].content);
 									found = true;
 								}
 							}

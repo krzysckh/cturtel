@@ -25,7 +25,7 @@ typedef struct TurtelString {
 
 typedef struct TurtelNum {
 	char *name;
-	int content;
+	long long content;
 } TurtelNum;
 
 typedef struct TurtelBool {

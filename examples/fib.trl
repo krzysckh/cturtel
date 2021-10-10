@@ -1,0 +1,35 @@
+@include:std.trl:
+
+a:num:1:
+b:num:1:
+c:num:0:
+
+howMany:num:20:
+now:num:0:
+adder:num:1:
+
+print:num:a:
+print:str:__newline:
+print:num:b:
+print:str:__newline:
+
+gototag:__loop:
+	sub:c:c:
+	add:c:a:
+	add:c:b:
+
+	print:num:c:
+	print:str:__newline:
+
+	sub:a:a:
+	add:a:b:
+
+	sub:b:b:
+	add:b:c:
+
+	add:now:adder:
+	
+	if:now:gt:howMany:__end:__loop:
+
+gototag:__end:
+
