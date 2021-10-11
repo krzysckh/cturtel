@@ -370,7 +370,8 @@ int tokenize(char* info, int linenn, FILE *out) {
 			strcmp(getArg(info, linenn), ADD) == 0 ||
 			strcmp(getArg(info, linenn), SUB) == 0 ||
 			strcmp(getArg(info, linenn), MUL) == 0 ||
-			strcmp(getArg(info, linenn), DIV) == 0
+			strcmp(getArg(info, linenn), DIV) == 0 ||
+			strcmp(getArg(info, linenn), MOD) == 0
 			) {
 
 		/* adding, subtracting, multiplying, dividing */
@@ -383,6 +384,8 @@ int tokenize(char* info, int linenn, FILE *out) {
 			fprintf(out, "9");
 		} else if (strcmp(getArg(info, linenn), DIV) == 0) {
 			fprintf(out, "a");
+		} else if (strcmp(getArg(info, linenn), MOD) == 0) {
+			fprintf(out, "c");
 		}
 
 		/* ↑ print what is needed to do, so the interpreter knows co jest sześć B)) */

@@ -404,6 +404,7 @@ int main (int argc, char *argv[]) {
 			case '8': ;
 			case '9': ;
 			case 'a': ;
+			case 'c': ;
 				int op_arg1, op_arg2, op_i = 0;
 				char op_arg1Name[LINE_LEN_MAX], op_arg2Name[LINE_LEN_MAX];
 				for (op_i = 0; op_i < LINE_LEN_MAX; op_i ++) {
@@ -459,6 +460,9 @@ int main (int argc, char *argv[]) {
 						break;
 					case 'a':
 						op_arg1 = op_arg1 / op_arg2;
+						break;
+					case 'c':
+						op_arg1 = op_arg1 % op_arg2;
 						break;
 				}
 
