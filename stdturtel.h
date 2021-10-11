@@ -24,6 +24,8 @@
 /* a */
 #define NOW_EQU "nowequ"
 /* b */
+#define MOD "mod"
+/* c */
 
 /* standard constants */
 char *NEWLINE[] = {"__newline", "\n"};
