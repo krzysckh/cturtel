@@ -175,9 +175,9 @@ int main (int argc, char *argv[]) {
 
 						if (read_found == false) {
 							NumInfo[NUM_COUNT].name = malloc(sizeof(char) * (strlen(read_varName)+1));
-							strncpy(NumInfo[NUM_COUNT].name, read_varName, strlen(read_varName));
+							strncpy(NumInfo[NUM_COUNT].name, read_varName, strlen(read_varName)+1);
 
-							NumInfo[NUM_COUNT].content = (long long) atoi(read_buff);
+							NumInfo[NUM_COUNT].content = atoi(read_buff);
 
 							NUM_COUNT ++;
 						}
@@ -200,7 +200,7 @@ int main (int argc, char *argv[]) {
 
 						if (read_found == false) {
 							StringInfo[NUM_COUNT].name = malloc(sizeof(char) * (strlen(read_varName)+1));
-							strncpy(StringInfo[NUM_COUNT].name, read_varName, strlen(read_varName));
+							strncpy(StringInfo[NUM_COUNT].name, read_varName, strlen(read_varName)+1);
 
 							StringInfo[read_i].content = malloc(sizeof(char) * (strlen(read_buff)+1));
 							strncpy(StringInfo[NUM_COUNT].content, read_buff, strlen(read_buff)-1);
@@ -221,7 +221,7 @@ int main (int argc, char *argv[]) {
 
 						if (read_found == false) {
 							TofInfo[TOF_COUNT].name = malloc(sizeof(char) * (strlen(read_varName)+1));
-							strncpy(TofInfo[TOF_COUNT].name, read_varName, strlen(read_varName));
+							strncpy(TofInfo[TOF_COUNT].name, read_varName, strlen(read_varName)+1);
 
 							TofInfo[TOF_COUNT].content = (atoi(read_buff) == 0) ? false : true;
 
