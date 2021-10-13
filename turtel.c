@@ -353,6 +353,8 @@ int main (int argc, char *argv[]) {
 					goto_tmpi ++;
 				}
 
+				if (gotoWhere[0] == '\0') break;
+
 				char goto_nameBuff[LINE_LEN_MAX];
 				int goto_nameBuff_cptr = 0;
 				bool goto_found = false;
