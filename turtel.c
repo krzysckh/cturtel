@@ -202,12 +202,13 @@ int main (int argc, char *argv[]) {
 
 						for (i = 0; i < STR_COUNT; i++) {
 							if (strcmp(StringInfo[i].name, newVarName) == 0) {
-								if (StringInfo[i].len < strlen(val)) {
-									err("new string won't fit in adressed space");
-									printf("\t↑ (adressed = %d, needed = %d)\n", StringInfo[i].len, (int)strlen(val));
-									return 1;
-								}
+								free(StringInfo[i].content);
+
+								StringInfo[i].len = strlen(val);
+
+								StringInfo[i].content = malloc(sizeof(char) * (strlen(val)+1));
 								strncpy(StringInfo[i].content, val, strlen(val)+1);
+
 								exists = true;
 							}
 						}
