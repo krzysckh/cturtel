@@ -138,9 +138,98 @@ int main (int argc, char *argv[]) {
 						break;
 				}
 				break;
-			case '1':
-				err("read not yet");
-				return 1;
+			case '1': ;
+				char read_tmpc = fgetc(inpt);
+				char read_vtmpc;
+				char read_varName[LINE_LEN_MAX];
+				int read_i;
+				bool read_found = false;
+
+				char read_buff[LINE_LEN_MAX];
+				for (read_i = 0; read_i < LINE_LEN_MAX; read_i++) {
+					read_varName[read_i] = '\0';
+					read_buff[read_i] = '\0';
+				}
+
+				read_i = 0;
+
+				fgets(read_buff, LINE_LEN_MAX, stdin);
+
+				while ((read_vtmpc = fgetc(inpt)) != ';') {
+					read_varName[read_i] = read_vtmpc;
+					read_i++;
+				}
+				read_varName[read_i] = '\0';
+
+				switch (read_tmpc) {
+					case 'a': ;
+						for (read_i = 0; read_i < NUM_COUNT; read_i++) {
+							if (NumInfo[read_i].name != NULL) {
+								if (strcmp(read_varName, NumInfo[read_i].name) == 0) {
+									NumInfo[read_i].content = atoi(read_buff);
+
+									read_found = true;
+								}
+							}
+						}
+
+						if (read_found == false) {
+							NumInfo[NUM_COUNT].name = malloc(sizeof(char) * (strlen(read_varName)+1));
+							strncpy(NumInfo[NUM_COUNT].name, read_varName, strlen(read_varName));
+
+							NumInfo[NUM_COUNT].content = (long long) atoi(read_buff);
+
+							NUM_COUNT ++;
+						}
+					
+						break;
+					case 'b': ;
+						for (read_i = 0; read_i < STR_COUNT; read_i++) {
+							if (StringInfo[read_i].name != NULL) {
+								if (strcmp(read_varName, StringInfo[read_i].name) == 0) {
+									free(StringInfo[read_i].content);
+
+									StringInfo[read_i].content = malloc(sizeof(char) * (strlen(read_buff)+1));
+									strncpy(StringInfo[NUM_COUNT].content, read_buff, strlen(read_buff)-1);
+									/* copying strlen() -1 to get rid of newline */
+
+									read_found = true;
+								}
+							}
+						}
+
+						if (read_found == false) {
+							StringInfo[NUM_COUNT].name = malloc(sizeof(char) * (strlen(read_varName)+1));
+							strncpy(StringInfo[NUM_COUNT].name, read_varName, strlen(read_varName));
+
+							StringInfo[read_i].content = malloc(sizeof(char) * (strlen(read_buff)+1));
+							strncpy(StringInfo[NUM_COUNT].content, read_buff, strlen(read_buff)-1);
+
+							STR_COUNT ++;
+						}
+						break;
+					case 'c': ;
+						for (read_i = 0; read_i < TOF_COUNT; read_i++) {
+							if (TofInfo[read_i].name != NULL) {
+								if (strcmp(read_varName, TofInfo[read_i].name) == 0) {
+									TofInfo[read_i].content = (atoi(read_buff) == 0) ? false : true;
+
+									read_found = true;
+								}
+							}
+						}
+
+						if (read_found == false) {
+							TofInfo[TOF_COUNT].name = malloc(sizeof(char) * (strlen(read_varName)+1));
+							strncpy(TofInfo[TOF_COUNT].name, read_varName, strlen(read_varName));
+
+							TofInfo[TOF_COUNT].content = (atoi(read_buff) == 0) ? false : true;
+
+							TOF_COUNT ++;
+						}
+
+						break;
+				}
 				break;
 			case 'N': ;
 				char newVarName[LINE_LEN_MAX];
