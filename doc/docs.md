@@ -53,6 +53,7 @@ tof: true or false statement (bool)
 # builtin functions
 
 | name	| syntax			| definition			|
+|-------|-------------------------------|-------------------------------|
 | print	| print:data_struc:var:		| prints variable content	|
 | read	| read:data_struc:var:		| reads into variable		|
 | if	| if:var1:op:var2:goto1:goto2	| logic (op can be eq/gt/lt/ne)	|
