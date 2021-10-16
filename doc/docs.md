@@ -46,9 +46,8 @@ tof: true or false statement (bool)
 
 # builtin constants
 
-- \_\_OS - tof - 1 if windows, 0 else,
-- \_\_newline - str - '\\n',
-- \_\_space - str - ' '
+- `__OS` - tof - 1 if windows, 0 else,
+- `__newline` - str - '\\n',
 
 # builtin functions
 
