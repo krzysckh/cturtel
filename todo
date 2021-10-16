@@ -1,6 +1,4 @@
 1. rest of the functions
-	- srun (interpreter & lexer)
-	- exit (interpreter & lexer)
 	- nowequ (interpreter & lexer)
 2. ...
 3. profit
