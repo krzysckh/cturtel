@@ -1,12 +1,12 @@
-3 data structures:
-	- num (int)
-	- str: (char[])
-	- bool (bool)
+# 3 data structures:
+#	- num (int)
+#	- str: (char[])
+# 	- bool (bool)
 
-1 line is one command
+# 1 line is one command
 
-gotos instead of for loops
-ex.:
+# gotos instead of for loops
+# ex.:
 
 	i:num:0:
 	max:num:2137:
@@ -27,10 +27,10 @@ ex.:
 	print:str:info:
 
 
-=====
-LATER
-change 'if' a little
-now:
+# =====
+# LATER
+# change 'if' a little
+# now:
 	if:a:eq:b:_add1:_add2:
 	gototag:_add1:
 	
@@ -43,5 +43,6 @@ now:
 
 	gototag:end:
 
-need to add:
-	if:a:eq:b:(add:a:1:):(add:a:2:):
+# need to add:
+	if:a:eq:b:[add:a:1:]:[add:a:2:]:
+# also: 1 and 2 have to be defined sooo sugma
