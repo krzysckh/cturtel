@@ -187,17 +187,18 @@ int main (int argc, char *argv[]) {
 						for (read_i = 0; read_i < STR_COUNT; read_i++) {
 							if (StringInfo[read_i].name != NULL) {
 								if (strcmp(read_varName, StringInfo[read_i].name) == 0) {
+									StringInfo[read_i].content = NULL;
 									free(StringInfo[read_i].content);
 
 									StringInfo[read_i].content = malloc(sizeof(char) * (strlen(read_buff)+1));
+
 									if (strlen(read_buff) <= 1) {
-										strncpy(StringInfo[NUM_COUNT].content, read_buff, strlen(read_buff));
-										printf("copying wITHOUT -1\n");
+										strncpy(StringInfo[read_i].content, " ", 2);
 									} else {
-										printf("copying w -1\n");
-										strncpy(StringInfo[NUM_COUNT].content, read_buff, strlen(read_buff)-1);
+										strncpy(StringInfo[read_i].content, read_buff, strlen(read_buff)-1);
 										/* copying strlen() -1 to get rid of newline */
 									}
+
 
 									read_found = true;
 								}
@@ -206,10 +207,10 @@ int main (int argc, char *argv[]) {
 
 						if (read_found == false) {
 							StringInfo[NUM_COUNT].name = malloc(sizeof(char) * (strlen(read_varName)+1));
-							strncpy(StringInfo[NUM_COUNT].name, read_varName, strlen(read_varName)+1);
+							strncpy(StringInfo[STR_COUNT].name, read_varName, strlen(read_varName)+1);
 
 							StringInfo[read_i].content = malloc(sizeof(char) * (strlen(read_buff)+1));
-							strncpy(StringInfo[NUM_COUNT].content, read_buff, strlen(read_buff)-1);
+							strncpy(StringInfo[STR_COUNT].content, read_buff, strlen(read_buff)-1);
 
 							STR_COUNT ++;
 						}
