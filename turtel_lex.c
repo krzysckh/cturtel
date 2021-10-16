@@ -14,6 +14,22 @@ int argLen(char *full, int linenn) {
 	return -1;
 }
 
+int checkLegal(char *what) {
+	int c_i;
+	for (c_i = 0; c_i < strlen(what); c_i++) {
+		if ((what[c_i] == ILLEGAL_C[0]) || (what[c_i] == ILLEGAL_C[1]) || (what[c_i] == ILLEGAL_C[2])) {
+			fprintf(stderr, "turtel_lex:\n%s\n", what);
+			int c_ti;
+			for (c_ti = 0; c_ti < c_i; c_ti++) {
+				fprintf(stderr, " ");
+			}
+			fprintf(stderr, "↑ illegal char\n");
+			return 1;
+		}
+	}
+	return 0;
+}
+
 
 char *getArg(char *arguments, int linenn) {
 	char *arg = NULL;
@@ -26,7 +42,11 @@ char *getArg(char *arguments, int linenn) {
 
 	for (i = 0; i < (int)strlen(arguments); i++) {
 		if (arguments[i] == SEPARATOR) {
-			return arg;
+			if (checkLegal(arg) != 0) {
+				return NULL;
+			} else {
+				return arg;
+			}
 		} else {
 			arg[i] = (arguments[i] == '\t') ? 0 : arguments[i];
 		}
@@ -355,8 +375,19 @@ int tokenize(char* info, int linenn, FILE *out) {
 		fprintf(out, "%s;", tag);
 		free(tag);
 		free(rest);
+	} else if (strcmp(getArg(info, linenn), EXIT) == 0) {
+		fprintf(out, "4");
+	} else if (strcmp(getArg(info, linenn), SRUN) == 0) {
+		char *run = getArg(getRest(info, strlen(SRUN)+1, linenn), linenn);
+		if (run == NULL) {
+			return 1;
+		}
+		fprintf(out, "3");
+		fprintf(out, "%s;", run);
+		free(run);
 	} else if (strcmp(getArg(info, linenn), NOW_EQU) == 0) {
 		printf("nowequ not implemented\n");
+		return 1;
 		/*
 		 * NOWEQU - usage
 		 * nowequ:type:destvar:type:var:
@@ -365,7 +396,6 @@ int tokenize(char* info, int linenn, FILE *out) {
 		 *
 		 * interpreter WILL convert all types to all types
 		 */
-
 	} else if (
 			strcmp(getArg(info, linenn), ADD) == 0 ||
 			strcmp(getArg(info, linenn), SUB) == 0 ||
@@ -420,6 +450,8 @@ int tokenize(char* info, int linenn, FILE *out) {
 		char *type = getArg(rest, linenn);
 
 		if (type == NULL) {
+			free(rest);
+			free(type);
 			return 1;
 		}
 
@@ -496,6 +528,9 @@ int main (int argc, char *argv[]) {
 
 	while (fgets(line, LINE_LEN_MAX, inpt)) {
 		if ( tokenize(line, line_n, tmpf) ) {
+			fclose(inpt);
+			fclose(outpt);
+			fclose(tmpf);
 			return 1;
 		}
 		line_n++;

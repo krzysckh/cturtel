@@ -76,7 +76,7 @@ int main (int argc, char *argv[]) {
 						}
 						if (found == false) {
 							err("num was not defined");
-							printf("varName is %s\n", varName);
+							printf("(%s)\n", varName);
 							return 1;
 						}
 					
@@ -104,7 +104,7 @@ int main (int argc, char *argv[]) {
 							}
 							if (found == false) {
 								err("str was not defined");
-								printf("varName is %s\n", varName);
+								printf("(%s)\n", varName);
 								return 1;
 							}
 						}
@@ -130,7 +130,7 @@ int main (int argc, char *argv[]) {
 							}
 							if (found == false) {
 								err("tof was not defined");
-								printf("varName is %s\n", varName);
+								printf("(%s)\n", varName);
 								return 1;
 							}
 						}
@@ -190,8 +190,14 @@ int main (int argc, char *argv[]) {
 									free(StringInfo[read_i].content);
 
 									StringInfo[read_i].content = malloc(sizeof(char) * (strlen(read_buff)+1));
-									strncpy(StringInfo[NUM_COUNT].content, read_buff, strlen(read_buff)-1);
-									/* copying strlen() -1 to get rid of newline */
+									if (strlen(read_buff) <= 1) {
+										strncpy(StringInfo[NUM_COUNT].content, read_buff, strlen(read_buff));
+										printf("copying wITHOUT -1\n");
+									} else {
+										printf("copying w -1\n");
+										strncpy(StringInfo[NUM_COUNT].content, read_buff, strlen(read_buff)-1);
+										/* copying strlen() -1 to get rid of newline */
+									}
 
 									read_found = true;
 								}
@@ -390,7 +396,7 @@ int main (int argc, char *argv[]) {
 
 				if (goto_found == false) {
 					err("gototag not defined");
-					fprintf(stderr, "\t↑ %s\n", gotoWhere);
+					fprintf(stderr, "\t(%s)\n", gotoWhere);
 					return 1;
 				}
 
@@ -444,7 +450,7 @@ int main (int argc, char *argv[]) {
 
 				if (ifarg1_exists == false || ifarg2_exists == false) {
 					err("num not defined");
-					fprintf(stderr, "\t↑ %s or %s\n", arg1Name, arg2Name);
+					fprintf(stderr, "\t(%s or %s)\n", arg1Name, arg2Name);
 					return 1;
 				}
 
@@ -536,7 +542,7 @@ int main (int argc, char *argv[]) {
 
 				if (op_arg1_exists == false || op_arg2_exists == false) {
 					err("num not defined");
-					fprintf(stderr, "\t↑ %s or %s\n", op_arg1Name, op_arg2Name);
+					fprintf(stderr, "\t(%s or %s)\n", op_arg1Name, op_arg2Name);
 					return 1;
 				}
 				
@@ -564,6 +570,39 @@ int main (int argc, char *argv[]) {
 						NumInfo[op_i].content = op_arg1;
 						break;
 					}
+				}
+
+				break;
+			case '4':
+				return 0;
+				break;
+			case '3': ;
+				char srun_varName[LINE_LEN_MAX];
+				int srun_i;
+				char srun_c;
+				bool srun_found = false;
+				for (srun_i = 0; srun_i < LINE_LEN_MAX; srun_i ++) {
+					 srun_varName[srun_i] = '\0';
+				}
+
+				srun_i = 0;
+
+				while ((srun_c = fgetc(inpt)) != ';') {
+					srun_varName[srun_i] = srun_c;
+					srun_i ++;
+				}
+
+				for (srun_i = 0; srun_i < STR_COUNT; srun_i ++) {
+					if (strcmp(StringInfo[srun_i].name, srun_varName) == 0) {
+						system(StringInfo[srun_i].content);
+						srun_found = true;
+					}
+				}
+
+				if (srun_found == false) {
+					err("str not defined");
+					fprintf(stderr, "\t(name is %s)\n", srun_varName);
+					return 1;
 				}
 
 				break;
