@@ -1,7 +1,6 @@
 # not a shell
 
 prompt:str:-> :
-comm:str::
 
 gototag:_loop:
 	print:str:prompt:

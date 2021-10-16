@@ -206,11 +206,17 @@ int main (int argc, char *argv[]) {
 						}
 
 						if (read_found == false) {
-							StringInfo[NUM_COUNT].name = malloc(sizeof(char) * (strlen(read_varName)+1));
+							StringInfo[STR_COUNT].name = malloc(sizeof(char) * (strlen(read_varName)+1));
 							strncpy(StringInfo[STR_COUNT].name, read_varName, strlen(read_varName)+1);
 
-							StringInfo[read_i].content = malloc(sizeof(char) * (strlen(read_buff)+1));
-							strncpy(StringInfo[STR_COUNT].content, read_buff, strlen(read_buff)-1);
+							StringInfo[STR_COUNT].content = malloc(sizeof(char) * (strlen(read_buff)+1));
+
+							if (strlen(read_buff) <= 1) {
+								strncpy(StringInfo[STR_COUNT].content, " ", 2);
+							} else {
+								strncpy(StringInfo[STR_COUNT].content, read_buff, strlen(read_buff)-1);
+								/* copying strlen() -1 to get rid of newline */
+							}
 
 							STR_COUNT ++;
 						}
