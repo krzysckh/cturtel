@@ -1,0 +1,60 @@
+@include std/std.trl
+
+# fizzbuzz to program liczący do max:num
+# który zamienia każdą liczbę podzielną przez 3 na 'fizz', podzielną przez 5 na 'buzz' a podzielną przez obie na 'fizzbuzz'
+# wow to jest wybitnie duża ilość linijek kodu jak na fizzbuzz
+
+_mess:str:podaj max -> :
+print:str:_mess:
+read:num:max:
+
+i:num:0:
+
+Fizz:num:3:
+Buzz:num:5:
+
+Fizz:str:Fizz:
+Buzz:str:Buzz:
+
+anything:num:false:
+
+
+goto:_loop:
+
+gototag:_printFizz:
+	print:str:Fizz:
+	add:anything:true:
+	goto:_backFromFizz:
+
+gototag:_printBuzz:
+	print:str:Buzz:
+	add:anything:true:
+	goto:_backFromBuzz:
+
+gototag:_loop:
+	anything:num:0:
+
+	tmp:num:0:
+	add:tmp:i:
+	mod:tmp:Fizz:
+	if:tmp:eq:false:_printFizz:_backFromFizz:
+	gototag:_backFromFizz:
+	
+	tmp:num:0:
+	add:tmp:i:
+	mod:tmp:Buzz:
+	if:tmp:eq:false:_printBuzz:_backFromBuzz:
+	gototag:_backFromBuzz:
+
+	if:anything:gt:false:_noprintnum:_printnum:
+
+	gototag:_printnum:
+		print:num:i:
+		goto:_noprintnum:
+
+	gototag:_noprintnum:
+		print:str:__newline:
+
+	add:i:true:
+	if:i:gt:max:_end:_loop:
+gototag:_end:

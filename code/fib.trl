@@ -1,4 +1,4 @@
-@include std.trl
+@include std/std.trl
 
 a:num:1:
 b:num:1:
