@@ -69,4 +69,4 @@ char *OS[] = {"__OS", "0"};
 #define LEX_INCLUDE "@include"
 
 /* illegal chars */
-char ILLEGAL_C[] = {';', '[', ']'};
+char ILLEGAL_C[] = {';', '[', ']', '#'};

@@ -17,7 +17,7 @@ int argLen(char *full, int linenn) {
 int checkLegal(char *what) {
 	int c_i;
 	for (c_i = 0; c_i < strlen(what); c_i++) {
-		if ((what[c_i] == ILLEGAL_C[0]) || (what[c_i] == ILLEGAL_C[1]) || (what[c_i] == ILLEGAL_C[2])) {
+		if ((what[c_i] == ILLEGAL_C[0]) || (what[c_i] == ILLEGAL_C[1]) || (what[c_i] == ILLEGAL_C[2]) || (what[c_i] == ILLEGAL_C[3])) {
 			fprintf(stderr, "turtel_lex:\n%s\n", what);
 			int c_ti;
 			for (c_ti = 0; c_ti < c_i; c_ti++) {

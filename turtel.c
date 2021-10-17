@@ -45,6 +45,11 @@ int main (int argc, char *argv[]) {
 	char c;
 	while ((c = fgetc(inpt)) != EOF) {
 		switch (c) {
+			case '#':
+				/* a hasbang probably */
+				char hash_c;
+				while ((hash_c = fgetc(inpt)) != '\n') {}
+				break;
 			case '0': ;
 				char tmpc = fgetc(inpt);
 				char vtmpc;
