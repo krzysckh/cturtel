@@ -1,8 +1,11 @@
-1. rest of the functions
+→ rest of the functions
 	- nowequ (interpreter & lexer)
-2. change syntax of 'if'
-3. ...
-4. transpiling to c ........
+→ change syntax of 'if'
+→ transpiling to C
+→ @endmacro needs to have an empty line after mit for some reason FIX THAAT
+→ bugs in @defmacro............. and in @run
+
+DONE ===============
 5. @newmacro, @endmacro, @run in lexer for macros
 	how?
 
@@ -19,4 +22,3 @@
 
 		@run <name> -> get name, and search for macro; print tokenized (LexerMacro.content)
 
-5. profit
