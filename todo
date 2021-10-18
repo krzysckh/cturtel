@@ -2,4 +2,5 @@
 	- nowequ (interpreter & lexer)
 2. change syntax of 'if'
 3. ...
-4. profit
+4. transpiling to c ........
+5. profit
