@@ -67,6 +67,9 @@ char *OS[] = {"__OS", "0"};
 /* lexer statements start with @, so they can be easily distinguished */
 
 #define LEX_INCLUDE "@include"
+#define LEX_NEWMACRO "@defmacro"
+#define LEX_ENDMACRO "@endmacro"
+#define LEX_RUNMACRO "@run"
 
 /* illegal chars */
 char ILLEGAL_C[] = {';', '[', ']', '#'};

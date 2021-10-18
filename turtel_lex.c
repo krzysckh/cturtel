@@ -1,5 +1,36 @@
 #include "turtel.h"
 
+typedef struct LexerMacro {
+	char *name;
+	FILE *content;
+} LexerMacro;
+/* define data structure for macros */
+
+int MACRO_COUNT = 0;
+
+LexerMacro MacroInfo[VAR_MAX];
+/* cannot be in main, cause scope shit probably */
+
+void codeErr (int line, char *code, int pos) {
+	fprintf(stderr, "\t%d | %s\t", line, code);
+	int err_i;
+	int num_count = 0;
+	do {
+		line /= 10;
+		num_count ++;
+	} while (line != 0);
+
+	for (err_i = 0; err_i < num_count; err_i ++) {
+		fprintf(stderr, " ");
+	}
+
+	for (err_i = 0; err_i < pos; err_i ++) {
+		fprintf(stderr, " ");
+	}
+
+	fprintf(stderr, "   ↑ here\n");
+}
+
 int argLen(char *full, int linenn) {
 	int i, ret = 0;
 	for (i = 0; i < (int)strlen(full); i++) {
@@ -121,7 +152,7 @@ int startswith(char* what, char* withwhat) {
 }
 
 
-int tokenize(char* info, int linenn, FILE *out) {
+int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 	if (startswith(info, "\n")) {
 	} else if (startswith(info, "#")) {
 		/* a comment */
@@ -145,7 +176,7 @@ int tokenize(char* info, int linenn, FILE *out) {
 		}
 
 		while (fgets(TMP_INCLINE, LINE_LEN_MAX, TMP_INCFILE)) {
-			if ( tokenize(TMP_INCLINE, TMP_INCN, out) ) {
+			if ( tokenize(TMP_INCLINE, TMP_INCN, out, in) ) {
 				return 1;
 			}
 			TMP_INCN ++;
@@ -154,6 +185,87 @@ int tokenize(char* info, int linenn, FILE *out) {
 		fclose(TMP_INCFILE);
 		free(name);
 		free(rest);
+	} else if (strcmp(getLexerArg(info, linenn), LEX_NEWMACRO) == 0) {
+		char *rest = getRest(info, strlen(LEX_NEWMACRO)+1, linenn);
+		char *name = getLexerArg(rest, linenn);
+		if (name == NULL) {
+			return 1;
+		}
+
+		int mac_i;
+
+		for (mac_i = 0; mac_i < MACRO_COUNT; mac_i ++) {
+			if (strcmp(name, MacroInfo[mac_i].name) == 0) {
+				fprintf(stderr, "turtel_lex: fatal err: macro %s was defined earlier\n", name);
+				codeErr(linenn, info, 0);
+				return 1;
+			}
+		}
+		
+		int mac_err;
+		char mac_line[LINE_LEN_MAX];
+		bool mac_get = true;
+
+		MacroInfo[MACRO_COUNT].content = tmpfile();
+
+		fgets(mac_line, LINE_LEN_MAX, in);
+
+		linenn ++;
+		while (mac_get) {
+			mac_err = tokenize(mac_line, linenn, MacroInfo[MACRO_COUNT].content, in);
+
+			if (mac_err == 100) {
+				mac_get = false;
+			} else if (mac_err != 0) {
+				return 1;
+			}
+
+			if (!fgets(mac_line, LINE_LEN_MAX, in)) {
+				mac_get = false;
+			}
+		}
+
+		MacroInfo[MACRO_COUNT].name = malloc(sizeof(char) * strlen(name)+1);
+		strncpy(MacroInfo[MACRO_COUNT].name, name, strlen(name));
+
+		MACRO_COUNT ++;
+		free(name);
+		free(rest);
+
+	} else if (strcmp(getLexerArg(info, linenn), LEX_ENDMACRO) == 0) {
+		return 100;
+	} else if (strcmp(getLexerArg(info, linenn), LEX_RUNMACRO) == 0) {
+		char *rest = getRest(info, strlen(LEX_RUNMACRO)+1, linenn);
+		char *name = getLexerArg(rest, linenn);
+
+		if (name == NULL) {
+			return 1;
+		}
+
+		int run_i;
+		char run_c;
+
+		for (run_i = 0; run_i < MACRO_COUNT; run_i ++) {
+			if (strcmp(MacroInfo[run_i].name, name) == 0) {
+				FILE *run_fp = MacroInfo[run_i].content;
+				rewind(run_fp);
+
+				while ((run_c = fgetc(run_fp)) != EOF) {
+					fputc(run_c, out);
+				}
+				free(name);
+				free(rest);
+				return 0;
+			}
+		}
+		
+		/* if still here, macro doesnt exist */
+
+		fprintf(stderr, "turtel_lex: fatal err: macro %s doesn't exist\n", name);
+		codeErr(linenn, info, 0);
+		free(name);
+		free(rest);
+		return 1;
 	} else if (strcmp(getArg(info, linenn), PRINT) == 0) {
 		fprintf(out, "0");
 		/* print the type for interpreter */
@@ -301,8 +413,8 @@ int tokenize(char* info, int linenn, FILE *out) {
 		} else {
 			fprintf(
 					stderr, 
-					"turtel: fatal err at line %d near %s"
-					"\t↑ expected %s / %s / %s / %s → got \"%s\"\n",
+					"turtel_lex: fatal err at line %d near %s"
+					"\t(expected %s / %s / %s / %s, got \"%s\")\n",
 					linenn, info,
 					EQ, LESSTHAN, GREATERTHAN, NOTEQ, op
 			       );
@@ -526,8 +638,15 @@ int main (int argc, char *argv[]) {
 		}
 	}
 
+
+	int err;
+
 	while (fgets(line, LINE_LEN_MAX, inpt)) {
-		if ( tokenize(line, line_n, tmpf) ) {
+		if ((err = tokenize(line, line_n, tmpf, inpt)) != 0) {
+			if (err == 100) {
+				fprintf(stderr, "turtel_lex: fatal_err: got %s, but no macro was started\n", LEX_ENDMACRO);
+				codeErr(line_n, line, 0);
+			}
 			fclose(inpt);
 			fclose(outpt);
 			fclose(tmpf);

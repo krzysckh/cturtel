@@ -1,0 +1,9 @@
+@defmacro pogger
+	a:str:Hellowo:
+	print:str:a:
+	print:str:__newline:
+@endmacro
+
+gototag:_loop:
+	@run pogger
+	goto:_loop:
