@@ -3,4 +3,20 @@
 2. change syntax of 'if'
 3. ...
 4. transpiling to c ........
+5. @newmacro, @endmacro, @run in lexer for macros
+	how?
+
+	→ create new lexer-only data structure:
+	idk,, something like 
+
+		typedef struct LexerMacro {
+			char *name;
+			FILE *content;
+		} LexerMacro;
+
+	→ then add new lexer definitions
+		@newmacro <name> -> get and tokenize all to @endmacro <name> and save it to LexerMacro.content (!as tmpfile!)
+
+		@run <name> -> get name, and search for macro; print tokenized (LexerMacro.content)
+
 5. profit
