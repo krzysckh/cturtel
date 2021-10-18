@@ -47,7 +47,7 @@ int main (int argc, char *argv[]) {
 		switch (c) {
 			case '\n':
 				break;
-			case '#':
+			case '#': ;
 				/* a hasbang probably */
 				char hash_c;
 				while ((hash_c = fgetc(inpt)) != '\n') {}
