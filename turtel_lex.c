@@ -12,7 +12,14 @@ LexerMacro MacroInfo[VAR_MAX];
 /* cannot be in main, cause scope shit probably */
 
 void codeErr (int line, char *code, int pos) {
-	fprintf(stderr, "\t%d | %s\t", line, code);
+	bool snl = false;
+
+	if (strstr(code, "\n") == NULL) snl = true;
+
+	fprintf(stderr, "\t%d | [...] %s", line, code);
+	if (snl) fprintf(stderr, "\n");
+	fprintf(stderr, "\t");
+
 	int err_i;
 	int num_count = 0;
 	do {
@@ -24,11 +31,11 @@ void codeErr (int line, char *code, int pos) {
 		fprintf(stderr, " ");
 	}
 
-	for (err_i = 0; err_i < pos; err_i ++) {
+	for (err_i = 0; err_i <= pos; err_i ++) {
 		fprintf(stderr, " ");
 	}
 
-	fprintf(stderr, "   ↑ here\n");
+	fprintf(stderr, "         ↑\n");
 }
 
 int argLen(char *full, int linenn) {
@@ -41,20 +48,17 @@ int argLen(char *full, int linenn) {
 		}
 	}
 	
-	fprintf(stderr, "turtel_lex: fatal err: SEPARATOR (%c) not found in line %d\n\t/\\-- around \"%s\"\n", SEPARATOR, linenn, full);
+	fprintf(stderr, "turtel_lex: fatal err: SEPARATOR (%c) not found\n", SEPARATOR);
+	codeErr(linenn, full, strlen(full));
 	return -1;
 }
 
-int checkLegal(char *what) {
+int checkLegal(char *what, int linee) {
 	int c_i;
 	for (c_i = 0; c_i < strlen(what); c_i++) {
 		if ((what[c_i] == ILLEGAL_C[0]) || (what[c_i] == ILLEGAL_C[1]) || (what[c_i] == ILLEGAL_C[2]) || (what[c_i] == ILLEGAL_C[3])) {
-			fprintf(stderr, "turtel_lex:\n%s\n", what);
-			int c_ti;
-			for (c_ti = 0; c_ti < c_i; c_ti++) {
-				fprintf(stderr, " ");
-			}
-			fprintf(stderr, "↑ illegal char\n");
+			fprintf(stderr, "turtel_lex: fatal err: illegal char\n");
+			codeErr(linee, what, c_i);
 			return 1;
 		}
 	}
@@ -73,7 +77,7 @@ char *getArg(char *arguments, int linenn) {
 
 	for (i = 0; i < (int)strlen(arguments); i++) {
 		if (arguments[i] == SEPARATOR) {
-			if (checkLegal(arg) != 0) {
+			if (checkLegal(arg, linenn) != 0) {
 				return NULL;
 			} else {
 				return arg;
@@ -83,7 +87,8 @@ char *getArg(char *arguments, int linenn) {
 		}
 	}
 	
-	fprintf(stderr, "turtel_lex: fatal err: SEPARATOR (%c) not found in line %d\n\t/\\-- around \"%s\"\n", SEPARATOR, linenn, arguments);
+	fprintf(stderr, "turtel_lex: fatal err: SEPARATOR (%c) not found\n", SEPARATOR);
+	codeErr(linenn, arguments, strlen(arguments));
 	return NULL;
 }
 
@@ -104,7 +109,8 @@ char *getLexerArg(char *arguments, int linenn) {
 		}
 	}
 	
-	fprintf(stderr, "turtel_lex: fatal err: man. i don't unnderstand this lexer definition\n");
+	fprintf(stderr, "turtel_lex: fatal err: man. i don't understand this lexer definition\n");
+	codeErr(linenn, arguments, 0);
 	return NULL;
 }
 
@@ -168,10 +174,8 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		int TMP_INCN = 0;
 
 		if (TMP_INCFILE == NULL) {
-			fprintf(stderr, "turtel: fatal err: could not open file %s\n"\
-					"\t↑ near \"%s\" at line %d\n",
-					name, info, linenn
-			       );
+			fprintf(stderr, "turtel: fatal err: could not open file %s\n", name);
+			codeErr(linenn, info, strlen(LEX_INCLUDE)+1);
 			return 1;
 		}
 
@@ -219,9 +223,10 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 			} else if (mac_err != 0) {
 				return 1;
 			}
-
-			if (!fgets(mac_line, LINE_LEN_MAX, in)) {
-				mac_get = false;
+			if (mac_get) {
+				if (!fgets(mac_line, LINE_LEN_MAX, in)) {
+					mac_get = false;
+				}
 			}
 		}
 
@@ -278,7 +283,8 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		}
 		
 		if (strlen(type) > 3) {
-			fprintf(stderr, "turtel_lex: fatal err: expected data structure, got %s. on line %d, near \"%s\"\n", type, linenn, info);
+			fprintf(stderr, "turtel_lex: fatal err: expected data structure, got %s\n", type);
+			codeErr(linenn, info, strlen(PRINT));
 			return 1;
 		}
 
@@ -289,10 +295,11 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		} else if (startswith(type, TOF)) {
 			fprintf(out, "c");
 		} else {
-			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure. got \"%s\" on line %d near \"%s\"\n"
+			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure\n"
 					"expected NUM (%s) / STR (%s) / TOF (%s)\n",
-					type, linenn, info, NUM, STR, TOF
+					NUM, STR, TOF
 			       );
+			codeErr(linenn, info, strlen(PRINT)+1);
 			return 1;
 		}
 
@@ -323,7 +330,8 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		}
 		
 		if (strlen(type) > 3) {
-			fprintf(stderr, "turtel_lex: fatal err: expected data structure, got %s. on line %d, near \"%s\"\n", type, linenn, rest);
+			fprintf(stderr, "turtel_lex: fatal err: expected data structure, got %s\n", type);
+			codeErr(linenn, info, strlen(PRINT)+1);
 			return 1;
 		}
 
@@ -334,10 +342,11 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		} else if (startswith(type, TOF)) {
 			fprintf(out, "c");
 		} else {
-			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure. got \"%s\" on line %d near \"%s\"\n"
+			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure\n"
 					"expected NUM (%s) / STR (%s) / TOF (%s)\n",
-					type, linenn, info, NUM, STR, TOF
+					NUM, STR, TOF
 			       );
+			codeErr(linenn, info, strlen(PRINT)+1);
 			return 1;
 		}
 
@@ -413,11 +422,10 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		} else {
 			fprintf(
 					stderr, 
-					"turtel_lex: fatal err at line %d near %s"
-					"\t(expected %s / %s / %s / %s, got \"%s\")\n",
-					linenn, info,
+					"turtel_lex: fatal err: expected %s / %s / %s / %s, got \"%s\"\n",
 					EQ, LESSTHAN, GREATERTHAN, NOTEQ, op
 			       );
+			codeErr(linenn, info, strlen(IF)+1+strlen(arg1));
 			return 1;
 		}
 
@@ -568,7 +576,8 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		}
 
 		if (strlen(type) > 3) {
-			fprintf(stderr, "turtel_lex: fatal err: expected data structure, got %s. on line %d, near \"%s\"\n", type, linenn, rest);
+			fprintf(stderr, "turtel_lex: fatal err: expected data structure, got %s\n", type);
+			codeErr(linenn, info, strlen(name)+1);
 			return 1;
 		}
 
@@ -580,10 +589,11 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		} else if (startswith(type, TOF)) {
 			fprintf(out, "c");
 		} else {
-			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure. got \"%s\" on line %d near \"%s\"\n"
+			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure\n"
 					"expected NUM (%s) / STR (%s) / TOF (%s)\n",
-					type, linenn, info, NUM, STR, TOF
+					NUM, STR, TOF
 			       );
+			codeErr(linenn, info, strlen(PRINT)+1);
 			return 1;
 		}
 
