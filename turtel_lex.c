@@ -288,11 +288,11 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 			return 1;
 		}
 
-		if (startswith(type, NUM)) {
+		if (strcmp(type, NUM) == 0) {
 			fprintf(out, "a");
-		} else if (startswith(type, STR)) {
+		} else if (strcmp(type, STR) == 0) {
 			fprintf(out, "b");
-		} else if (startswith(type, TOF)) {
+		} else if (strcmp(type, TOF) == 0) {
 			fprintf(out, "c");
 		} else {
 			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure\n"
@@ -335,11 +335,11 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 			return 1;
 		}
 
-		if (startswith(type, NUM)) {
+		if (strcmp(type, NUM) == 0) {
 			fprintf(out, "a");
-		} else if (startswith(type, STR)) {
+		} else if (strcmp(type, STR) == 0) {
 			fprintf(out, "b");
-		} else if (startswith(type, TOF)) {
+		} else if (strcmp(type, TOF) == 0) {
 			fprintf(out, "c");
 		} else {
 			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure\n"
@@ -582,11 +582,11 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		}
 
 		
-		if (startswith(type, NUM)) {
+		if (strcmp(type, NUM) == 0) {
 			fprintf(out, "a");
-		} else if (startswith(type, STR)) {
+		} else if (strcmp(type, STR) == 0) {
 			fprintf(out, "b");
-		} else if (startswith(type, TOF)) {
+		} else if (strcmp(type, TOF) == 0) {
 			fprintf(out, "c");
 		} else {
 			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure\n"

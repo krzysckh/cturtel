@@ -1,9 +1,7 @@
 → rest of the functions
 	- nowequ (interpreter & lexer)
 → change syntax of 'if'
-→ transpiling to C
 → bugs in @defmacro............. and in @run
-→ repair code for print and read in lexer. now structures are defined with startswith() so "str" actually can be "strldfsksd"
 
 DONE ===============
 5. @newmacro, @endmacro, @run in lexer for macros
