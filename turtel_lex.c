@@ -11,6 +11,20 @@ int LINE_SYNC = 0;
 
 LexerMacro MacroInfo[VAR_MAX];
 /* cannot be in main, cause scope shit probably */
+char *rmtab (char *str) {
+	int i,j;
+	i = 0;
+	while (i < strlen(str)) {
+		if (str[i] == '\t') {
+			for (j = i; j < strlen(str); j++) {
+				str[j] = str[j+1];
+			}
+		} else {
+			i ++;
+		}
+	}
+	return str;
+}
 
 void codeErr (int line, char *code, int pos) {
 	bool snl = false;
@@ -68,6 +82,7 @@ int checkLegal(char *what, int linee) {
 
 
 char *getArg(char *arguments, int linenn) {
+	arguments = rmtab(arguments);
 	char *arg = NULL;
 	arg = malloc(sizeof(char) * strlen(arguments));
 	int i;
@@ -649,6 +664,15 @@ int main (int argc, char *argv[]) {
 						"usage: turtel_lex [-o outfile] [-f infile] [-h]\n"
 				      );
 				return 0;
+		}
+	}
+
+
+	if (argv[optind] != NULL) {
+		inpt = fopen(argv[optind], "r");
+		if (inpt == NULL) {
+			fprintf(stderr, "file %s doesn't exist\n", argv[optind]);
+			return 1;
 		}
 	}
 

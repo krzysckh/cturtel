@@ -23,6 +23,8 @@ syntax:
 turtel_lex -f infile.trl -o outfile.tlx
 # or
 turtel_lex < infile.trl > outfile.tlx
+# or
+turtel_lex infile.trl -o outfile.tlx
 ```
 
 then run it with
