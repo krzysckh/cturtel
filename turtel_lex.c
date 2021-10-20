@@ -7,6 +7,7 @@ typedef struct LexerMacro {
 /* define data structure for macros */
 
 int MACRO_COUNT = 0;
+int LINE_SYNC = 0;
 
 LexerMacro MacroInfo[VAR_MAX];
 /* cannot be in main, cause scope shit probably */
@@ -228,6 +229,9 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 					mac_get = false;
 				}
 			}
+
+			linenn ++;
+			LINE_SYNC = linenn;
 		}
 
 		MacroInfo[MACRO_COUNT].name = malloc(sizeof(char) * strlen(name)+1);
@@ -662,7 +666,7 @@ int main (int argc, char *argv[]) {
 			fclose(tmpf);
 			return 1;
 		}
-		line_n++;
+		line_n = (LINE_SYNC > line_n) ? LINE_SYNC : line_n + 1;
 	}
 
 	char c;
