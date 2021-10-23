@@ -14,9 +14,9 @@ LexerMacro MacroInfo[VAR_MAX];
 char *rmtab (char *str) {
 	int i,j;
 	i = 0;
-	while (i < strlen(str)) {
+	while (i < (int)strlen(str)) {
 		if (str[i] == '\t') {
-			for (j = i; j < strlen(str); j++) {
+			for (j = i; j < (int)strlen(str); j++) {
 				str[j] = str[j+1];
 			}
 		} else {
@@ -70,7 +70,7 @@ int argLen(char *full, int linenn) {
 
 int checkLegal(char *what, int linee) {
 	int c_i;
-	for (c_i = 0; c_i < strlen(what); c_i++) {
+	for (c_i = 0; c_i < (int)strlen(what); c_i++) {
 		if ((what[c_i] == ILLEGAL_C[0]) || (what[c_i] == ILLEGAL_C[1]) || (what[c_i] == ILLEGAL_C[2]) || (what[c_i] == ILLEGAL_C[3])) {
 			fprintf(stderr, "turtel_lex: fatal err: illegal char\n");
 			codeErr(linee, what, c_i);
@@ -130,7 +130,7 @@ char *getLexerArg(char *arguments, int linenn) {
 	return NULL;
 }
 
-char *getRest(char *full, int from, int linenn) {
+char *getRest(char *full, int from) {
 	char *ret = malloc(sizeof(char)*strlen(full));
 	int i, j = 0;
 	for (i = from; i < (int)strlen(full); i++) {
@@ -179,7 +179,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 	} else if (startswith(info, "#")) {
 		/* a comment */
 	} else if (strcmp(getLexerArg(info, linenn), LEX_INCLUDE) == 0) {
-		char *rest = getRest(info, strlen(LEX_INCLUDE)+1, linenn);
+		char *rest = getRest(info, strlen(LEX_INCLUDE)+1);
 		char *name = getLexerArg(rest, linenn);
 		if (name == NULL) {
 			return 1;
@@ -206,7 +206,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		free(name);
 		free(rest);
 	} else if (strcmp(getLexerArg(info, linenn), LEX_NEWMACRO) == 0) {
-		char *rest = getRest(info, strlen(LEX_NEWMACRO)+1, linenn);
+		char *rest = getRest(info, strlen(LEX_NEWMACRO)+1);
 		char *name = getLexerArg(rest, linenn);
 		if (name == NULL) {
 			return 1;
@@ -259,7 +259,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 	} else if (strcmp(getLexerArg(info, linenn), LEX_ENDMACRO) == 0) {
 		return 100;
 	} else if (strcmp(getLexerArg(info, linenn), LEX_RUNMACRO) == 0) {
-		char *rest = getRest(info, strlen(LEX_RUNMACRO)+1, linenn);
+		char *rest = getRest(info, strlen(LEX_RUNMACRO)+1);
 		char *name = getLexerArg(rest, linenn);
 
 		if (name == NULL) {
@@ -293,7 +293,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 	} else if (strcmp(getArg(info, linenn), PRINT) == 0) {
 		fprintf(out, "0");
 		/* print the type for interpreter */
-		char *rest = getRest(info, strlen(PRINT)+1, linenn);
+		char *rest = getRest(info, strlen(PRINT)+1);
 		
 		char *type = getArg(rest, linenn);
 
@@ -324,7 +324,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 
 		free(rest);
 		rest = NULL;
-		rest = getRest(info, strlen(PRINT) + 4 + 1, linenn);
+		rest = getRest(info, strlen(PRINT) + 4 + 1);
 
 		char *varn = getArg(rest, linenn);
 		if (varn == NULL) {
@@ -340,7 +340,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 	} else if (strcmp(getArg(info, linenn), READ) == 0) {
 		fprintf(out, "1");
 		/* print the type for interpreter */
-		char *rest = getRest(info, strlen(READ)+1, linenn);
+		char *rest = getRest(info, strlen(READ)+1);
 		
 		char *type = getArg(rest, linenn);
 
@@ -371,7 +371,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 
 		free(rest);
 		rest = NULL;
-		rest = getRest(info, strlen(READ) + 4 + 1, linenn);
+		rest = getRest(info, strlen(READ) + 4 + 1);
 
 		char *varn = getArg(rest, linenn);
 		if (varn == NULL) {
@@ -409,7 +409,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		 */
 		fprintf(out, "2");
 
-		char *rest = getRest(info, strlen(IF)+1, linenn);
+		char *rest = getRest(info, strlen(IF)+1);
 		char *arg1, *arg2, *op, *goto1, *goto2;
 
 		arg1 = getArg(rest, linenn);
@@ -423,7 +423,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		free(rest);
 		rest = NULL;
 
-		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1, linenn);
+		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1);
 
 		op = getArg(rest, linenn);
 		if (op == NULL) {
@@ -451,7 +451,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		free(rest);
 		rest = NULL;
 
-		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1 + strlen(op) + 1, linenn);
+		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1 + strlen(op) + 1);
 
 		arg2 = getArg(rest, linenn);
 
@@ -464,7 +464,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		free(rest);
 		rest = NULL;
 
-		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1 + strlen(op) + 1 + strlen(arg2) + 1, linenn);
+		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1 + strlen(op) + 1 + strlen(arg2) + 1);
 
 		goto1 = getArg(rest, linenn);
 
@@ -477,7 +477,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		free(rest);
 		rest = NULL;
 
-		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1 + strlen(op) + 1 + strlen(arg2) + 1 + strlen(goto1) + 1, linenn);
+		rest = getRest(info, strlen(IF) + 1 + strlen(arg1) + 1 + strlen(op) + 1 + strlen(arg2) + 1 + strlen(goto1) + 1);
 		goto2 = getArg(rest, linenn);
 
 		if (goto2 == NULL) {
@@ -493,7 +493,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		free(goto1);
 		free(goto2);
 	} else if (strcmp(getArg(info, linenn), GOTO) == 0) {
-		char *rest = getRest(info, strlen(GOTO)+1, linenn);
+		char *rest = getRest(info, strlen(GOTO)+1);
 		char *where = getArg(rest, linenn);
 		if (where == NULL) {
 			return 1;
@@ -504,7 +504,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		free(where);
 		free(rest);
 	} else if (strcmp(getArg(info, linenn), GOTOTAG) == 0) {
-		char *rest = getRest(info, strlen(GOTOTAG)+1, linenn);
+		char *rest = getRest(info, strlen(GOTOTAG)+1);
 		char *tag = getArg(rest, linenn);
 		if (tag == NULL) {
 			return 1;
@@ -517,7 +517,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 	} else if (strcmp(getArg(info, linenn), EXIT) == 0) {
 		fprintf(out, "4");
 	} else if (strcmp(getArg(info, linenn), SRUN) == 0) {
-		char *run = getArg(getRest(info, strlen(SRUN)+1, linenn), linenn);
+		char *run = getArg(getRest(info, strlen(SRUN)+1), linenn);
 		if (run == NULL) {
 			return 1;
 		}
@@ -559,7 +559,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 
 		/* ↑ print what is needed to do, so the interpreter knows co jest sześć B)) */
 
-		char *rest = getRest(info, strlen(ADD)+1, linenn);
+		char *rest = getRest(info, strlen(ADD)+1);
 		char *dest = getArg(rest, linenn);
 		
 		if (dest == NULL) {
@@ -570,7 +570,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 
 		free(rest);
 		rest = NULL;
-		rest = getRest(info, strlen(ADD) + 1 + strlen(dest) + 1, linenn);
+		rest = getRest(info, strlen(ADD) + 1 + strlen(dest) + 1);
 		char *from = getArg(rest, linenn);
 		if (from == NULL) {
 			return 1;
@@ -585,7 +585,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		char *name = getArg(info, linenn);
 		fprintf(out, "%s:", name);
 		free(name);
-		char *rest = getRest(info, argLen(info, linenn)+1, linenn);
+		char *rest = getRest(info, argLen(info, linenn)+1);
 		char *type = getArg(rest, linenn);
 
 		if (type == NULL) {
@@ -618,7 +618,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 
 		free(rest);
 		rest = NULL;
-		rest = getRest(info, argLen(info, linenn) + 1 + 4, linenn);
+		rest = getRest(info, argLen(info, linenn) + 1 + 4);
 		char *val = getArg(rest, linenn);
 		if (val == NULL) {
 			return 1;

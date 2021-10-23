@@ -3,7 +3,7 @@
 → change syntax of 'if'
 → bugs in @defmacro............. and in @run
 → change goto. instead of rewind(in) and search from start, go back and search from right now. if not found - rewind and search from start to finish
-→ fix all -Wextra warnings, fix all -O3 warnings
+→ fix all fix all -O3 warnings
 
 DONE ===============
 5. @newmacro, @endmacro, @run in lexer for macros

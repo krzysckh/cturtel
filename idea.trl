@@ -19,7 +19,7 @@
 		print:str:__newline:
 
 		add:a:1:
-		
+
 		if:a:eq:max:_loop:_end:
 
 	gototag:_end:
@@ -33,11 +33,11 @@
 # now:
 	if:a:eq:b:_add1:_add2:
 	gototag:_add1:
-	
+
 	add:a:1:
 	goto:end:
 	gototag:_add2:
-	
+
 	add:a:2:
 	goto:end:
 
