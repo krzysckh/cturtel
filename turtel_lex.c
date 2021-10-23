@@ -1,5 +1,8 @@
 #include "turtel.h"
 
+#include <sys/stat.h>
+/* including sys/stat.h only in lexer, 'cause interpreter doesn't need it */
+
 typedef struct LexerMacro {
 	char *name;
 	FILE *content;
@@ -641,12 +644,14 @@ int main (int argc, char *argv[]) {
 	FILE *outpt = stdout;
 	char line[LINE_LEN_MAX];
 	int line_n = 1;
+	bool executable = false;
+	char *ofname = NULL;
 
 	int opt;
 
 	FILE *tmpf = tmpfile();
 
-	while ((opt = getopt(argc, argv, "f:o:h")) != -1) {
+	while ((opt = getopt(argc, argv, "f:o:he")) != -1) {
 		switch(opt) {
 			case 'f':
 				inpt = fopen(optarg, "r");
@@ -657,6 +662,12 @@ int main (int argc, char *argv[]) {
 				break;
 			case 'o':
 				outpt = fopen(optarg, "w");
+				ofname = malloc(sizeof(char) * (strlen(optarg)+1));
+				strcpy(ofname, optarg);
+
+				break;
+			case 'e':
+				executable = true;
 				break;
 			case 'h':
 				printf(
@@ -679,6 +690,15 @@ int main (int argc, char *argv[]) {
 
 	int err;
 
+	if (executable) {
+		if (ofname == NULL) {
+			fprintf(stderr, "turtel_lex: fatal err: cannot make <stdin> executable. try using -o to set output file\n");
+			return 1;
+		}
+
+		fprintf(tmpf, "#!/usr/bin/turtel\n");
+	}
+
 	while (fgets(line, LINE_LEN_MAX, inpt)) {
 		if ((err = tokenize(line, line_n, tmpf, inpt)) != 0) {
 			if (err == 100) {
@@ -698,6 +718,16 @@ int main (int argc, char *argv[]) {
 	while ((c = fgetc(tmpf)) != EOF) {
 		fputc(c, outpt);
 	}
+
+	if (executable) {
+		if (chmod(ofname, strtol("0777", 0, 0)) < 0) {
+			fprintf(stderr, "turtel_lex: warning: couldn't make %s executable. try 'chmod +x %s' to do it yourself\n",
+					ofname, ofname);
+		}
+	}
+
+	fclose(tmpf);
+	fclose(outpt);
 
 	return 0;
 }
