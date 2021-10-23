@@ -672,7 +672,7 @@ int main (int argc, char *argv[]) {
 			case 'h':
 				printf(
 						"turtel_lex - lexical analiser for turtel\n"
-						"usage: turtel_lex [-o outfile] [-f infile] [-h]\n"
+						"usage: turtel_lex [-o outfile] [-f infile] [-he]\n"
 				      );
 				return 0;
 		}
