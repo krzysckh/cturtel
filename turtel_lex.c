@@ -225,7 +225,6 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 			}
 		}
 		
-		int mac_err;
 		char mac_line[LINE_LEN_MAX];
 		bool mac_get = true;
 
@@ -235,7 +234,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 
 		linenn ++;
 		while (mac_get) {
-			mac_err = tokenize(mac_line, linenn, MacroInfo[MACRO_COUNT].content, in);
+			int mac_err = tokenize(mac_line, linenn, MacroInfo[MACRO_COUNT].content, in);
 
 			if (mac_err == 100) {
 				mac_get = false;
@@ -688,7 +687,6 @@ int main (int argc, char *argv[]) {
 	}
 
 
-	int err;
 
 	if (executable) {
 		if (ofname == NULL) {
@@ -699,7 +697,9 @@ int main (int argc, char *argv[]) {
 		fprintf(tmpf, "#!/usr/bin/turtel\n");
 	}
 
+
 	while (fgets(line, LINE_LEN_MAX, inpt)) {
+		int err;
 		if ((err = tokenize(line, line_n, tmpf, inpt)) != 0) {
 			if (err == 100) {
 				fprintf(stderr, "turtel_lex: fatal_err: got %s, but no macro was started\n", LEX_ENDMACRO);
