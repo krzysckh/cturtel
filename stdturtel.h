@@ -22,7 +22,7 @@
 /* 9 */
 #define DIV "div"
 /* a */
-#define NOW_EQU "nowequ"
+#define NOWEQU "nowequ"
 /* b */
 #define MOD "mod"
 /* c */

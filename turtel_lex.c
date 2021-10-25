@@ -526,9 +526,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		fprintf(out, "3");
 		fprintf(out, "%s;", run);
 		free(run);
-	} else if (strcmp(getArg(info, linenn), NOW_EQU) == 0) {
-		printf("nowequ not implemented\n");
-		return 1;
+	} else if (strcmp(getArg(info, linenn), NOWEQU) == 0) {
 		/*
 		 * NOWEQU - usage
 		 * nowequ:type:destvar:type:var:
@@ -537,6 +535,80 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		 *
 		 * interpreter WILL convert all types to all types
 		 */
+
+		fprintf(out, "b");
+
+		char *rest = getRest(info, strlen(NOWEQU)+1);
+		char *type1 = getArg(rest, linenn);
+		if (type1 == NULL) {
+			return 1;
+		}
+
+		free(rest);
+		rest = getRest(info, strlen(NOWEQU) + strlen(type1) + 2);
+
+		char *var1 = getArg(rest, linenn);
+		if (var1 == NULL) {
+			return 1;
+		}
+
+		free(rest);
+		rest = getRest(info, strlen(NOWEQU) + strlen(type1) + strlen(var1) + 3);
+
+		char *type2 = getArg(rest, linenn);
+		if (type2 == NULL) {
+			return 1;
+		}
+
+		free(rest);
+		rest = getRest(info, strlen(NOWEQU) + strlen(type1) + strlen(var1) + strlen(type2) + 4);
+
+		char *var2 = getArg(rest, linenn);
+		if (var2 == NULL) {
+			return 1;
+		}
+
+
+		if (strcmp(type1, NUM) == 0) {
+			fprintf(out, "a");
+		} else if (strcmp(type1, STR) == 0) {
+			fprintf(out, "b");
+		} else if (strcmp(type1, TOF) == 0) {
+			fprintf(out, "c");
+		} else {
+			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure\n"
+					"expected NUM (%s) / STR (%s) / TOF (%s)\n",
+					NUM, STR, TOF
+			       );
+			codeErr(linenn, info, strlen(NOWEQU)+1);
+			return 1;
+		}
+
+		fprintf(out, "%s:", var1);
+
+		if (strcmp(type2, NUM) == 0) {
+			fprintf(out, "a");
+		} else if (strcmp(type2, STR) == 0) {
+			fprintf(out, "b");
+		} else if (strcmp(type2, TOF) == 0) {
+			fprintf(out, "c");
+		} else {
+			fprintf(stderr, "turtel_lex: fatal err: could not recognise data structure\n"
+					"expected NUM (%s) / STR (%s) / TOF (%s)\n",
+					NUM, STR, TOF
+			       );
+			codeErr(linenn, info, strlen(NOWEQU)+strlen(var1)+5);
+			return 1;
+		}
+
+		fprintf(out, "%s;", var2);
+
+		free(type1);
+		free(type2);
+		free(var1);
+		free(var2);
+		free(rest);
+
 	} else if (
 			strcmp(getArg(info, linenn), ADD) == 0 ||
 			strcmp(getArg(info, linenn), SUB) == 0 ||
