@@ -8,6 +8,9 @@ void err(char *errm) {
 	fprintf(stderr, "turtel: fatal error while interpreting. error message is \"%s\"\n", errm);
 }
 
+/* all of this code assumes that turtel code is lexed properly */
+
+
 int main (int argc, char *argv[]) {
 	FILE *finpt = stdin;
 
@@ -303,6 +306,11 @@ int main (int argc, char *argv[]) {
 						}
 						break;
 					case 'b':
+						if ((strcmp(newVarName, NEWLINE[0]) == 0) || (strcmp(newVarName, SPACE[0]) == 0)) {
+							err("cannot set value to predefined turtel constants");
+							return 1;
+						}
+
 						while ((valc = fgetc(inpt)) != ';') {
 							val[vali] = valc;
 							vali ++;
@@ -333,6 +341,10 @@ int main (int argc, char *argv[]) {
 						}
 						break;
 					case 'c':
+						if (strcmp(newVarName, OS[0]) == 0) {
+							err("cannot set value to predefined turtel constants");
+							return 1;
+						}
 						while ((valc = fgetc(inpt)) != ';') {
 							val[vali] = valc;
 							vali ++;
@@ -588,9 +600,12 @@ int main (int argc, char *argv[]) {
 
 				break;
 			case '4':
+				/* very poggers way to exit */
 				return 0;
+				/* man that was hard */
 				break;
 			case '3': ;
+				/* shell command (just system()) */
 				char srun_varName[LINE_LEN_MAX];
 				int srun_i;
 				char srun_c;
@@ -620,6 +635,58 @@ int main (int argc, char *argv[]) {
 				}
 
 				break;
+			case 'b': ;
+				/* nowequ - converting types of variables */
+				char nowequ_c_type1;
+				char nowequ_c_type2;
+				char nowequ_tmpc;
+				char nowequ_varn1[LINE_LEN_MAX];
+				char nowequ_varn2[LINE_LEN_MAX];
+
+				char nowequ_var1_val[LINE_LEN_MAX];
+				char nowequ_var2_val[LINE_LEN_MAX];
+				int nowequ_i;
+
+				for (nowequ_i = 0; nowequ_i < LINE_LEN_MAX; nowequ_i ++) {
+					nowequ_varn1[nowequ_i] = '\0';
+					nowequ_varn2[nowequ_i] = '\0';
+					nowequ_var1_val[nowequ_i] = '\0';
+					nowequ_var2_val[nowequ_i] = '\0';
+				}
+
+				nowequ_c_type1 = fgetc(inpt);
+				/* char representing 1 var -> nowequ_c_type1 */
+
+				nowequ_i = 0;
+				while ((nowequ_tmpc = fgetc(inpt)) != ':') {
+					nowequ_varn1[nowequ_i] = nowequ_tmpc;
+					nowequ_i ++;
+				}
+				/* name of var1 -> nowequ_var1 */
+
+				nowequ_c_type1 = fgetc(inpt);
+				/* char representing 2 var -> nowequ_c_type2 */
+
+				nowequ_i = 0;
+				while ((nowequ_tmpc = fgetc(inpt)) != ';') {
+					nowequ_varn2[nowequ_i] = nowequ_tmpc;
+					nowequ_i ++;
+				}
+
+				switch (nowequ_c_type1) {
+					case 'a':
+						
+						break;
+					case 'b':
+
+						break;
+					case 'c':
+
+						break;
+				}
+				
+				
+				break;
 			default:
 				err("not implemended");
 				fprintf(stderr, "died on char %c\n", c);
@@ -627,6 +694,12 @@ int main (int argc, char *argv[]) {
 				break;
 		}
 	}
-	
+
+	int i;
+	for (i = 0; i < STR_COUNT; i ++) {
+		free(StringInfo[i].name);
+		free(StringInfo[i].content);
+	}
+
 	return 0;
 }
