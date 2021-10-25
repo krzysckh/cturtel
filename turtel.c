@@ -673,7 +673,8 @@ int main (int argc, char *argv[]) {
 					nowequ_i ++;
 				}
 
-				switch (nowequ_c_type1) {
+				/* idea: write value of variable 2 to nowequ_var2_val as a char[], so it can be later refered to with atoi() */
+				switch (nowequ_c_type2) {
 					case 'a':
 						
 						break;
