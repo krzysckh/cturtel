@@ -1,10 +1,6 @@
 @include std/std.trl
 
-# fizzbuzz to program liczący do max:num
-# który zamienia każdą liczbę podzielną przez 3 na 'fizz', podzielną przez 5 na 'buzz' a podzielną przez obie na 'fizzbuzz'
-# wow to jest wybitnie duża ilość linijek kodu jak na fizzbuzz
-
-_mess:str:podaj max -> :
+_mess:str:gib max -> :
 print:str:_mess:
 read:num:max:
 
