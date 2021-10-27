@@ -5,11 +5,13 @@
  \___|\__|\__,_|_|   \__\___|_|
 ================================
                                
-turtel is an interpreted programming language.
+turtel is an interpreted "programming language".
 this implementation is written in C89
 
-documentation: doc/
+! this project is absolutely NOT ended yet. if you want to read more, please read idea.trl and todo !
 
+documentation: not written yet
+example scripts: code/
 
 installation
 ------------
@@ -18,3 +20,22 @@ installation
 	cd cturtel
 	make
 	sudo make install
+
+syntax highlighting
+-------------------
+
+	" using vim-plug
+	Plug 'krzysckh/turtel-vim'
+
+running scripts
+---------------
+
+	turtel_lex script_name.trl -o script_name.tlx
+	turtel script_name.tlx
+
+	# or
+
+	turtel_lex -e -o script_name script_name.trl
+	./script_name
+
+

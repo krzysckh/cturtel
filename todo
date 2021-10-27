@@ -1,22 +1,3 @@
-→ change syntax of 'if'
 → bugs in @defmacro............. and in @run
 → change goto. instead of rewind(in) and search from start, go back and search from right now. if not found - rewind and search from start to finish
 → fix all -O3 warnings
-
-DONE ===============
-5. @newmacro, @endmacro, @run in lexer for macros
-	how?
-
-	→ create new lexer-only data structure:
-	idk,, something like 
-
-		typedef struct LexerMacro {
-			char *name;
-			FILE *content;
-		} LexerMacro;
-
-	→ then add new lexer definitions
-		@newmacro <name> -> get and tokenize all to @endmacro <name> and save it to LexerMacro.content (!as tmpfile!)
-
-		@run <name> -> get name, and search for macro; print tokenized (LexerMacro.content)
-
