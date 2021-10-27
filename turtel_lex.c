@@ -1,10 +1,6 @@
 #include "turtel.h"
 
-#if !defined(WIN32) && !defined(_WIN32) && !defined(_WIN64)
 #include <sys/stat.h>
-#else
-#warning "You're using windows! -e won't work"
-#endif
 /* including sys/stat.h only in lexer, 'cause interpreter doesn't need it */
 
 typedef struct LexerMacro {
@@ -727,11 +723,7 @@ int main (int argc, char *argv[]) {
 	FILE *tmpf = tmpfile();
 
 
-#if !defined(WIN32) && !defined(_WIN32) && !defined(_WIN64)
 	while ((opt = getopt(argc, argv, "f:o:he")) != -1) {
-#else
-	while ((opt = getopt(argc, argv, "f:o:h")) != -1) {
-#endif
 		switch(opt) {
 			case 'f':
 				inpt = fopen(optarg, "r");
@@ -746,11 +738,9 @@ int main (int argc, char *argv[]) {
 				strcpy(ofname, optarg);
 
 				break;
-#if !defined(WIN32) && !defined(_WIN32) && !defined(_WIN64)
 			case 'e':
 				executable = true;
 				break;
-#endif
 			case 'h':
 				printf(
 						"turtel_lex - lexical analiser for turtel\n"

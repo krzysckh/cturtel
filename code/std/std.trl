@@ -8,8 +8,6 @@ NULL:num::
 
 __SPACE:str: :
 
-# nowequ:num:__OS:tof:__OS:
-
 STD_IS_DEFINED:tof:1:
 STD_IS_DEFINED:num:1:
 STD_IS_DEFINED:str:true:

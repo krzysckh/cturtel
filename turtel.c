@@ -127,22 +127,19 @@ int main (int argc, char *argv[]) {
 
 						varName[i] = '\0';
 
-						if (strcmp(varName, OS[0]) == 0) {
-							printf("%d", atoi(OS[1]));
-						} else {
-							for (i = 0; i < TOF_COUNT; i++) {
-								if (TofInfo[i].name != NULL) {
-									if (strcmp(varName, TofInfo[i].name) == 0) {
-										printf("%d", TofInfo[i].content);
-										found = true;
-									}
+						for (i = 0; i < TOF_COUNT; i++) {
+							if (TofInfo[i].name != NULL) {
+								if (strcmp(varName, TofInfo[i].name) == 0) {
+									printf("%d", TofInfo[i].content);
+									found = true;
 								}
 							}
-							if (found == false) {
-								err("tof was not defined");
-								printf("(%s)\n", varName);
-								return 1;
-							}
+						}
+
+						if (found == false) {
+							err("tof was not defined");
+							printf("(%s)\n", varName);
+							return 1;
 						}
 
 						break;
@@ -341,10 +338,6 @@ int main (int argc, char *argv[]) {
 						}
 						break;
 					case 'c':
-						if (strcmp(newVarName, OS[0]) == 0) {
-							err("cannot set value to predefined turtel constants");
-							return 1;
-						}
 						while ((valc = fgetc(inpt)) != ';') {
 							val[vali] = valc;
 							vali ++;
