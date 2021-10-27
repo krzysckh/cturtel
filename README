@@ -8,7 +8,7 @@
 turtel is an interpreted "programming language".
 this implementation is written in C89
 
-! this project is absolutely NOT ended yet. if you want to read more, please read idea.trl and todo !
+! this project is absolutely unfinished. if you want to read more, please read idea.trl and todo !
 
 documentation: not written yet
 example scripts: code/
