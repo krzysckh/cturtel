@@ -4,8 +4,16 @@ int NUM_COUNT = 0;
 int STR_COUNT = 0;
 int TOF_COUNT = 0;
 
+bool warningOn = true;
+
 void err(char *errm) {
 	fprintf(stderr, "turtel: fatal error while interpreting. error message is \"%s\"\n", errm);
+}
+
+void warn(char *errm) {
+	if (warningOn) {
+		fprintf(stderr, "turtel: warning: \"%s\"\n", errm);
+	}
 }
 
 /* all of this code assumes that turtel code is lexed properly */
@@ -14,10 +22,24 @@ void err(char *errm) {
 int main (int argc, char *argv[]) {
 	FILE *finpt = stdin;
 
-	if (argv[1] != NULL) {
-		finpt = fopen(argv[1], "rb+");
+	int opt;
+
+	while ((opt = getopt(argc, argv, "hw")) != -1) {
+		switch(opt) {
+			case 'w':
+				warningOn = true;
+				break;
+			case 'h':
+				printf("turtel - turtel interpreter\nusage: turtel [-w]\n");
+				return 0;
+				break;
+		}
+	}
+
+	if (argv[optind] != NULL) {
+		finpt = fopen(argv[optind], "rb+");
 		if (finpt == NULL) {
-			fprintf(stderr, "turtel: couldn't open file %s\n", argv[1]);
+			fprintf(stderr, "turtel: couldn't open file %s\n", argv[optind]);
 			return 2;
 		}
 	}
@@ -630,21 +652,24 @@ int main (int argc, char *argv[]) {
 				break;
 			case 'b': ;
 				/* nowequ - converting types of variables */
-				char nowequ_c_type1;
-				char nowequ_c_type2;
+				char nowequ_c_type1 = 0;
+				char nowequ_c_type2 = 0; /* setting values of type to 0, so -Wall chills the f out. they WILL get changed later ; ) */
 				char nowequ_tmpc;
 				char nowequ_varn1[LINE_LEN_MAX];
 				char nowequ_varn2[LINE_LEN_MAX];
 
-				char nowequ_var1_val[LINE_LEN_MAX];
-				char nowequ_var2_val[LINE_LEN_MAX];
+				char *nowequ_var2_val = NULL;
 				int nowequ_i;
+
+				int nowequ_num_count = 0;
+				int nowequ_tmpi = 0;
+
+				bool nowequ_found = false;
+
 
 				for (nowequ_i = 0; nowequ_i < LINE_LEN_MAX; nowequ_i ++) {
 					nowequ_varn1[nowequ_i] = '\0';
 					nowequ_varn2[nowequ_i] = '\0';
-					nowequ_var1_val[nowequ_i] = '\0';
-					nowequ_var2_val[nowequ_i] = '\0';
 				}
 
 				nowequ_c_type1 = fgetc(inpt);
@@ -657,7 +682,7 @@ int main (int argc, char *argv[]) {
 				}
 				/* name of var1 -> nowequ_var1 */
 
-				nowequ_c_type1 = fgetc(inpt);
+				nowequ_c_type2 = fgetc(inpt);
 				/* char representing 2 var -> nowequ_c_type2 */
 
 				nowequ_i = 0;
@@ -669,17 +694,111 @@ int main (int argc, char *argv[]) {
 				/* idea: write value of variable 2 to nowequ_var2_val as a char[], so it can be later refered to with atoi() */
 				switch (nowequ_c_type2) {
 					case 'a':
-						
+						for (nowequ_i = 0; nowequ_i < NUM_COUNT; nowequ_i ++) {
+							if (strcmp(NumInfo[nowequ_i].name, nowequ_varn2) == 0) {
+								nowequ_tmpi = NumInfo[nowequ_i].content;
+
+								do {
+									nowequ_tmpi /= 10;
+									nowequ_num_count ++;
+								} while (nowequ_tmpi != 0);
+
+								/* great that it doesn't support floats or doubles! please oh god send help */
+								nowequ_var2_val = malloc(sizeof(char) * (nowequ_num_count + 1));
+								sprintf(nowequ_var2_val, "%lld", NumInfo[nowequ_i].content);
+							}
+						}
+
+						if (nowequ_var2_val == NULL) {
+							warn("nowequ: refernced 2nd variable doesn't exist (copying NULL)");
+						}
+							
 						break;
 					case 'b':
+						for (nowequ_i = 0; nowequ_i < STR_COUNT; nowequ_i ++) {
+							if (strcmp(StringInfo[nowequ_i].name, nowequ_varn2) == 0) {
+								nowequ_var2_val = malloc(sizeof(char) * strlen(StringInfo[nowequ_i].content));
+
+								strncpy(nowequ_var2_val, StringInfo[nowequ_i].content, strlen(StringInfo[nowequ_i].content));
+							}
+						}
+
+						if (nowequ_var2_val == NULL) {
+							warn("nowequ: refernced 2nd variable doesn't exist (copying NULL)");
+						}
 
 						break;
 					case 'c':
+						for (nowequ_i = 0; nowequ_i < TOF_COUNT; nowequ_i ++) {
+							if (strcmp(TofInfo[nowequ_i].name, nowequ_varn2) == 0) {
+								nowequ_var2_val = malloc(sizeof(char)*2);
+
+								sprintf(nowequ_var2_val, "%d", ((TofInfo[nowequ_i].content == false) ? 0 : 1));
+								/* set the value to "0" or "1". "0" if 0, else "1" */
+							}
+						}
+
+						if (nowequ_var2_val == NULL) {
+							warn("nowequ: refernced 2nd variable doesn't exist (copying NULL)");
+						}
+						break;
+				}
+
+				switch (nowequ_c_type1) {
+					case 'a':
+						for (nowequ_i = 0; nowequ_i < NUM_COUNT; nowequ_i ++) {
+							if (strcmp(NumInfo[nowequ_i].name, nowequ_varn1) == 0) {
+								NumInfo[nowequ_i].content = atoi(nowequ_var2_val);
+								nowequ_found = true;
+							}
+						}
+
+						if (nowequ_found == false) {
+							err("var not declared");
+							fprintf(stderr, "(%s)\n", nowequ_varn1);
+							return 1;
+						}
+
+						break;
+					case 'b':
+						for (nowequ_i = 0; nowequ_i < STR_COUNT; nowequ_i ++) {
+							if (strcmp(StringInfo[nowequ_i].name, nowequ_varn1) == 0) {
+								StringInfo[nowequ_i].content = NULL;
+								free(StringInfo[nowequ_i].content);
+
+								StringInfo[nowequ_i].content = malloc(sizeof(char) * (strlen(nowequ_var2_val)+1));
+
+								strncpy(StringInfo[nowequ_i].content, nowequ_var2_val, strlen(nowequ_var2_val));
+
+								nowequ_found = true;
+							}
+						}
+
+						if (nowequ_found == false) {
+							err("var not declared");
+							fprintf(stderr, "(%s)\n", nowequ_varn1);
+							return 1;
+						}
+
+						break;
+					case 'c':
+						for (nowequ_i = 0; nowequ_i < TOF_COUNT; nowequ_i ++) {
+							if (strcmp(TofInfo[nowequ_i].name, nowequ_varn1) == 0) {
+								TofInfo[nowequ_i].content = (atoi(nowequ_var2_val) == 0) ? false : true;
+								nowequ_found = true;
+							}
+						}
+
+						if (nowequ_found == false) {
+							err("var not declared");
+							fprintf(stderr, "(%s)\n", nowequ_varn1);
+							return 1;
+						}
 
 						break;
 				}
 				
-				
+				free(nowequ_var2_val);
 				break;
 			default:
 				err("not implemended");
