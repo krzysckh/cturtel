@@ -4,7 +4,7 @@ int NUM_COUNT = 0;
 int STR_COUNT = 0;
 int TOF_COUNT = 0;
 
-bool warningOn = true;
+bool warningOn = false;
 
 void err(char *errm) {
 	fprintf(stderr, "turtel: fatal error while interpreting. error message is \"%s\"\n", errm);
@@ -405,35 +405,77 @@ int main (int argc, char *argv[]) {
 				char goto_nameBuff[LINE_LEN_MAX];
 				int goto_nameBuff_cptr = 0;
 				bool goto_found = false;
+				bool goto_skip = false;
 
 				for (i = 0; i < LINE_LEN_MAX; i++) {
 					goto_nameBuff[i] = '\0';
 				}
 
-				rewind(inpt);
-				/* rewinds input back to 0, so it can search for gototag from start */
-				while ((goto_tmpc = fgetc(inpt)) != EOF && goto_found == false) {
-					if (goto_tmpc == '6') {
-						while ((goto_tmpc = fgetc(inpt)) != ';') {
-							goto_nameBuff[goto_nameBuff_cptr] = goto_tmpc;
-							goto_nameBuff_cptr ++;
-						}
-						goto_nameBuff[goto_nameBuff_cptr] = '\0';
+				fseek(inpt, -1L, SEEK_CUR);
+				while (!fseek(inpt, -1L, SEEK_CUR)) { /* !fseek(), 'cause it returns 0 @ success */
+					if (!goto_skip) {
+						goto_skip = false;
 
-						if (strcmp(goto_nameBuff, gotoWhere) == 0) {
-							fseek(inpt, -1L, SEEK_CUR);
-							goto_found = true;
-						} else {
-							/* clear vars so they can be reused */
-							goto_tmpc = 0;
-							for (i = 0; i < LINE_LEN_MAX; i++) {
-								goto_nameBuff[i] = '\0';
+						for (goto_tmpi = 0; goto_tmpi < LINE_LEN_MAX; goto_tmpi ++) {
+							goto_nameBuff[goto_tmpi] = '\0';
+						}
+
+						if (fgetc(inpt) == ';') {
+							if (fgetc(inpt) == '6') {
+								goto_tmpi = 0;
+								while ((goto_tmpc = fgetc(inpt)) != ';') {
+									goto_nameBuff[goto_tmpi] = goto_tmpc;
+									goto_tmpi ++;
+								}
+
+								if (strcmp(goto_nameBuff, gotoWhere) == 0) {
+									goto_found = true;
+								} else {
+									goto_skip = true;
+								}
+							} else {
+								fseek(inpt, -2L, SEEK_CUR);
 							}
-							goto_nameBuff_cptr = 0;
+						} else {
+							fseek(inpt, -1L, SEEK_CUR);
+						}
+					}
+
+					if (goto_found == true) { break; }
+				}
+				
+				/* while goin' back || found right goto: clean vars, if found ';' → see if next command is a gototag. if yes → see if right, else go back */
+
+				if (goto_found == false) {
+					for (goto_tmpi = 0; goto_tmpi < LINE_LEN_MAX; goto_tmpi ++) {
+						goto_nameBuff[goto_tmpi] = '\0';
+					}
+
+					rewind(inpt);
+					/* rewinds input back to 0, so it can search for gototag from start */
+					warn("gototag not defined. trying to search further in code");
+					while ((goto_tmpc = fgetc(inpt)) != EOF && goto_found == false) {
+						if (goto_tmpc == '6') {
+							while ((goto_tmpc = fgetc(inpt)) != ';') {
+								goto_nameBuff[goto_nameBuff_cptr] = goto_tmpc;
+								goto_nameBuff_cptr ++;
+							}
+							goto_nameBuff[goto_nameBuff_cptr] = '\0';
+
+							if (strcmp(goto_nameBuff, gotoWhere) == 0) {
+								fseek(inpt, -1L, SEEK_CUR);
+								goto_found = true;
+							} else {
+								/* clear vars so they can be reused */
+								goto_tmpc = 0;
+								for (i = 0; i < LINE_LEN_MAX; i++) {
+									goto_nameBuff[i] = '\0';
+								}
+								goto_nameBuff_cptr = 0;
+							}
 						}
 					}
 				}
-				
 
 				if (goto_found == false) {
 					err("gototag not defined");

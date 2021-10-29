@@ -1,9 +1,13 @@
-@defmacro pogger
-	a:str:Hellowo:
-	print:str:a:
+@defmacro test
+	_test_a:str::
+	nowequ:str:_test_a:str:_TEST_A_STR:
+	print:str:_test_a:
 	print:str:__newline:
 @endmacro
 
-gototag:_loop:
-	@run pogger
-	goto:_loop:
+_TEST_A_STR:str:test 1:
+@run test
+_TEST_A_STR:str:test 2:
+@run test
+_TEST_A_STR:str:test 3:
+@run test

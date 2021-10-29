@@ -1,3 +1,2 @@
 → bugs in @defmacro............. and in @run
-→ change goto. instead of rewind(in) and search from start, go back and search from right now. if not found - rewind and search from start to finish
 → fix all -O3 warnings
