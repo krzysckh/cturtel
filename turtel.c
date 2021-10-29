@@ -752,7 +752,7 @@ int main (int argc, char *argv[]) {
 						}
 
 						if (nowequ_var2_val == NULL) {
-							warn("nowequ: refernced 2nd variable doesn't exist (copying NULL)");
+							warn("nowequ: refernced 2nd variable doesn't exist (trying to copy NULL [will fail probably])");
 						}
 							
 						break;
