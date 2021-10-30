@@ -763,7 +763,7 @@ int main (int argc, char *argv[]) {
 
 	if (executable) {
 		if (ofname == NULL) {
-			fprintf(stderr, "turtel_lex: fatal err: cannot make <stdin> executable. try using -o to set output file\n");
+			fprintf(stderr, "turtel_lex: fatal err: cannot make <stdout> executable. try using -o to set output file\n");
 			return 1;
 		}
 
