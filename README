@@ -39,3 +39,5 @@ running scripts
 	./script_name
 
 
+please, oh please don't look at this spaghetti code.
+please, oh please don't use lexer macros (@defmacro, @endmacro, @run) and @include (imma repair them or just delete them idk lol)

@@ -112,19 +112,17 @@ char *getArg(char *arguments, int linenn) {
 }
 
 char *getLexerArg(char *arguments, int linenn) {
-	char *arg = NULL;
-	arg = malloc(sizeof(char) * strlen(arguments));
+	char *arg = malloc(sizeof(char) * (strlen(arguments)+1));
 	int i;
-
-	for (i = 0; i < (int)strlen(arguments); i++) {
+	for (i = 0; i < (int)strlen(arguments)+1; i++) {
 		arg[i] = '\0';
 	}
 
 	for (i = 0; i < (int)strlen(arguments); i++) {
-		if ((arguments[i] == ' ') || (arguments[i] == '\n')) {
+		if ((arguments[i] == ' ') || (arguments[i] == '\n') || (arguments[i] == '\t')) {
 			return arg;
 		} else {
-			arg[i] = (arguments[i] == '\t') ? 0 : arguments[i];
+			arg[i] = arguments[i];
 		}
 	}
 	
@@ -211,6 +209,9 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 	} else if (strcmp(getLexerArg(info, linenn), LEX_NEWMACRO) == 0) {
 		char *rest = getRest(info, strlen(LEX_NEWMACRO)+1);
 		char *name = getLexerArg(rest, linenn);
+
+		if (DEBUG) { printf("new macro: rest = %s, name = %s\n", rest, name); }
+
 		if (name == NULL) {
 			return 1;
 		}
@@ -778,6 +779,7 @@ int main (int argc, char *argv[]) {
 				fprintf(stderr, "turtel_lex: fatal_err: got %s, but no macro was started\n", LEX_ENDMACRO);
 				codeErr(line_n, line, 0);
 			}
+			if (DEBUG) {char c;rewind(tmpf);while ((c = fgetc(tmpf)) != EOF) {fputc(c, outpt);}}
 			fclose(inpt);
 			fclose(outpt);
 			fclose(tmpf);

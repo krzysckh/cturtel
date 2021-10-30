@@ -1,0 +1,19 @@
+@include std/std.trl
+
+a:num:10:
+
+mod:a:a:
+
+print:num:a:
+print:str:__newline:
+
+a:num:10:
+_mod_1num:num::
+_mod_2num:num::
+nowequ:num:_mod_1num:num:a:
+nowequ:num:_mod_2num:num:a:
+
+#@run mod
+
+print:num:_mod_ret_num:
+print:str:__newline:
