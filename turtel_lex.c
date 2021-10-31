@@ -210,7 +210,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		char *rest = getRest(info, strlen(LEX_NEWMACRO)+1);
 		char *name = getLexerArg(rest, linenn);
 
-		if (DEBUG) { printf("new macro: rest = %s, name = %s\n", rest, name); }
+		/*if (DEBUG) { printf("new macro: rest = %s, name = %s\n", rest, name); }*/
 
 		if (name == NULL) {
 			return 1;
