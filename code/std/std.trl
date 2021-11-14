@@ -8,19 +8,19 @@ NULL:num::
 
 __SPACE:str: :
 
-@defmacro mod_std
-	gototag:_mod_loop:
-		tmp:num:0:
-		add:tmp:_mod_1num:
-		sub:tmp:_mod_2num:
-		if:tmp:lt:false:_mod_ret::
-		sub:_mod_num:_mod_num:
-		goto:_mod_loop:
-	gototag:_mod_ret:
-		_mod_ret_num:num:0:
-		add:_mod_ret_num:_mod_1num:
-
-@endmacro
+#@defmacro mod_std
+#	gototag:_mod_loop:
+#		tmp:num:0:
+#		add:tmp:_mod_1num:
+#		sub:tmp:_mod_2num:
+#		if:tmp:lt:false:_mod_ret::
+#		sub:_mod_num:_mod_num:
+#		goto:_mod_loop:
+#	gototag:_mod_ret:
+#		_mod_ret_num:num:0:
+#		add:_mod_ret_num:_mod_1num:
+#
+#@endmacro
 
 STD_IS_DEFINED:tof:1:
 STD_IS_DEFINED:num:1:

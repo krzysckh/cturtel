@@ -71,6 +71,7 @@ int main (int argc, char *argv[]) {
 	while ((c = fgetc(inpt)) != EOF) {
 		switch (c) {
 			case '\n':
+			case '\t':
 				break;
 			case '#': ;
 				/* a hasbang probably */
