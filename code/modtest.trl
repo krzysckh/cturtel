@@ -13,7 +13,7 @@ _mod_2num:num::
 nowequ:num:_mod_1num:num:a:
 nowequ:num:_mod_2num:num:a:
 
-#@run mod
+@run mod_std
 
 print:num:_mod_ret_num:
 print:str:__newline:

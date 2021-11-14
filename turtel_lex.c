@@ -112,7 +112,9 @@ char *getArg(char *arguments, int linenn) {
 }
 
 char *getLexerArg(char *arguments, int linenn) {
-	char *arg = malloc(sizeof(char) * (strlen(arguments)+1));
+	char *arg = NULL;
+	arg= malloc(sizeof(char) * (strlen(arguments)+1));
+
 	int i;
 	for (i = 0; i < (int)strlen(arguments)+1; i++) {
 		arg[i] = '\0';
@@ -187,8 +189,9 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		}
 		
 		FILE *TMP_INCFILE = fopen(name, "r");
-		char TMP_INCLINE[LINE_LEN_MAX];
+		char TMP_INCLINE[LINE_LEN_MAX] = { 0 };
 		int TMP_INCN = 0;
+		int INC_i;
 
 		if (TMP_INCFILE == NULL) {
 			fprintf(stderr, "turtel: fatal err: could not open file %s\n", name);
@@ -200,6 +203,11 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 			if ( tokenize(TMP_INCLINE, TMP_INCN, out, in) ) {
 				return 1;
 			}
+
+			for (INC_i = 0; INC_i < LINE_LEN_MAX; INC_i ++) {
+				TMP_INCLINE[INC_i] = '\0';
+			}
+
 			TMP_INCN ++;
 		}
 
@@ -207,10 +215,12 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		free(name);
 		free(rest);
 	} else if (strcmp(getLexerArg(info, linenn), LEX_NEWMACRO) == 0) {
-		char *rest = getRest(info, strlen(LEX_NEWMACRO)+1);
-		char *name = getLexerArg(rest, linenn);
+		char *rest = NULL;
+		rest = getRest(info, strlen(LEX_NEWMACRO)+1);
+		char *name = NULL;
+		name = getLexerArg(rest, linenn);
 
-		/*if (DEBUG) { printf("new macro: rest = %s, name = %s\n", rest, name); }*/
+		if (DEBUG) { printf("new macro: rest = %s, name = \"%s\" (len = %d) (no %d)\n", rest, name, (int)strlen(name), MACRO_COUNT); }
 
 		if (name == NULL) {
 			return 1;
@@ -252,18 +262,28 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 			LINE_SYNC = linenn;
 		}
 
-		MacroInfo[MACRO_COUNT].name = malloc(sizeof(char) * strlen(name)+1);
-		strncpy(MacroInfo[MACRO_COUNT].name, name, strlen(name));
+		MacroInfo[MACRO_COUNT].name = malloc(sizeof(char) * strlen(name)+3);
+		for (mac_i = 0; mac_i < (int)strlen(name)+3; mac_i++) {
+			MacroInfo[MACRO_COUNT].name[mac_i] = '\0';
+		}
+
+		strcpy(MacroInfo[MACRO_COUNT].name, name);/*, strlen(name)+1);*/
 
 		MACRO_COUNT ++;
 		free(name);
 		free(rest);
-
 	} else if (strcmp(getLexerArg(info, linenn), LEX_ENDMACRO) == 0) {
 		return 100;
 	} else if (strcmp(getLexerArg(info, linenn), LEX_RUNMACRO) == 0) {
 		char *rest = getRest(info, strlen(LEX_RUNMACRO)+1);
-		char *name = getLexerArg(rest, linenn);
+		char *name;
+		if (name != NULL) {
+			free(name);
+		}
+
+		name = getLexerArg(rest, linenn);
+
+		printf("tryin to compare \"%s\"\n", name);
 
 		if (name == NULL) {
 			return 1;
@@ -273,11 +293,13 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		char run_c;
 
 		for (run_i = 0; run_i < MACRO_COUNT; run_i ++) {
+			printf("trying to cmp macro no. %d with name %s\n", run_i, MacroInfo[run_i].name);
 			if (strcmp(MacroInfo[run_i].name, name) == 0) {
-				FILE *run_fp = MacroInfo[run_i].content;
-				rewind(run_fp);
+				/*FILE *run_fp = MacroInfo[run_i].content;*/
+				rewind(MacroInfo[run_i].content);
+				puts("rewund");
 
-				while ((run_c = fgetc(run_fp)) != EOF) {
+				while ((run_c = fgetc(MacroInfo[run_i].content)) != EOF) {
 					fputc(run_c, out);
 				}
 				free(name);

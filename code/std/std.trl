@@ -8,7 +8,7 @@ NULL:num::
 
 __SPACE:str: :
 
-@defmacro mod
+@defmacro mod_std
 	gototag:_mod_loop:
 		tmp:num:0:
 		add:tmp:_mod_1num:
@@ -19,8 +19,10 @@ __SPACE:str: :
 	gototag:_mod_ret:
 		_mod_ret_num:num:0:
 		add:_mod_ret_num:_mod_1num:
+
 @endmacro
 
 STD_IS_DEFINED:tof:1:
 STD_IS_DEFINED:num:1:
 STD_IS_DEFINED:str:true:
+

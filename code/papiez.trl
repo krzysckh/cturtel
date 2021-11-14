@@ -1,9 +1,8 @@
-@include std/std.trl
-
 max:num:2137:
 i:num:0:
 adder:num:1:
 mess:str:papiezak:
+__SPACE:str: :
 
 gototag:_loop:
 	print:str:mess:
