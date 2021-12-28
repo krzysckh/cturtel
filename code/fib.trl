@@ -6,7 +6,6 @@ c:num:0:
 
 howMany:num:40:
 now:num:0:
-adder:num:1:
 
 print:num:a:
 print:str:__newline:
@@ -27,7 +26,7 @@ gototag:__loop:
 	sub:b:b:
 	add:b:c:
 
-	add:now:adder:
+	add:now:true:
 	
 	if:now:gt:howMany:__end:__loop:
 

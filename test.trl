@@ -1,0 +1,11 @@
+# test program in turtel
+
+a:num:10:
+
+goto:main:
+
+gototag:main:
+	print:num:a:
+	print:str:__newline:
+	exit:
+

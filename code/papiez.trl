@@ -1,5 +1,5 @@
 max:num:2137:
-i:num:0:
+i:num:1:
 adder:num:1:
 mess:str:papiezak:
 __SPACE:str: :
@@ -14,4 +14,3 @@ gototag:_loop:
 	if:i:gt:max:_end:_loop:
 
 gototag:_end:
-
