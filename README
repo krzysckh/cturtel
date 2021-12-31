@@ -13,7 +13,7 @@ this implementation is written in C89
 this project is absolutely unfinished. if you want to read more, please read idea.trl and todo files
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-documentation: not yet
+documentation: doc/
 example scripts: code/
 
 INSTALLATION

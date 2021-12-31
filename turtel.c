@@ -45,16 +45,21 @@ int main (int argc, char *argv[]) {
 	}
 
 	FILE *inpt = tmpfile();
+	int Vars = 0;
 
 	char fc;
 	while ((fc = fgetc(finpt)) != EOF) {
+		if (fc == 'N') {
+			Vars ++; /* not really a good idea. it will create a new variable even if a variable name has 'N' inside, but i'm to lazy to change that */
+		}
 		fputc(fc, inpt);
 	}
 	rewind(inpt);
 
-	TurtelString StringInfo[VAR_MAX];
-	TurtelNum NumInfo[VAR_MAX];
-	TurtelBool TofInfo[VAR_MAX];
+
+	TurtelString *StringInfo = malloc(sizeof(TurtelString) * Vars);
+	TurtelNum *NumInfo = malloc(sizeof(TurtelNum) * Vars);
+	TurtelBool *TofInfo = malloc(sizeof(TurtelBool) * Vars);
 
 	/*
 	int l = 5;
@@ -123,9 +128,9 @@ int main (int argc, char *argv[]) {
 						varName[i] = '\0';
 
 						if (strcmp(varName, NEWLINE[0]) == 0) {
-							printf(NEWLINE[1]);
+							printf("%s", NEWLINE[1]);
 						} else if (strcmp(varName, SPACE[0]) == 0) {
-							printf(SPACE[1]);
+							printf("%s", SPACE[1]);
 						} else {
 							for (i = 0; i < STR_COUNT; i++) {
 								if (StringInfo[i].name != NULL) {

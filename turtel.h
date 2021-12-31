@@ -6,7 +6,7 @@
 
 #define turtel
 
-#define VAR_MAX 100
+#define VAR_MAX 100 /* still used for lexer macros */
 #define LINE_LEN_MAX 1024
 
 typedef int bool;
