@@ -1,19 +1,22 @@
-      _              _       _ 
-  ___| |_ _   _ _ __| |_ ___| |
- / __| __| | | | '__| __/ _ \ |
-| (__| |_| |_| | |  | ||  __/ |
- \___|\__|\__,_|_|   \__\___|_|
-================================
-                               
+     _____    ____
+   /  /// \  /  o | 
+  /    ///   _____+ 
+  \_________/     
+  /_\_\ /_\_\
+
+CTURTEL
+=======
+
 turtel is an interpreted "programming language".
 this implementation is written in C89
 
-! this project is absolutely unfinished. if you want to read more, please read idea.trl and todo !
+this project is absolutely unfinished. if you want to read more, please read idea.trl and todo files
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-documentation: not written yet
+documentation: not yet
 example scripts: code/
 
-installation
+INSTALLATION
 ------------
 
 	git clone https://github.com/krzysckh/cturtel
@@ -21,13 +24,13 @@ installation
 	make
 	sudo make install
 
-syntax highlighting
+SYNTAX HIGHLIGHTING
 -------------------
 
 	" using vim-plug
 	Plug 'krzysckh/turtel-vim'
 
-running scripts
+RUNNING SCRIPTS
 ---------------
 
 	turtel_lex script_name.trl -o script_name.tlx
@@ -39,5 +42,46 @@ running scripts
 	./script_name
 
 
-please, oh please don't look at this spaghetti code.
-please, oh please don't use lexer macros (@defmacro, @endmacro, @run) and @include (imma repair them or just delete them idk lol)
+* please, oh please don't look at this spaghetti code.
+
+
+KNOWN BUGS
+----------
+
+turtel_lex:
+	- @include does not work
+	- line numbers in errors may not be right
+	- memory may leak on errors
+	- gibbirish is displayed sometimes on errors
+	- won't compile on windows, may not compile on BSD, won't compile on plan9
+
+turtel:
+	- won't compile on windows, may not compile on BSD, won't compile on plan9
+	- __newline etc. definitions are really bad
+	- is slow
+	- -w is bad
+
+
+if you want the funcionality of @include use a sh function like this one:
+
+--- shell script
+
+trl_inc_lex() {
+	usage() {
+		echo "usage: trl_inc_lex file.trl > file_incd.trl"
+	}
+
+	[ -z "$1" ] && usage || \
+		(
+			for f in `grep "@include " "$1" | awk '{ print $2 }'`
+			do
+				trl_inc_lex "$f"
+			done
+
+			grep -v "@include " "$1"
+		)
+}
+
+---
+
+@include will be fixed in the future, but for now that's the "correct" way to include files

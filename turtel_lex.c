@@ -283,7 +283,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 
 		name = getLexerArg(rest, linenn);
 
-		printf("tryin to compare \"%s\"\n", name);
+		/*printf("tryin to compare \"%s\"\n", name);*/
 
 		if (name == NULL) {
 			return 1;
@@ -293,11 +293,11 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		char run_c;
 
 		for (run_i = 0; run_i < MACRO_COUNT; run_i ++) {
-			printf("trying to cmp macro no. %d with name %s\n", run_i, MacroInfo[run_i].name);
+			/*printf("trying to cmp macro no. %d with name %s\n", run_i, MacroInfo[run_i].name);*/
 			if (strcmp(MacroInfo[run_i].name, name) == 0) {
 				/*FILE *run_fp = MacroInfo[run_i].content;*/
 				rewind(MacroInfo[run_i].content);
-				puts("rewund");
+				/*puts("rewund");*/
 
 				while ((run_c = fgetc(MacroInfo[run_i].content)) != EOF) {
 					fputc(run_c, out);

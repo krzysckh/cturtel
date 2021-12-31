@@ -13,7 +13,7 @@ typedef int bool;
 #define true 1
 #define false 0
 
-#define DEBUG true
+#define DEBUG false
 
 #include "stdturtel.h"
 
