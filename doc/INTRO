@@ -11,7 +11,7 @@ Keyword, SEPARATOR, options, ..., SEPARATOR
 	or
 Variable Name, SEPARATOR, Variable Type, SEPARATOR, Variable Value, SEPARATOR
 
-So every keyword must be seperated with the SEPARATOR (defined in stdturtel.h).
+So every keyword must be separated with the SEPARATOR (defined in stdturtel.h).
 
 2. DATA TYPES
 -------------

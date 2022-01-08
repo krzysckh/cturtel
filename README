@@ -62,7 +62,7 @@ turtel:
 	- -w is bad
 
 
-if you want the funcionality of @include use a sh function like this one:
+if you want the functionality of @include use a sh function like this one:
 
 --- shell script
 
