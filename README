@@ -10,8 +10,9 @@ CTURTEL
 turtel is an interpreted "programming language".
 this implementation is written in C89
 
-this project is absolutely unfinished. if you want to read more, please read idea.trl and todo files
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+this project is absolutely unfinished.
+if you want to read more, please read "idea.trl" and "todo" files
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 documentation: doc/
 example scripts: code/
@@ -41,8 +42,6 @@ RUNNING SCRIPTS
 	turtel_lex -e -o script_name script_name.trl
 	./script_name
 
-
-* please, oh please don't look at this spaghetti code.
 
 
 KNOWN BUGS
@@ -85,6 +84,8 @@ trl_inc_lex() {
 ---
 
 @include will be fixed in the future, but for now that's the "correct" way to include files
+
+* please, oh please don't look at this spaghetti code.
 
 [ krzysckh 2021 - 2022 ]
 
