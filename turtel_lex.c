@@ -1,7 +1,9 @@
 #include "turtel.h"
 
+#ifndef _WIN32
 #include <sys/stat.h>
 /* including sys/stat.h only in lexer, 'cause interpreter doesn't need it */
+#endif
 
 typedef struct LexerMacro {
 	char *name;
@@ -839,12 +841,14 @@ int main (int argc, char *argv[]) {
 		fputc(c, outpt);
 	}
 
+#ifndef _WIN32
 	if (executable) {
 		if (chmod(ofname, strtol("0777", 0, 0)) < 0) {
 			fprintf(stderr, "turtel_lex: warning: couldn't make %s executable. try 'chmod +x %s' to do it yourself\n",
 					ofname, ofname);
 		}
 	}
+#endif
 
 	fclose(tmpf);
 	fclose(outpt);
