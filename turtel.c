@@ -16,6 +16,14 @@ void warn(char *errm) {
 	}
 }
 
+int get_int_len (int value){
+	int l=1;
+	while(value>9) {
+		l++; value/=10;
+	}
+	return l;
+}
+
 /* all of this code assumes that turtel code is lexed properly */
 
 
@@ -762,8 +770,7 @@ int main (int argc, char *argv[]) {
 					case 'b':
 						for (nowequ_i = 0; nowequ_i < STR_COUNT; nowequ_i ++) {
 							if (strcmp(StringInfo[nowequ_i].name, nowequ_varn2) == 0) {
-								nowequ_var2_val = malloc(sizeof(char) * strlen(StringInfo[nowequ_i].content));
-
+								nowequ_var2_val = malloc(sizeof(char) * strlen(StringInfo[nowequ_i].content)+1);
 								strncpy(nowequ_var2_val, StringInfo[nowequ_i].content, strlen(StringInfo[nowequ_i].content));
 							}
 						}
@@ -899,7 +906,7 @@ int main (int argc, char *argv[]) {
 						strfc_c = StringInfo[strfc_i].content[0];
 						free(StringInfo[strfc_i].content);
 						
-						StringInfo[strfc_i].content = malloc(sizeof(char) * (floor(log10(abs((int)strfc_c))) + 1) + 1);
+						StringInfo[strfc_i].content = malloc(sizeof(char) * get_int_len((int)strfc_c) + 1);
 
 						sprintf(StringInfo[strfc_i].content, "%d", (int) strfc_c);
 						strfc_found = true;

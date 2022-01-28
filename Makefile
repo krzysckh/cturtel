@@ -1,5 +1,5 @@
 CFLAGS=-std=c89 -Wall -Wextra -Ofast
-LDFLAGS=-lm
+LDFLAGS=
 PREFIX=/usr
 
 all: turtel turtel_lex
