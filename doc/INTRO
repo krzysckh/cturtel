@@ -44,7 +44,6 @@ This syntax allows 3 variables of the same name with different types.
 
 Turtel has 2 builtin variables. Both of type str:
 	__newline: is literally a newline (\n)
-	__space: is literally a space. Idk why i added it there but it's there.
 
 4. BUILTIN FUNCTIONS
 --------------------

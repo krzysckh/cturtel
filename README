@@ -52,13 +52,13 @@ turtel_lex:
 	- line numbers in errors may not be right
 	- memory may leak on errors
 	- gibbirish is displayed sometimes on errors
-	- won't compile on windows, may not compile on BSD, won't compile on plan9
+	- won't compile on windows, won't compile on plan9
 
 turtel:
-	- won't compile on windows, may not compile on BSD, won't compile on plan9
-	- __newline etc. definitions are really bad
+	- won't compile on windows, won't compile on plan9
 	- is slow
 	- -w is bad
+	- if var name has a '#' it interpreter will probably crash or cry
 
 
 if you want the functionality of @include use a sh function like this one:

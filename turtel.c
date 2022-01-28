@@ -72,6 +72,14 @@ int main (int argc, char *argv[]) {
 	printf("%s\n", StringInfo[0].content);
 	*/
 
+	StringInfo[STR_COUNT].name = malloc(sizeof(char) * (strlen(NEWLINE[0])+1));
+	strncpy(StringInfo[STR_COUNT].name, NEWLINE[0], strlen(NEWLINE[0])+1);
+	StringInfo[STR_COUNT].len = strlen(NEWLINE[1]);
+
+	StringInfo[STR_COUNT].content = malloc(sizeof(char) * (strlen(NEWLINE[1])+1));
+	strncpy(StringInfo[STR_COUNT].content, NEWLINE[1], strlen(NEWLINE[1])+1);
+	STR_COUNT ++;
+
 	char c;
 	while ((c = fgetc(inpt)) != EOF) {
 		switch (c) {
@@ -127,24 +135,18 @@ int main (int argc, char *argv[]) {
 
 						varName[i] = '\0';
 
-						if (strcmp(varName, NEWLINE[0]) == 0) {
-							printf("%s", NEWLINE[1]);
-						} else if (strcmp(varName, SPACE[0]) == 0) {
-							printf("%s", SPACE[1]);
-						} else {
-							for (i = 0; i < STR_COUNT; i++) {
-								if (StringInfo[i].name != NULL) {
-									if (strcmp(varName, StringInfo[i].name) == 0) {
-										printf("%s", StringInfo[i].content);
-										found = true;
-									}
+						for (i = 0; i < STR_COUNT; i++) {
+							if (StringInfo[i].name != NULL) {
+								if (strcmp(varName, StringInfo[i].name) == 0) {
+									printf("%s", StringInfo[i].content);
+									found = true;
 								}
 							}
-							if (found == false) {
-								err("str was not defined");
-								printf("(%s)\n", varName);
-								return 1;
-							}
+						}
+						if (found == false) {
+							err("str was not defined");
+							printf("(%s)\n", varName);
+							return 1;
 						}
 						break;
 					case 'c': ;
@@ -331,11 +333,6 @@ int main (int argc, char *argv[]) {
 						}
 						break;
 					case 'b':
-						if ((strcmp(newVarName, NEWLINE[0]) == 0) || (strcmp(newVarName, SPACE[0]) == 0)) {
-							err("cannot set value to predefined turtel constants");
-							return 1;
-						}
-
 						while ((valc = fgetc(inpt)) != ';') {
 							val[vali] = valc;
 							vali ++;
@@ -847,6 +844,74 @@ int main (int argc, char *argv[]) {
 				}
 				
 				free(nowequ_var2_val);
+				break;
+			case 'd': ;
+				char strmv_varName[LINE_LEN_MAX];
+				int strmv_i;
+				char strmv_c;
+				bool strmv_found = false;
+				char *strmv_tmp;
+
+				for (strmv_i = 0; strmv_i < LINE_LEN_MAX; strmv_i ++) {
+					 strmv_varName[strmv_i] = '\0';
+				}
+
+				strmv_i = 0;
+
+				while ((strmv_c = fgetc(inpt)) != ';') {
+					strmv_varName[strmv_i] = strmv_c;
+					strmv_i ++;
+				}
+
+				for (strmv_i = 0; strmv_i < STR_COUNT; strmv_i ++) {
+					if (strcmp(StringInfo[strmv_i].name, strmv_varName) == 0) {
+						memmove(StringInfo[strmv_i].content, StringInfo[strmv_i].content+1, strlen(StringInfo[strmv_i].content));
+						strmv_found = true;
+					}
+				}
+
+				if (strmv_found == false) {
+					err("str not defined");
+					fprintf(stderr, "\t(name is %s)\n", strmv_varName);
+					return 1;
+				}
+
+				break;
+			case 'e': ;
+				char strfc_varName[LINE_LEN_MAX];
+				int strfc_i;
+				char strfc_c;
+				bool strfc_found = false;
+
+				for (strfc_i = 0; strfc_i < LINE_LEN_MAX; strfc_i ++) {
+					 strfc_varName[strfc_i] = '\0';
+				}
+
+				strfc_i = 0;
+
+				while ((strfc_c = fgetc(inpt)) != ';') {
+					strfc_varName[strfc_i] = strfc_c;
+					strfc_i ++;
+				}
+
+				for (strfc_i = 0; strfc_i < STR_COUNT; strfc_i ++) {
+					if (strcmp(StringInfo[strfc_i].name, strfc_varName) == 0) {
+						strfc_c = StringInfo[strfc_i].content[0];
+						free(StringInfo[strfc_i].content);
+						
+						StringInfo[strfc_i].content = malloc(sizeof(char) * (floor(log10(abs((int)strfc_c))) + 1) + 1);
+
+						sprintf(StringInfo[strfc_i].content, "%d", (int) strfc_c);
+						strfc_found = true;
+					}
+				}
+
+				if (strfc_found == false) {
+					err("str not defined");
+					fprintf(stderr, "\t(name is %s)\n", strfc_varName);
+					return 1;
+				}
+
 				break;
 			default:
 				err("not implemended");

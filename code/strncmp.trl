@@ -1,0 +1,50 @@
+# strncmp requires 3 arguments: _strncmp_str1, _strncmp_str2, _strncmp_n
+# it checks if _strncmp_str1 is equal to _strncmp_str2 with length of _strncmp_n
+# it returns _strncmp_ret: if it's 1 -> strings are equal, else they're not
+# _strncmp_str{1,2} are NOT the same as before going to this macro afterwards
+
+# example 
+# _strncmp_str1:str:bruh:
+# _strncmp_str2:str:hurb:
+# _strncmp_n:num:4:
+# 
+# @run strncmp
+# 
+# print:num:_strncmp_ret:
+
+@defmacro strncmp
+	true:num:1:
+	__strncmp_i:num:0:
+	_strncmp_ret:num:1:
+
+	__strncmp_tmp1_n:num::
+	__strncmp_tmp2_n:num::
+
+	gototag:__strncmp_loop:
+		__strncmp_tmp1:str::
+		__strncmp_tmp2:str::
+
+		nowequ:str:__strncmp_tmp1:str:_strncmp_str1:
+		nowequ:str:__strncmp_tmp2:str:_strncmp_str2:
+
+		_str_fc:__strncmp_tmp1:
+		_str_fc:__strncmp_tmp2:
+
+		nowequ:num:__strncmp_tmp1_n:str:__strncmp_tmp1:
+		nowequ:num:__strncmp_tmp2_n:str:__strncmp_tmp2:
+
+		if:__strncmp_tmp1_n:ne:__strncmp_tmp2_n:__strncmp_noteq::
+
+		_str_mv:_strncmp_str1:
+		_str_mv:_strncmp_str2:
+		add:__strncmp_i:true:
+
+		if:__strncmp_i:eq:_strncmp_n:__strncmp_exit:__strncmp_loop:
+
+	gototag:__strncmp_noteq:
+		_strncmp_ret:num:0:
+		goto:__strncmp_exit:
+
+	gototag:__strncmp_exit:
+@endmacro
+

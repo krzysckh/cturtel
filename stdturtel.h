@@ -26,6 +26,10 @@
 /* b */
 #define MOD "mod"
 /* c */
+#define STRMV "_str_mv"
+/* d */
+#define STRFC "_str_fc"
+/* e */
 
 /* standard constants */
 char *NEWLINE[] = {"__newline", "\n"};

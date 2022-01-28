@@ -541,6 +541,29 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		free(rest);
 	} else if (strcmp(getArg(info, linenn), EXIT) == 0) {
 		fprintf(out, "4");
+	} else if (strcmp(getArg(info, linenn), STRMV) == 0) {
+		char *rest = getRest(info, strlen(STRMV)+1);
+		char *str1 = getArg(rest, linenn);
+
+		if (str1 == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "d%s;", str1);
+
+		free(rest);
+		free(str1);
+	} else if (strcmp(getArg(info, linenn), STRFC) == 0) {
+		char *rest = getRest(info, strlen(STRFC)+1);
+		char *str = getArg(rest, linenn);
+		if (str == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "e%s;", str);
+
+		free(rest);
+		free(str);
 	} else if (strcmp(getArg(info, linenn), SRUN) == 0) {
 		char *run = getArg(getRest(info, strlen(SRUN)+1), linenn);
 		if (run == NULL) {
