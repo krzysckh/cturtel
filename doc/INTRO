@@ -42,7 +42,7 @@ Examples:
 
 This syntax allows 3 variables of the same name with different types.
 
-Turtel has 2 builtin variables. Both of type str:
+Turtel has a builtin variable with type str:
 	__newline: is literally a newline (\n)
 
 4. BUILTIN FUNCTIONS
