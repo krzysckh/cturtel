@@ -1,4 +1,3 @@
-.FT CooperBlack
 .TL 
 Intro to scripting in turtel
 .AU 
