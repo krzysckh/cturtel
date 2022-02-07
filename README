@@ -87,6 +87,8 @@ trl_inc_lex() {
 @include will be fixed in the future, but for now that's the "correct" way to include files
 
 * please, oh please don't look at this spaghetti code.
+* i absolutely _need_ to rewrite most of the code
+* it's bad
 
 [ krzysckh 2021 - 2022 ]
 
