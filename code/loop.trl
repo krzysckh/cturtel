@@ -1,4 +1,5 @@
 hello:str:Hello, World!:
+__space:str: :
 
 goto:main:
 

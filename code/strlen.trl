@@ -1,0 +1,49 @@
+# for some obscure reason
+# it does not work
+# something is wrong
+# i can feel it
+# ...
+# bruh
+
+@defmacro strlen
+	__strlen_true:num:1:
+
+	__strlen_empty:str::
+	__strlen_empty:num::
+
+	_str_fc:__strlen_empty:
+	nowequ:num:__strlen_empty:str:__strlen_empty:
+
+	_strlen_ret:num:0:
+
+	__strlen_tmp:str::
+	nowequ:str:__strlen_tmp:str:_strlen_str:
+
+	__strlen_fc_tmp:str::
+	__strlen_fc_tmp:num::
+
+	gototag:__strlen_loop:
+		nowequ:str:__strlen_fc_tmp:str:__strlen_tmp:
+		_str_fc:__strlen_fc_tmp:
+		nowequ:num:__strlen_fc_tmp:str:__strlen_fc_tmp:
+		print:str:__strlen_tmp:
+		print:str:__newline:
+		print:str:__strlen_fc_tmp:
+		print:str:__newline:
+
+		if:__strlen_fc_tmp:eq:__strlen_empty:__strlen_exit::
+		_str_mv:__strlen_tmp:
+		add:_strlen_ret:__strlen_true:
+		goto:__strlen_loop:
+
+	gototag:__strlen_exit:
+
+@endmacro
+
+_strlen_str:str:Hello:
+@run strlen
+print:str:_strlen_str:
+print:str:__newline:
+print:num:_strlen_ret:
+print:str:__newline:
+

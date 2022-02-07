@@ -50,13 +50,14 @@ KNOWN BUGS
 turtel_lex:
 	- @include does not work
 	- line numbers in errors may not be right
+	- it should use strtok() to tokenize strings. it does not.
 	- memory may leak on errors
 	- gibbirish is displayed sometimes on errors
 	- won't compile on windows, won't compile on plan9
 
 turtel:
 	- won't compile on windows, won't compile on plan9
-	- is slow
+	- is really slow
 	- -w is bad
 	- if var name has a '#' it interpreter will probably crash or cry
 
