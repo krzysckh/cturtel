@@ -857,7 +857,7 @@ int main (int argc, char *argv[]) {
 				int strmv_i;
 				char strmv_c;
 				bool strmv_found = false;
-				char *strmv_tmp;
+				/*char *strmv_tmp;*/
 
 				for (strmv_i = 0; strmv_i < LINE_LEN_MAX; strmv_i ++) {
 					 strmv_varName[strmv_i] = '\0';

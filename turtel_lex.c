@@ -278,10 +278,7 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		return 100;
 	} else if (strcmp(getLexerArg(info, linenn), LEX_RUNMACRO) == 0) {
 		char *rest = getRest(info, strlen(LEX_RUNMACRO)+1);
-		char *name;
-		if (name != NULL) {
-			free(name);
-		}
+		char *name = NULL;
 
 		name = getLexerArg(rest, linenn);
 
