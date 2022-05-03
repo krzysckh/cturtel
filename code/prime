@@ -1,2 +1,0 @@
-#!/usr/bin/turtel
-Ntrue:a1;Nfalse:a0;Nmax:a3000;Ni:a1;NdivForPrime:a2;6main;6_loop;5isPrime;6_bak_isPrime;2i:=:max:5end;5;7i:true;5_loop;6end;46printp;N_m:bFound prime ;0b_m;0ai;0b__newline;5_bak_printp;6isPrime;Ndivisors:a0;Nisp_i:a;baisp_i:ai;Nisp_tmp:a0;6_isp_loop;baisp_tmp:ai;cisp_tmp:isp_i;2isp_tmp:=:false:5_divplus;5;6_bak_divplus;8isp_i:true;2isp_i:=:false:5_isp_end;5_isp_loop;6_isp_end;2divisors:=:divForPrime:5printp;5;6_bak_printp;5_bak_isPrime;6_divplus;7divisors:true;5_bak_divplus;
