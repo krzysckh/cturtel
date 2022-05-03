@@ -1,0 +1,33 @@
+true:num:1:
+space:str: :
+
+x:num:0:
+y:num:0:
+
+max_X:num:1000:
+max_Y:num:1000:
+
+R:num:250:
+G:num:0:
+B:num:250:
+
+win_create:max_X:max_Y:
+
+gototag:_loopX:
+	if:x:eq:max_X:_end::
+	add:x:true:
+	y:num:0:
+	
+	gototag:_loopY:
+		if:y:eq:max_Y:_loopX::
+		print:num:x:
+		print:str:space:
+		print:num:y:
+		print:str:__newline:
+
+		win_draw:x:y:R:G:B:
+		add:y:true:
+		goto:_loopY:
+
+gototag:_end:
+	goto:_end:

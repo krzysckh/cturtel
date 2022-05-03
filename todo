@@ -1,6 +1,4 @@
 → SOOOO the bugs are mainly in @include
   Lexer is not really usable ATM, 'cause of the dev messages,
   but i "found" the bug
-+ add shell arguments support
-
-→ fix all -O3 warnings
+→ add shell arguments support

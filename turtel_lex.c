@@ -698,6 +698,65 @@ int tokenize(char* info, int linenn, FILE *out, FILE *in) {
 		fprintf(out, "%s;", from);
 		free(from);
 		free(dest);
+	} else if (strcmp(getArg(info, linenn), WIN_CREATE) == 0) {
+		fprintf(out, "f");
+
+		char *rest = getRest(info, strlen(WIN_CREATE)+1);
+		char *var = getArg(rest, linenn);
+
+		if (var == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "%s;", var);
+
+		free(rest);
+		rest = NULL;
+		rest = getRest(info, (strlen(WIN_CREATE) + strlen(var) + 2));
+
+		free(var);
+		var = getArg(rest, linenn);
+		
+		if (var == NULL) {
+			return 1;
+		}
+
+		fprintf(out, "%s;", var);
+	} else if (strcmp(getArg(info, linenn), WIN_DRAW) == 0) {
+		char *X, *Y, *R, *G, *B;
+		char *rest = getRest(info, strlen(WIN_DRAW)+1);
+
+		X = getArg(rest, linenn);
+		free(rest);
+		if (X == NULL) return 1;
+		rest = getRest(info, (strlen(WIN_DRAW) + strlen(X) + 2));
+		Y = getArg(rest, linenn);
+		free(rest);
+		if (Y == NULL) return 1;
+		rest = getRest(info, (strlen(WIN_DRAW) + strlen(X) + strlen(Y) + 3));
+		R = getArg(rest, linenn);
+		free(rest);
+		if (R == NULL) return 1;
+		rest = getRest(info, (strlen(WIN_DRAW) + strlen(X) + strlen(Y) + 
+					strlen(R) + 4));
+		G = getArg(rest, linenn);
+		free(rest);
+		if (G == NULL) return 1;
+		rest = getRest(info, (strlen(WIN_DRAW) + strlen(X) + strlen(Y) + 
+					strlen(R) + strlen(G) + 5));
+		B = getArg(rest, linenn);
+		if (B == NULL) return 1;
+
+		fprintf(out, "g%s;%s;%s;%s;%s;", X, Y, R, G, B);
+
+		free(rest);
+		free(X);
+		free(Y);
+		free(R);
+		free(G);
+		free(B);
+	} else if (strcmp(getArg(info, linenn), WIN_DEL) == 0) {
+		fprintf(out, "h");
 	} else {
 		/* declaration */
 		fprintf(out, "N");

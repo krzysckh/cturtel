@@ -1,5 +1,7 @@
 #include "turtel.h"
 
+/* all of this code assumes that turtel code is lexed properly */
+
 int NUM_COUNT = 0;
 int STR_COUNT = 0;
 int TOF_COUNT = 0;
@@ -24,7 +26,90 @@ int get_int_len (int value){
 	return l;
 }
 
-/* all of this code assumes that turtel code is lexed properly */
+static Display *display;
+static Window win;
+static GC gc;
+static Colormap cmap;
+static int fastcolor;
+
+void create_win(int X, int Y) {
+#ifdef GRAPHICS
+  display = XOpenDisplay(0);
+  if (!display) {
+    fprintf(stderr, "cannot open display\n");
+  }
+
+  Visual *visual = DefaultVisual(display, 0);
+  if (visual && visual->class == TrueColor) {
+    fastcolor = 1;
+  } else {
+    fastcolor = 0;
+  }
+
+  int black = BlackPixel(display, DefaultScreen(display));
+  int white = WhitePixel(display, DefaultScreen(display));
+
+  win = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0,
+      X, Y, 0, black, black);
+
+  XSetWindowAttributes attr;
+  attr.backing_store = Always;
+  XChangeWindowAttributes(display, win, CWBackingStore, &attr);
+
+  XStoreName(display, win, "trl window");
+
+  XSelectInput(display, win, StructureNotifyMask|KeyPressMask|ButtonPressMask);
+
+  XMapWindow(display, win);
+
+  gc = XCreateGC(display, win, 0, 0);
+
+  cmap = DefaultColormap(display, 0);
+
+  XSetForeground(display, gc, white);
+
+  for (;;) {
+    XEvent e;
+    XNextEvent(display, &e);
+
+    if (e.type == MapNotify)
+      break;
+  }
+#else
+  fprintf(stderr, "compiled without graphics\n");
+#endif
+}
+
+void win_draw(int x, int y, int r, int g, int b) {
+#ifdef GRAPHICS
+  /* just yoinked from gfx */
+  XColor color;
+
+  if (fastcolor) {
+    color.pixel = ((b&0xff) | ((g&0xff)<<8) | ((r&0xff)<<16) );
+  } else {
+    color.pixel = 0;
+    color.red = r<<8;
+    color.green = g<<8;
+    color.blue = b<<8;
+    XAllocColor(display, cmap, &color);
+  }
+
+  XSetForeground(display, gc, color.pixel);
+
+  XDrawPoint(display, win, gc, x, y);
+#else
+  fprintf(stderr, "compiled without graphics\n");
+#endif
+}
+
+void win_del() {
+#ifdef GRAPHICS
+  XCloseDisplay(display);
+#else
+  fprintf(stderr, "compiled without graphics\n");
+#endif
+}
 
 
 int main (int argc, char *argv[]) {
@@ -919,6 +1004,157 @@ int main (int argc, char *argv[]) {
 					return 1;
 				}
 
+				break;
+      case 'f': ;
+				char wincr_X[LINE_LEN_MAX];
+				char wincr_Y[LINE_LEN_MAX];
+				int wincr_i;
+				char wincr_c;
+				int wincr_X_ptr = -1;
+				int wincr_Y_ptr = -1;
+
+
+				for (wincr_i = 0; wincr_i < LINE_LEN_MAX; wincr_i ++) {
+					wincr_X[wincr_i] = '\0';
+					wincr_Y[wincr_i] = '\0';
+				}
+
+				wincr_i = 0;
+				while ((wincr_c = fgetc(inpt)) != ';') {
+					wincr_X[wincr_i] = wincr_c;
+					wincr_i ++;
+				}
+
+				fgetc(inpt);
+				/* ; */
+
+				wincr_i = 0;
+				while ((wincr_c = fgetc(inpt)) != ';') {
+					wincr_Y[wincr_i] = wincr_c;
+					wincr_i ++;
+				}
+
+				for (wincr_i = 0; wincr_i < NUM_COUNT; wincr_i ++) {
+					if (strcmp(NumInfo[wincr_i].name, wincr_X) == 0) {
+						wincr_X_ptr = wincr_i;
+					}
+
+					if (strcmp(NumInfo[wincr_i].name, wincr_X) == 0) {
+						wincr_Y_ptr = wincr_i;
+					}
+				}
+
+				if (wincr_Y_ptr == -1 || wincr_X_ptr == -1) {
+					err("num not defined");
+					fprintf(stderr, "\t(name is %s or %s)\n", wincr_X, wincr_Y);
+					return 1;
+				}
+
+				create_win(
+					NumInfo[wincr_X_ptr].content,
+					NumInfo[wincr_Y_ptr].content
+				);
+        break;
+			case 'g': ;
+				char windrw_X[LINE_LEN_MAX];
+				char windrw_Y[LINE_LEN_MAX];
+				char windrw_R[LINE_LEN_MAX];
+				char windrw_G[LINE_LEN_MAX];
+				char windrw_B[LINE_LEN_MAX];
+				int windrw_X_ptr = -1;
+				int windrw_Y_ptr = -1;
+				int windrw_R_ptr = -1;
+				int windrw_G_ptr = -1;
+				int windrw_B_ptr = -1;
+				int windrw_i;
+				char windrw_c;
+
+				for (windrw_i = 0; windrw_i < LINE_LEN_MAX; windrw_i ++) {
+					windrw_X[windrw_i] = '\0';
+					windrw_Y[windrw_i] = '\0';
+					windrw_R[windrw_i] = '\0';
+					windrw_G[windrw_i] = '\0';
+					windrw_B[windrw_i] = '\0';
+				}
+
+				windrw_i = 0;
+				while ((windrw_c = fgetc(inpt)) != ';') {
+					windrw_X[windrw_i] = windrw_c;
+					windrw_i ++;
+				}
+
+				/*printf("?THIS SHOULD BE ; : %c\n", fgetc(inpt));*/
+				/* ; */
+				windrw_i = 0;
+				while ((windrw_c = fgetc(inpt)) != ';') {
+					windrw_Y[windrw_i] = windrw_c;
+					windrw_i ++;
+				}
+				/*fgetc(inpt);*/
+				/* ; */
+				windrw_i = 0;
+				while ((windrw_c = fgetc(inpt)) != ';') {
+					windrw_R[windrw_i] = windrw_c;
+					windrw_i ++;
+				}
+				/*fgetc(inpt);*/
+				/* ; */
+				windrw_i = 0;
+				while ((windrw_c = fgetc(inpt)) != ';') {
+					windrw_G[windrw_i] = windrw_c;
+					windrw_i ++;
+				}
+				/*fgetc(inpt);*/
+				/* ; */
+				windrw_i = 0;
+				while ((windrw_c = fgetc(inpt)) != ';') {
+					windrw_B[windrw_i] = windrw_c;
+					windrw_i ++;
+				}
+				/*fgetc(inpt);*/
+				/* ; */
+
+				for (windrw_i = 0; windrw_i < NUM_COUNT; windrw_i ++) {
+					if (strcmp(NumInfo[windrw_i].name, windrw_X) == 0) {
+						windrw_X_ptr = windrw_i;
+					}
+
+					if (strcmp(NumInfo[windrw_i].name, windrw_Y) == 0) {
+						windrw_Y_ptr = windrw_i;
+					}
+
+					if (strcmp(NumInfo[windrw_i].name, windrw_R) == 0) {
+						windrw_R_ptr = windrw_i;
+					}
+
+					if (strcmp(NumInfo[windrw_i].name, windrw_G) == 0) {
+						windrw_G_ptr = windrw_i;
+					}
+
+					if (strcmp(NumInfo[windrw_i].name, windrw_B) == 0) {
+						windrw_B_ptr = windrw_i;
+					}
+
+				}
+
+				if (windrw_Y_ptr == -1 || windrw_X_ptr == -1 || windrw_B_ptr == -1
+						|| windrw_G_ptr == -1 || windrw_R_ptr == -1) {
+					err("num not defined");
+					fprintf(stderr, "\t(name is %s or %s or %s or %s or %s)\n", windrw_X,
+							windrw_Y,windrw_R,windrw_G,windrw_B);
+					return 1;
+				}
+
+				win_draw(
+					NumInfo[windrw_X_ptr].content,
+					NumInfo[windrw_Y_ptr].content,
+					NumInfo[windrw_R_ptr].content,
+					NumInfo[windrw_G_ptr].content,
+					NumInfo[windrw_B_ptr].content
+				);
+				break;
+			case 'h':
+				win_del();
 				break;
 			default:
 				err("not implemended");

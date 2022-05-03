@@ -30,6 +30,12 @@
 /* d */
 #define STRFC "_str_fc"
 /* e */
+#define WIN_CREATE "win_create"
+/* f */
+#define WIN_DRAW "win_draw"
+/* g */
+#define WIN_DEL "win_delete"
+/* h */
 
 /* standard constants */
 char *NEWLINE[] = {"__newline", "\n"};

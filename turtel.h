@@ -3,6 +3,13 @@
 #include <string.h>
 #include <getopt.h>
 
+#define GRAPHICS
+
+#ifdef GRAPHICS
+#include <X11/Xlib.h>
+#endif
+
+
 #define turtel
 
 #define VAR_MAX 100 /* still used for lexer macros */
