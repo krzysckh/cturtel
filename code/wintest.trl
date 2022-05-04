@@ -1,33 +1,79 @@
-true:num:1:
-space:str: :
+@defmacro amogus
+	true:num:1:
 
-x:num:0:
-y:num:0:
+	spc:str: :
 
-max_X:num:1000:
-max_Y:num:1000:
+	x:num:0:
+	y:num:0:
 
-R:num:250:
-G:num:0:
-B:num:250:
+	R:num:0:
+	G:num:0:
+	B:num:0:
+
+	sub:y:true:
+	gototag:_y_loop:
+		if:y:eq:max_Y:_end::
+		if:y:gt:max_Y:_end::
+		add:y:true:
+
+		add:R:true:
+		add:G:true:
+		add:B:true:
+
+		x:num:0:
+		gototag:_x_loop:
+			if:x:eq:max_X:_y_loop::
+			if:x:gt:max_X:_y_loop::
+
+			win_draw:x:y:R:G:B:
+			add:x:true:
+
+			goto:_x_loop:
+
+	gototag:_end:
+@endmacro
+
+@defmacro sus
+	true:num:1:
+
+	spc:str: :
+
+	x:num:0:
+	y:num:0:
+
+	R:num:256:
+	G:num:256:
+	B:num:256:
+
+	sub:y:true:
+	gototag:_sus_y_loop:
+		if:y:eq:max_Y:_sus_end::
+		if:y:gt:max_Y:_sus_end::
+		add:y:true:
+
+		sub:R:true:
+		sub:G:true:
+		sub:B:true:
+
+		x:num:0:
+		gototag:_sus_x_loop:
+			if:x:eq:max_X:_sus_y_loop::
+			if:x:gt:max_X:_sus_y_loop::
+
+			win_draw:x:y:R:G:B:
+			add:x:true:
+
+			goto:_sus_x_loop:
+
+	gototag:_sus_end:
+@endmacro
+
+max_X:num:255:
+max_Y:num:255:
 
 win_create:max_X:max_Y:
 
-gototag:_loopX:
-	if:x:eq:max_X:_end::
-	add:x:true:
-	y:num:0:
-	
-	gototag:_loopY:
-		if:y:eq:max_Y:_loopX::
-		print:num:x:
-		print:str:space:
-		print:num:y:
-		print:str:__newline:
-
-		win_draw:x:y:R:G:B:
-		add:y:true:
-		goto:_loopY:
-
-gototag:_end:
-	goto:_end:
+gototag:_loop:
+	@run sus
+	@run amogus
+	goto:_loop:

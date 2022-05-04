@@ -98,6 +98,8 @@ void win_draw(int x, int y, int r, int g, int b) {
   XSetForeground(display, gc, color.pixel);
 
   XDrawPoint(display, win, gc, x, y);
+
+  XFlush(display);
 #else
   fprintf(stderr, "compiled without graphics\n");
 #endif
