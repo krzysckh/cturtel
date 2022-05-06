@@ -2,16 +2,20 @@ CFLAGS=-std=c89 -Wall -Wextra -Ofast -DGRAPHICS
 LDFLAGS=-lX11
 PREFIX=/usr
 
-all: turtel turtel_lex turtel.1.gz turtel_lex.1.gz
-%.gz: %
+.SUFFIXES: .1 .1.gz
+
+.1.1.gz: turtel.1 turtel_lex.1
 	gzip -k $<
+
+all: turtel turtel_lex turtel.1.gz turtel_lex.1.gz
+
 clean:
 	rm -f turtel turtel_lex turtel.1.gz turtel_lex.1.gz
 install: all
-	install -Dm755 -s turtel -t $(PREFIX)/bin/
-	install -Dm755 -s turtel_lex -t $(PREFIX)/bin/
-	install -Dm644 turtel.1.gz -t $(PREFIX)/share/man/man1/
-	install -Dm644 turtel_lex.1.gz -t $(PREFIX)/share/man/man1/
+	cp turtel $(PREFIX)/bin/
+	cp turtel_lex $(PREFIX)/bin/
+	cp turtel.1.gz $(PREFIX)/share/man/man1/
+	cp turtel_lex.1.gz $(PREFIX)/share/man/man1/
 uninstall:
 	rm -f $(PREFIX)/bin/turtel
 	rm -f $(PREFIX)/bin/turtel_lex
