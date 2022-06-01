@@ -1,40 +1,84 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <getopt.h>
 
-#define GRAPHICS
+#define MAX_TRL_READ 1024
 
-#ifdef GRAPHICS
-#include <X11/Xlib.h>
-#endif
+#define iprintd(x) printf(#x " = %d\n", x)
 
+/* data structures */
+typedef enum {
+  Str,
+  Num,
+  Tof
+} Type;
 
-#define turtel
+/* "functions" */
+typedef enum {
+  NOOP,
+  NVAR,
+  PRINT,
+  READ,
+  IF,
+  SRUN,
+  EXIT,
+  GOTO,
+  GOTOTAG,
+  ADD,
+  SUB,
+  MUL,
+  DIV,
+  NOWEQU,
+  MOD,
+  STR_MV,
+  STR_FC,
+  WIN_CREATE,
+  WIN_DRAW,
+  WIN_DELETE
+} ExprType;
 
-#define VAR_MAX 100 /* still used for lexer macros */
-#define LINE_LEN_MAX 1024
+typedef struct {
+  Type type;
+  char *content;
+  char *name;
+} Variable;
 
-typedef int bool;
-#define true 1
-#define false 0
+typedef struct {
+  int argc;
+  char **argv;
 
-#define DEBUG false
+  ExprType type;
+} Expr;
 
-#include "stdturtel.h"
+typedef struct {
+  int steps;
+  Expr *expr;
 
-typedef struct TurtelString {
-	char *name;
-	int len;
-	char *content;
-} TurtelString;
+  /* variables are created and allocated at runtime */
+} Program;
 
-typedef struct TurtelNum {
-	char *name;
-	long long content;
-} TurtelNum;
+void err(char *fmt, ...);
+void warn(char *fmt, ...);
+Program trl_lex(FILE *fp);
+int run(Program prog);
+void setvar(char *name, Type type, char *value);
+char *getvar(char *name, Type type);
+Type gettype(char *t);
 
-typedef struct TurtelBool {
-	char *name;
-	bool content;
-} TurtelBool;
+void trl_print(int argc, char **argv);
+void trl_nvar(int argc, char **argv);
+void trl_read(int argc, char **argv);
+void trl_add(int argc, char **argv);
+void trl_sub(int argc, char **argv);
+void trl_mul(int argc, char **argv);
+void trl_div(int argc, char **argv);
+void trl_mod(int argc, char **argv);
+
+/* void trl_if(int argc, char **argv); */
+void trl_srun(int argc, char **argv);
+void trl_exit(int argc, char **argv);
+void trl_goto(int argc, char **argv);
+void trl_nowequ(int argc, char **argv);
+void trl_str_mv(int argc, char **argv);
+void trl_str_fc(int argc, char **argv);
+void trl_win_create(int argc, char **argv);
+void trl_win_draw(int argc, char **argv);
+void trl_win_delete(int argc, char **argv);
