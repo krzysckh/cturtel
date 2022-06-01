@@ -72,11 +72,11 @@ void trl_mul(int argc, char **argv);
 void trl_div(int argc, char **argv);
 void trl_mod(int argc, char **argv);
 
-/* void trl_if(int argc, char **argv); */
-void trl_srun(int argc, char **argv);
 void trl_exit(int argc, char **argv);
-void trl_goto(int argc, char **argv);
+void trl_srun(int argc, char **argv);
+
 void trl_nowequ(int argc, char **argv);
+
 void trl_str_mv(int argc, char **argv);
 void trl_str_fc(int argc, char **argv);
 void trl_win_create(int argc, char **argv);

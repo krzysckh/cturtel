@@ -81,7 +81,7 @@ int run(Program prog) {
       n_var_approx = 0,
       gototag_found,
       gototag_back;
-  extern int var_p;
+  /*extern int var_p;*/
   var_pt = 0; /* curr *var stack end ptr */
 
   for (i = 0; i < prog.steps; i++) {
@@ -96,6 +96,7 @@ int run(Program prog) {
 
   i = 0;
   while (i < prog.steps) {
+    /*printf("%d\n", prog.expr[i].type);*/
     switch (prog.expr[i].type) {
       case IF: {
         if (prog.expr[i].argc != 5 && prog.expr[i].argc != 4) {
@@ -133,6 +134,11 @@ int run(Program prog) {
             goto_if = prog.expr[i].argv[4];
         } else {
           err("runtime: invalid if operand \"%s\"", op);
+        }
+
+        if ((int)strlen(goto_if) == 0) {
+          i ++;
+          continue;
         }
 
         /** copy-pasted from goto **/
@@ -237,6 +243,15 @@ int run(Program prog) {
         break;
       case MOD:
         trl_mod(prog.expr[i].argc, prog.expr[i].argv);
+        break;
+      case NOWEQU:
+        trl_nowequ(prog.expr[i].argc, prog.expr[i].argv);
+        break;
+      case EXIT:
+        trl_exit(prog.expr[i].argc, prog.expr[i].argv);
+        break;
+      case SRUN:
+        trl_srun(prog.expr[i].argc, prog.expr[i].argv);
         break;
       case NOOP:
         break;

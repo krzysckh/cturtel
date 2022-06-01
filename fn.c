@@ -22,13 +22,45 @@ char *int_to_str(int d) {
   return ret;
 }
 
+
+void trl_nowequ(int argc, char **argv) {
+  if (argc != 4) {
+    err("runtime: error using builtin nowequ: expected 4 arguments, got %d", 
+        argc);
+  }
+
+  Type t1 = gettype(argv[0]),
+       t2 = gettype(argv[2]);
+
+  setvar(argv[1], t1, getvar(argv[3], t2));
+}
+
+void trl_exit(int argc, char **argv) {
+  if (argc != 0) {
+    err("runtime: error using builtin exit: expected 0 arguments, got %d", 
+        argc);
+  }
+
+  exit(0);
+}
+
+void trl_srun(int argc, char **argv) {
+  if (argc != 1) {
+    err("runtime: error using builtin exit: expected 1 argument, got %d", 
+        argc);
+  }
+
+  system(getvar(argv[0], Str));
+}
+
 void trl_print(int argc, char **argv) {
   if (argc != 2) {
     err("runtime: error using builtin print: expected 2 arguments, got %d", 
         argc);
   }
+  Type t = gettype(argv[0]);
 
-  printf("%s", getvar(argv[1], gettype(argv[0])));
+  printf("%s", getvar(argv[1], t));
   fflush(stdout);
 }
 

@@ -11,7 +11,7 @@
 true:num:1:
 false:num:0:
 
-max:num:100:
+max:num:10000:
 i:num:1:
 
 divForPrime:num:2:

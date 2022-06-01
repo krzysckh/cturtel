@@ -1,6 +1,7 @@
 #include "turtel.h"
 
 #include <stdlib.h>
+#include <getopt.h>
 
 void free_prog(Program p) {
   int i, j;
@@ -15,14 +16,43 @@ void free_prog(Program p) {
 }
 
 int main (int argc, char *argv[]) {
-  FILE *test = fopen("test.trl", "r");
-  Program testp;
-  testp = trl_lex(test);
+  int opt;
 
-  run(testp);
+  while ((opt = getopt(argc, argv, "h")) != -1) {
+    switch (opt) {
+      case 'h':
+        printf("usage: %s [-h] [file.trl]\n", argv[0]);
+        exit(0);
+        break;
+      default:
+        exit(1);
+    }
+  }
 
-  free_prog(testp);
+  FILE *in;
 
-  fclose(test);
+  if (argv[optind] != NULL) {
+    in = fopen(argv[optind], "r");
+    if (in == NULL) {
+      fprintf(stderr, "failed to open %s\n", argv[optind]);
+      exit(1);
+    }
+  } else {
+    in = tmpfile();
+    int c;
+
+    while ((c = fgetc(stdin)) != EOF)
+      fputc(c, in);
+
+    rewind(in);
+  }
+
+
+  Program prg;
+  prg = trl_lex(in);
+  run(prg);
+  free_prog(prg);
+
+  fclose(in);
   return 0;
 }

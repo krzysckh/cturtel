@@ -1,56 +1,61 @@
-@include std/std.trl
+# fastfizz.trl - faster implementation of fizzbuzz
+# krzysckh 2021
+# krzysckh.org
 
-_mess:str:gib max -> :
-print:str:_mess:
-read:num:max:
+true:num:1:
+false:num:0:
+
+_m:str:Podaj max -> :
+print:str:_m:
 
 i:num:0:
+max:num::
+read:num:max:
 
-Fizz:num:3:
-Buzz:num:5:
-
-Fizz:str:Fizz:
-Buzz:str:Buzz:
-
-anything:num:false:
-
-
-goto:_loop:
-
-gototag:_printFizz:
-	print:str:Fizz:
-	add:anything:true:
-	goto:_backFromFizz:
-
-gototag:_printBuzz:
-	print:str:Buzz:
-	add:anything:true:
-	goto:_backFromBuzz:
+fizz:num:3:
+buzz:num:5:
 
 gototag:_loop:
-	anything:num:0:
-
 	tmp:num:0:
-	add:tmp:i:
-	mod:tmp:Fizz:
-	if:tmp:eq:false:_printFizz:_backFromFizz:
-	gototag:_backFromFizz:
-	
-	tmp:num:0:
-	add:tmp:i:
-	mod:tmp:Buzz:
-	if:tmp:eq:false:_printBuzz:_backFromBuzz:
-	gototag:_backFromBuzz:
+	pr_num:num:1:
 
-	if:anything:gt:false:_noprintnum:_printnum:
+	nowequ:num:tmp:num:i:
+	mod:tmp:fizz:
 
-	gototag:_printnum:
-		print:num:i:
-		goto:_noprintnum:
+	if:tmp:eq:false:printFizz:_bak_fizz:
+	gototag:_bak_fizz:
 
-	gototag:_noprintnum:
-		print:str:__newline:
+	nowequ:num:tmp:num:i:
+	mod:tmp:buzz:
 
+	if:tmp:eq:false:printBuzz:_bak_buzz:
+	gototag:_bak_buzz:
+
+	if:pr_num:gt:false:printNum:_bak_num:
+	gototag:_bak_num:
+
+	print:str:__newline:
+
+	if:i:eq:max:end::
 	add:i:true:
-	if:i:gt:max:_end:_loop:
-gototag:_end:
+	goto:_loop:
+
+gototag:end:
+	exit:
+	
+gototag:printFizz:
+	_m:str:Fizz:
+	print:str:_m:
+	sub:pr_num:true:
+	goto:_bak_fizz:
+
+gototag:printBuzz:
+	_m:str:Buzz:
+	print:str:_m:
+	sub:pr_num:true:
+	goto:_bak_buzz:
+
+gototag:printNum:
+	print:num:i:
+	nowequ:num:pr_num:num:true:
+	goto:_bak_num:
