@@ -190,11 +190,11 @@ int run(Program prog) {
 
         gototag_found = 0;
         gototag_back = i;
-        for (; i > 0 && !gototag_found; i--) {
-          if (prog.expr[i].type == GOTOTAG && 
-              prog.expr[i].argc > 0 &&
-              strcmp(prog.expr[i].argv[0], prog.expr[gototag_back].argv[0]) \
-              == 0) {
+        for (; i >= 0 && !gototag_found; i--) {
+          if (prog.expr[i].type == GOTOTAG)
+            if (prog.expr[i].argc > 0)
+              if (strcmp(prog.expr[i].argv[0], prog.expr[gototag_back].argv[0])
+                  == 0) {
 
               gototag_found = 1;
           }
@@ -217,7 +217,7 @@ int run(Program prog) {
 
         if (!gototag_found)
           err("runtime: \"%s\": no such gototag",
-              prog.expr[gototag_back].argv[i]);
+              prog.expr[gototag_back].argv[0]);
         continue;
         break;
       case PRINT:

@@ -4,7 +4,7 @@ a:num:1:
 b:num:1:
 c:num:0:
 
-howMany:num:40:
+howMany:num:30:
 now:num:0:
 
 print:num:a:

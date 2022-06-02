@@ -1,10 +1,10 @@
-hello:str:Hello, World!:
-__space:str: :
-
 goto:main:
 
+
 gototag:main:
+	hello:str:Hello, World!:
+
 	gototag:___loop:
-	print:str:hello:
-	print:str:__space:
-	goto:___loop:
+		print:str:hello:
+		print:str:__newline:
+		goto:___loop:
