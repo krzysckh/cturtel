@@ -18,7 +18,6 @@ char *int_to_str(int d) {
     ret[j] = '\0';
 
   sprintf(ret, "%d", d);
-
   return ret;
 }
 

@@ -1,5 +1,5 @@
 CFLAGS=-Wall -Wextra -std=c89 -O2 -Wno-unused-parameter \
-       -DGRAPHICS `pkg-config --cflags x11`
+       -DGRAPHICS `pkg-config --cflags x11` -ggdb
 LDFLAGS=`pkg-config --libs x11`
 OFILES=turtel.o lexer.o err.o run.o fn.o x.o
 
