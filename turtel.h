@@ -71,14 +71,15 @@ void trl_sub(int argc, char **argv);
 void trl_mul(int argc, char **argv);
 void trl_div(int argc, char **argv);
 void trl_mod(int argc, char **argv);
-
 void trl_exit(int argc, char **argv);
 void trl_srun(int argc, char **argv);
-
 void trl_nowequ(int argc, char **argv);
 
+/* not implemented yet */
+/*
 void trl_str_mv(int argc, char **argv);
 void trl_str_fc(int argc, char **argv);
 void trl_win_create(int argc, char **argv);
 void trl_win_draw(int argc, char **argv);
 void trl_win_delete(int argc, char **argv);
+*/
