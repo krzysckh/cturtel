@@ -22,6 +22,38 @@ char *int_to_str(int d) {
   return ret;
 }
 
+void trl_win_create(int argc, char **argv) {
+  if (argc != 2) {
+    err("runtime: error using builtin win_create: expected 2 arguments, got %d", 
+        argc);
+  }
+
+  x_create_win(atoi(getvar(argv[0], Num)), atoi(getvar(argv[1], Num)));
+}
+
+void trl_win_delete(int argc, char **argv) {
+  if (argc != 0) {
+    err("runtime: error using builtin win_delete: expected 0 arguments, got %d", 
+        argc);
+  }
+
+  x_del_win();
+}
+
+void trl_win_draw(int argc, char **argv) {
+  if (argc != 5) {
+    err("runtime: error using builtin win_delete: expected 5 arguments, got %d", 
+        argc);
+  }
+
+  x_draw(
+    atoi(getvar(argv[0], Num)),
+    atoi(getvar(argv[1], Num)),
+    atoi(getvar(argv[2], Num)),
+    atoi(getvar(argv[3], Num)),
+    atoi(getvar(argv[4], Num))
+  );
+}
 
 void trl_nowequ(int argc, char **argv) {
   if (argc != 4) {

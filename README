@@ -43,7 +43,6 @@ KNOWN BUGS
 turtel:
 	- these things are not re-written yet:
 		- lexer macros and definitions
-		- X11 funcionality
 		- the _* functions
 
 [ krzysckh 2021 - 2022 ]

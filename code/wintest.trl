@@ -1,4 +1,7 @@
-@defmacro amogus
+goto:__Main:
+
+#@defmacro amogus
+gototag:__test:
 	true:num:1:
 
 	spc:str: :
@@ -31,9 +34,9 @@
 			goto:_x_loop:
 
 	gototag:_end:
-@endmacro
+#@endmacro
 
-@defmacro sus
+#@defmacro sus
 	true:num:1:
 
 	spc:str: :
@@ -66,7 +69,10 @@
 			goto:_sus_x_loop:
 
 	gototag:_sus_end:
-@endmacro
+#@endmacro
+
+goto:_loop:
+gototag:__Main:
 
 max_X:num:255:
 max_Y:num:255:
@@ -74,6 +80,7 @@ max_Y:num:255:
 win_create:max_X:max_Y:
 
 gototag:_loop:
-	@run sus
-	@run amogus
+	#@run sus
+	#@run amogus
+	goto:__test:
 	goto:_loop:

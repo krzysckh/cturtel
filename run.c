@@ -255,6 +255,15 @@ int run(Program prog) {
         break;
       case NOOP:
         break;
+      case WIN_CREATE:
+        trl_win_create(prog.expr[i].argc, prog.expr[i].argv);
+        break;
+      case WIN_DRAW:
+        trl_win_draw(prog.expr[i].argc, prog.expr[i].argv);
+        break;
+      case WIN_DELETE:
+        trl_win_delete(prog.expr[i].argc, prog.expr[i].argv);
+        break;
       default:
         err("fatal");
     }

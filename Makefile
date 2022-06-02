@@ -1,5 +1,6 @@
-CFLAGS=-Wall -Wextra -std=c89 -O2
-OFILES=turtel.o lexer.o err.o run.o fn.o
+CFLAGS=-Wall -Wextra -std=c89 -O2 -DGRAPHICS `pkg-config --cflags x11`
+LDFLAGS=`pkg-config --libs x11`
+OFILES=turtel.o lexer.o err.o run.o fn.o x.o
 
 PREFIX=/usr/local
 
@@ -7,9 +8,9 @@ PREFIX=/usr/local
 
 all: turtel
 turtel: ${OFILES}
-	${CC} ${CFLAGS} -o $@ ${OFILES}
+	${CC} ${CFLAGS} -o $@ ${OFILES} ${LDFLAGS}
 .c.o:
-	${CC} ${CFLAGS} -c $< ${LDFLAGS}
+	${CC} ${CFLAGS} -c $<
 clean:
 	rm -f turtel *.o
 install: all
