@@ -1,6 +1,10 @@
 *.swp
+*.o
+*.gz
 turtel
 turtel_lex
 *.tlx
 *.ms
 *.mom
+*.ps
+*.pdf

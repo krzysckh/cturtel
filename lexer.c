@@ -7,6 +7,210 @@
 
 #define SEPERATOR ':'
 int curr_line;
+int step_ctr;
+
+void dbg_print_prog_tree(Program p) {
+  int i;
+  iprintd(p.steps);
+  fflush(stdout);
+
+  for (i = 0; i < p.steps; i++) {
+    switch (p.expr[i].type) {
+      case NOOP:
+        break;
+      case LEX_STAT:
+        warn("step %d: lexer macro", i);
+        break;
+      case NVAR:
+        warn("step %d: new varaible %s", i, p.expr[i].argv[0]);
+        break;
+      case PRINT:
+      case READ:
+        warn("step %d: I/O action", i);
+        break;
+      case IF:
+        warn("step %d: if", i);
+        break;
+      case SRUN:
+        warn("step %d: srun", i);
+        break;
+      case EXIT:
+        warn("step %d: exit", i);
+        break;
+      case GOTO:
+        warn("step %d: goto", i);
+        break;
+      case GOTOTAG:
+        warn("step %d: goto tag", i);
+        break;
+      case ADD:
+      case SUB:
+      case MUL:
+      case DIV:
+      case MOD:
+      case NOWEQU:
+        warn("step %d: num/str op (add/sub/.../nowequ)", i);
+        break;
+      case WIN_CREATE:
+      case WIN_DRAW:
+      case WIN_DELETE:
+        warn("step %d: window operation", i);
+        break;
+      default:
+        break;
+    }
+  }
+
+}
+
+/* appends prg2 to prg1 at prg1_step
+ * assuming realloc_prog was called before, so no overflow will appear
+ */
+Program append_prog(Program prg1, Program prg2, int prg1_step) {
+  int i,
+      j,
+      k;
+
+  if (prg1.steps < prg2.steps) {
+    err("there was an error allocating memory");
+  }
+
+  for (i = prg1_step, j = 0; j < prg2.steps; i++, j++) {
+    prg1.steps++;
+    prg1.expr[i].argc = prg2.expr[j].argc;
+    prg1.expr[i].type = prg2.expr[j].type;
+    prg1.expr[i].argv = malloc(sizeof(char*) * prg1.expr[i].argc);
+
+    for (k = 0; k < prg1.expr[i].argc; k++) {
+      prg1.expr[i].argv[k] = malloc(sizeof(char) *
+          (strlen(prg2.expr[j].argv[k]) + 1));
+
+      strcpy(prg1.expr[i].argv[k], prg2.expr[j].argv[k]);
+
+      prg1.expr[i].argv[k][strlen(prg2.expr[j].argv[k])] = '\0';
+      /* this line ends the string based on strlen of the same string
+       * in prg2
+       */
+    }
+  }
+
+  return prg1;
+}
+
+/* reallocates Program (used for @includes and @defmacros)
+ * usage: prg = (prg, prg.steps, step_ctr, prg.steps + 1);
+ */
+Program realloc_prog(Program prg, int old_sz, int cpy, int new_sz) {
+  Program ret;
+  int i,
+      j;
+
+  ret.steps = new_sz;
+  ret.expr = malloc(sizeof(Expr) * new_sz);
+
+  /* copy prg to ret */
+  for (i = 0; i < cpy; i++) {
+    ret.expr[i].type = prg.expr[i].type;
+    ret.expr[i].argc = prg.expr[i].argc;
+
+    ret.expr[i].argv = malloc(sizeof(char*) * prg.expr[i].argc);
+    for (j = 0; j < prg.expr[i].argc; j++) {
+      ret.expr[i].argv[j] = malloc(sizeof(char) * 
+          (strlen(prg.expr[i].argv[j])+1));
+      strcpy(ret.expr[i].argv[j], prg.expr[i].argv[j]);
+
+      ret.expr[i].argv[j][strlen(prg.expr[i].argv[j])] = '\0';
+    }
+  }
+
+  /*free_prog(prg);*/
+
+  return ret;
+}
+
+LexerMacroType get_lexer_macro_type(char *t) {
+  if (strcmp(t, "@include") == 0) return LEX_INCLUDE;
+  else if (strcmp(t, "@defmacro") == 0) return LEX_DEFMACRO;
+  else if (strcmp(t, "@endmacro") == 0) return LEX_ENDMACRO;
+  else if (strcmp(t, "@run") == 0) return LEX_RUN;
+  else err("%d: unknown lexer macro \"%s\"", curr_line, t);
+
+  /* unreachable */
+  return -1;
+}
+
+Program get_lexer_macro(Program prg, char *line) {
+  Program ret,
+          tmp_prog;
+  LexerMacroType type;
+  char *tmp;
+  int i = 0,
+      step_ctr_bak = step_ctr,
+      step_ctr_bak_bak; /* fuck off */
+
+  FILE *inc_file;
+
+  /* omit whitespace */
+  while (iswspace(*line++))
+    ;
+  --line;
+
+  tmp = line;
+
+  while (!iswspace(*tmp++)) {
+    if (*tmp == '\0')
+      err("%d: fatal: macro \"%s\" with no argument", curr_line, line);
+    i ++;
+  }
+
+  tmp = malloc(sizeof(char) * (i+1));
+  strncpy(tmp, line, i);
+  tmp[i] = '\0';
+  line += ++i;
+
+  type = get_lexer_macro_type(tmp);
+  free(tmp);
+
+  switch (type) {
+    case LEX_INCLUDE:
+      i = 0;
+      tmp = line;
+      while (*tmp++ != '\0')
+        ++i;
+
+      tmp = malloc(sizeof(char) * (i+1));
+      strcpy(tmp, line);
+      tmp[i] = '\0';
+
+      inc_file = fopen(tmp, "r");
+      if (inc_file == NULL)
+        err("fatal: %d cannot open file %s (referenced by a macro)", 
+            curr_line, tmp);
+
+      tmp_prog = trl_lex(inc_file);
+
+      step_ctr_bak_bak = step_ctr;
+      step_ctr = step_ctr_bak;
+
+      dbg_print_prog_tree(tmp_prog);
+
+      ret = realloc_prog(prg, prg.steps, step_ctr, prg.steps + tmp_prog.steps);
+      ret = append_prog(ret, tmp_prog, step_ctr);
+      /*free_prog(tmp_prog);*/
+
+      /*step_ctr++;*/
+      step_ctr = ++step_ctr_bak_bak;
+      break;
+    case LEX_DEFMACRO:
+      break;
+    case LEX_ENDMACRO:
+      break;
+    case LEX_RUN:
+      break;
+  }
+
+  return ret;
+}
 
 ExprType get_exprtype(char *pt) {
   if ((int)strlen(pt) < 1) return NOOP;
@@ -46,6 +250,12 @@ Expr get_expr(char *line) {
   /* abort if comment or empty line */
   if (*line == '#' || *line == '\0') {
     ret.type = NOOP;
+    return ret;
+  }
+
+  if (*line == '@') {
+    /* it's a lexer statement */
+    ret.type = LEX_STAT;
     return ret;
   }
 
@@ -115,13 +325,13 @@ Program trl_lex(FILE *fp) {
       i,
       j,
       nl = 0,
-      linesz,
-      step_ctr = 0;
+      linesz;
   char *in,
        **line,
        *tmp;
   extern int curr_line;
   curr_line = 1;
+  step_ctr = 0;
 
   fseek(fp, 0L, SEEK_END);
   sz = ftell(fp);
@@ -144,8 +354,6 @@ Program trl_lex(FILE *fp) {
     for (j = 0; tmp[j] != '\n' && tmp[j] != '\0'; j++)
       linesz ++;
 
-    /*iprintd(i);*/
-
     line[i] = malloc(sizeof(char) * ++linesz);
     strncpy(line[i], tmp, --linesz);
     line[i][linesz] = '\0';
@@ -161,10 +369,15 @@ Program trl_lex(FILE *fp) {
 
   for (i = 0; i < nl; i++) {
     ret.expr[step_ctr] = get_expr(line[i]);
-    if (ret.expr[step_ctr].type == NOOP)
-      ret.steps --;
-    else
-      step_ctr ++;
+    
+    if (ret.expr[step_ctr].type == LEX_STAT) {
+      ret.steps--;
+      ret = get_lexer_macro(ret, line[i]);
+    } else
+      if (ret.expr[step_ctr].type == NOOP)
+        ret.steps--;
+      else
+        step_ctr++;
 
     curr_line ++;
   }
@@ -173,5 +386,6 @@ Program trl_lex(FILE *fp) {
     free(line[i]);
   free(in);
   free(line);
+  dbg_print_prog_tree(ret);
   return ret;
 }

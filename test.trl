@@ -1,0 +1,2 @@
+@include code/std/std.trl
+print:str:STD_IS_DEFINED:

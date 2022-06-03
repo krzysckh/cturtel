@@ -14,6 +14,7 @@ typedef enum {
 /* "functions" */
 typedef enum {
   NOOP,
+  LEX_STAT,
   NVAR,
   PRINT,
   READ,
@@ -35,6 +36,13 @@ typedef enum {
   WIN_DELETE
 } ExprType;
 
+typedef enum {
+  LEX_INCLUDE,
+  LEX_DEFMACRO,
+  LEX_ENDMACRO,
+  LEX_RUN
+} LexerMacroType;
+
 typedef struct {
   Type type;
   char *content;
@@ -55,6 +63,7 @@ typedef struct {
   /* variables are created and allocated at runtime */
 } Program;
 
+void free_prog(Program p);
 void err(char *fmt, ...);
 void warn(char *fmt, ...);
 Program trl_lex(FILE *fp);
