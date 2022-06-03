@@ -5,21 +5,31 @@
 #include <string.h>
 #include <wctype.h>
 
+#define MAX_CODE_MACRO 1024
+
+typedef struct {
+  Program code;
+  char *name;
+} LexerCodeMacro;
+
 #define SEPERATOR ':'
 int curr_line;
 int step_ctr;
+int in_macro = 0;
+
+LexerCodeMacro code_macro[MAX_CODE_MACRO];
+int code_macro_n = 0;
+int code_macro_step_ctr = 0;
 
 void dbg_print_prog_tree(Program p) {
   int i;
-  iprintd(p.steps);
-  fflush(stdout);
 
   for (i = 0; i < p.steps; i++) {
     switch (p.expr[i].type) {
       case NOOP:
         break;
       case LEX_STAT:
-        warn("step %d: lexer macro", i);
+        warn("step %d: !! !! !! LEXER MACRO", i);
         break;
       case NVAR:
         warn("step %d: new varaible %s", i, p.expr[i].argv[0]);
@@ -76,7 +86,6 @@ Program append_prog(Program prg1, Program prg2, int prg1_step) {
   }
 
   for (i = prg1_step, j = 0; j < prg2.steps; i++, j++) {
-    prg1.steps++;
     prg1.expr[i].argc = prg2.expr[j].argc;
     prg1.expr[i].type = prg2.expr[j].type;
     prg1.expr[i].argv = malloc(sizeof(char*) * prg1.expr[i].argc);
@@ -123,8 +132,6 @@ Program realloc_prog(Program prg, int old_sz, int cpy, int new_sz) {
     }
   }
 
-  /*free_prog(prg);*/
-
   return ret;
 }
 
@@ -148,7 +155,7 @@ Program get_lexer_macro(Program prg, char *line) {
       step_ctr_bak = step_ctr,
       step_ctr_bak_bak; /* fuck off */
 
-  FILE *inc_file;
+  FILE *m_file;
 
   /* omit whitespace */
   while (iswspace(*line++))
@@ -182,28 +189,57 @@ Program get_lexer_macro(Program prg, char *line) {
       strcpy(tmp, line);
       tmp[i] = '\0';
 
-      inc_file = fopen(tmp, "r");
-      if (inc_file == NULL)
+      m_file = fopen(tmp, "r");
+      if (m_file == NULL)
         err("fatal: %d cannot open file %s (referenced by a macro)", 
             curr_line, tmp);
 
-      tmp_prog = trl_lex(inc_file);
+      tmp_prog = trl_lex(m_file);
 
       step_ctr_bak_bak = step_ctr;
       step_ctr = step_ctr_bak;
 
-      dbg_print_prog_tree(tmp_prog);
-
       ret = realloc_prog(prg, prg.steps, step_ctr, prg.steps + tmp_prog.steps);
       ret = append_prog(ret, tmp_prog, step_ctr);
-      /*free_prog(tmp_prog);*/
+      free_prog(tmp_prog);
 
-      /*step_ctr++;*/
-      step_ctr = ++step_ctr_bak_bak;
+      step_ctr = step_ctr_bak_bak;
       break;
     case LEX_DEFMACRO:
+      if (in_macro)
+        err("fatal: %d: trying to define macro in a macro");
+      in_macro = 1;
+
+      i = 0;
+      tmp = line;
+      while (*tmp++ != '\0')
+        i++;
+
+      tmp = malloc(sizeof(char) * (i+1));
+      strcpy(tmp, line);
+      tmp[i] = '\0';
+
+      for (i = 0; i < code_macro_n; i++)
+        if (strcmp(tmp, code_macro[i].name) == 0)
+          err("fatal: %d: trying to re-define macro \"%s\"", curr_line, tmp);
+
+      code_macro[code_macro_n].code.expr = malloc(sizeof(Expr) * 1);
+      code_macro[code_macro_n].name = malloc(sizeof(char) * strlen(tmp)+1);
+      code_macro[code_macro_n].code.steps = 0;
+      strcpy(code_macro[code_macro_n].name, tmp);
+      code_macro[code_macro_n].name[strlen(tmp)] = '\0';
+
+      free(tmp);
+
       break;
     case LEX_ENDMACRO:
+      if (!in_macro)
+        err("fatal: %d: trying to end a macro not within a macro", curr_line);
+
+      in_macro = 0;
+      code_macro_n ++;
+      code_macro_step_ctr = 0;
+
       break;
     case LEX_RUN:
       break;
@@ -368,17 +404,41 @@ Program trl_lex(FILE *fp) {
   ret.expr = malloc(sizeof(Expr) * nl);
 
   for (i = 0; i < nl; i++) {
-    ret.expr[step_ctr] = get_expr(line[i]);
-    
-    if (ret.expr[step_ctr].type == LEX_STAT) {
-      ret.steps--;
-      ret = get_lexer_macro(ret, line[i]);
-    } else
-      if (ret.expr[step_ctr].type == NOOP)
-        ret.steps--;
-      else
-        step_ctr++;
+    if (!in_macro) {
+      ret.expr[step_ctr] = get_expr(line[i]);
 
+      if (ret.expr[step_ctr].type == LEX_STAT) {
+        ret.steps--;
+        ret = get_lexer_macro(ret, line[i]);
+      } else
+        if (ret.expr[step_ctr].type == NOOP)
+          ret.steps--;
+        else
+          step_ctr++;
+
+    } else {
+      realloc_prog(
+        code_macro[code_macro_n].code,
+        code_macro[code_macro_n].code.steps,
+        code_macro[code_macro_n].code.steps,
+        code_macro[code_macro_n].code.steps+1
+      );
+
+      code_macro[code_macro_n].code.expr[code_macro_step_ctr] = 
+        get_expr(line[i]);
+
+      if (code_macro[code_macro_n].code.expr[code_macro_step_ctr].type 
+          == LEX_STAT) {
+        /*code_macro[code_macro_n].code.steps--;*/
+        code_macro[code_macro_n].code = get_lexer_macro(
+          code_macro[code_macro_n].code,
+          line[i]
+        );
+      } else
+        if (code_macro[code_macro_n].code.expr[code_macro_step_ctr].type 
+            != NOOP) code_macro_step_ctr++;
+    }
+    
     curr_line ++;
   }
 
@@ -386,6 +446,6 @@ Program trl_lex(FILE *fp) {
     free(line[i]);
   free(in);
   free(line);
-  dbg_print_prog_tree(ret);
+  /*dbg_print_prog_tree(ret);*/
   return ret;
 }

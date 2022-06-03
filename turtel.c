@@ -51,7 +51,7 @@ int main (int argc, char *argv[]) {
   Program prg;
   prg = trl_lex(in);
   run(prg);
-  /*free_prog(prg);*/
+  free_prog(prg);
 
   fclose(in);
   return 0;
