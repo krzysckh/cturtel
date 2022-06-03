@@ -1,5 +1,5 @@
-CFLAGS=-std=c89 -Wall -Wextra -Ofast -DGRAPHICS
-LDFLAGS=-lX11
+CFLAGS=-std=c89 -Wall -Wextra -Ofast -DGRAPHICS `pkg-config --cflags x11`
+LDFLAGS=-lX11 `pkg-config --libs x11`
 PREFIX=/usr
 
 .SUFFIXES: .1 .1.gz
