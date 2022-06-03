@@ -33,12 +33,12 @@ gototag:_setcolor:
 
 gototag:_setx_0:
 	cur_x:num:0:
-	last_x:num:0:
+	last_x:num:1:
 	goto:_setx_bak:
 
 gototag:_setx_1:
 	cur_x:num:1:
-	last_x:num:1:
+	last_x:num:0:
 	goto:_setx_bak:
 
 gototag:_setx:
@@ -53,6 +53,7 @@ gototag:main:
 		if:cur_y:eq:_y_sz:_end::
 		gototag:_x_loop:
 			win_draw:cur_x:cur_y:color:color:color:
+			print:num:color:
 			goto:_setcolor:
 			gototag:_setcolor_bak:
 
@@ -62,9 +63,9 @@ gototag:main:
 			gototag:_end_x:
 				nowequ:num:cur_x:num:false:
 				add:cur_y:true:
+
+				print:str:__newline:
 				goto:_y_loop:
 
 	gototag:_end:
-		_msg:str:I'm fast as F boiii:
-		print:str:_msg:
-		print:str:__newline:
+		goto:_end:
