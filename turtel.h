@@ -72,6 +72,8 @@ void setvar(char *name, Type type, char *value);
 char *getvar(char *name, Type type);
 Type gettype(char *t);
 
+void dbg_print_prog_tree(Program p);
+
 void trl_print(int argc, char **argv);
 void trl_nvar(int argc, char **argv);
 void trl_read(int argc, char **argv);

@@ -16,13 +16,17 @@ void free_prog(Program p) {
 }
 
 int main (int argc, char *argv[]) {
-  int opt;
+  int opt,
+      debug = 0;
 
-  while ((opt = getopt(argc, argv, "h")) != -1) {
+  while ((opt = getopt(argc, argv, "hd")) != -1) {
     switch (opt) {
       case 'h':
         printf("usage: %s [-h] [file.trl]\n", argv[0]);
         exit(0);
+        break;
+      case 'd':
+        debug = 1;
         break;
       default:
         exit(1);
@@ -50,6 +54,10 @@ int main (int argc, char *argv[]) {
 
   Program prg;
   prg = trl_lex(in);
+
+  if (debug)
+    dbg_print_prog_tree(prg);
+
   run(prg);
   free_prog(prg);
 

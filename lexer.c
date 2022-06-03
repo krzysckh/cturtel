@@ -164,9 +164,9 @@ Program get_lexer_macro(Program prg, char *line) {
 
   tmp = line;
 
-  while (!iswspace(*tmp++)) {
-    if (*tmp == '\0')
-      err("%d: fatal: macro \"%s\" with no argument", curr_line, line);
+  while (*tmp != '\0' && !iswspace(*tmp++)) {
+    /*if (*tmp == '\0')*/
+      /*err("%d: fatal: macro \"%s\" with no argument", curr_line, line);*/
     i ++;
   }
 
@@ -245,6 +245,7 @@ Program get_lexer_macro(Program prg, char *line) {
       break;
   }
 
+#warning YES I KNOW IT'S UNITIALISED
   return ret;
 }
 
