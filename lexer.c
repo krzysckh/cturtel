@@ -29,8 +29,7 @@ void dbg_print_prog_tree(Program p) {
       case NOOP:
         break;
       case LEX_STAT:
-        warn("step %d: !! LEXER MACRO /w argc = %d (%s, %s)", i, 
-            p.expr[i].argc, p.expr[i].argv[0], p.expr[i].argv[1]);
+        warn("step %d: !! LEXER MACRO");
         break;
       case NVAR:
         warn("step %d: new varaible %s", i, p.expr[i].argv[0]);
@@ -134,7 +133,12 @@ Program realloc_prog(Program prg, int old_sz, int cpy, int new_sz) {
     }
   }
 
-  free_prog(prg);
+  /* it will leak a lil bit of memory until i find out how to write
+   * a free_prog() func that doesn't make turtel unstable
+   * -____-
+   */
+
+  /*free_prog(prg);*/
 
   return ret;
 }
