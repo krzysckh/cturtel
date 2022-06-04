@@ -95,8 +95,5 @@ void trl_win_create(int argc, char **argv);
 void trl_win_draw(int argc, char **argv);
 void trl_win_delete(int argc, char **argv);
 
-/* not implemented yet */
-/*
 void trl_str_mv(int argc, char **argv);
 void trl_str_fc(int argc, char **argv);
-*/

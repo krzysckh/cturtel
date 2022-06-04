@@ -264,6 +264,12 @@ int run(Program prog) {
       case WIN_DELETE:
         trl_win_delete(prog.expr[i].argc, prog.expr[i].argv);
         break;
+      case STR_MV:
+        trl_str_mv(prog.expr[i].argc, prog.expr[i].argv);
+        break;
+      case STR_FC:
+        trl_str_fc(prog.expr[i].argc, prog.expr[i].argv);
+        break;
       default:
         err("fatal");
     }

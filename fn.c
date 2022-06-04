@@ -21,6 +21,34 @@ char *int_to_str(int d) {
   return ret;
 }
 
+void trl_str_fc(int argc, char **argv) {
+  if (argc != 1) {
+    err("runtime: error using builtin _str_fc: expected 1 argument, got %d", 
+        argc);
+  }
+
+  char val[2] = { getvar(argv[0], Str)[0], '\0' };
+  setvar(argv[0], Str, val);
+}
+
+void trl_str_mv(int argc, char **argv) {
+  if (argc != 1) {
+    err("runtime: error using builtin _str_mv: expected 1 argument, got %d", 
+        argc);
+  }
+
+  char *val = getvar(argv[0], Str);
+
+  if (*val == '\0')
+    err("runtime: _str_fc trying to move empty variable %s. exiting to avoid "
+        "overflow", argv[0]);
+
+  ++val;
+  setvar(argv[0], Str, val);
+
+  free(--val);
+}
+
 void trl_win_create(int argc, char **argv) {
   if (argc != 2) {
     err("runtime: error using builtin win_create: expected 2 arguments, got %d", 
