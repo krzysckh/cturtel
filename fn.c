@@ -12,7 +12,7 @@ char *int_to_str(int d) {
     i ++;
   } while (tmp != 0);
 
-  ret = malloc(sizeof(char) * (i + 1));
+  ret = malloc(sizeof(char) * (++i + 1));
 
   for (j = 0; j < i; j++)
     ret[j] = '\0';

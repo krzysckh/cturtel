@@ -134,6 +134,8 @@ Program realloc_prog(Program prg, int old_sz, int cpy, int new_sz) {
     }
   }
 
+  free_prog(prg);
+
   return ret;
 }
 
@@ -247,7 +249,6 @@ Program get_lexer_macro(Program prg, char *line) {
       code_macro_step_ctr = 0;
 
       prg.steps--;
-      /*iprintd(prg.steps);*/
 
       return prg;
       break;
@@ -278,6 +279,7 @@ Program get_lexer_macro(Program prg, char *line) {
 
       step_ctr += code_macro[fnd].code.steps;
 
+      free(tmp);
       return ret;
       break;
   }
@@ -454,6 +456,8 @@ Program trl_lex(FILE *fp) {
           step_ctr++;
 
     } else {
+      ret.steps--;
+
       code_macro[code_macro_n].code = realloc_prog(
         code_macro[code_macro_n].code,
         code_macro[code_macro_n].code.steps,
@@ -461,14 +465,11 @@ Program trl_lex(FILE *fp) {
         code_macro[code_macro_n].code.steps+1
       );
 
-      /*iprintd(code_macro_step_ctr);*/
-      /*iprintd(code_macro[code_macro_n].code.steps);*/
       code_macro[code_macro_n].code.expr[code_macro_step_ctr] = 
         get_expr(line[i]);
 
       if (code_macro[code_macro_n].code.expr[code_macro_step_ctr].type 
           == LEX_STAT) {
-        /*code_macro[code_macro_n].code.steps--;*/
         code_macro[code_macro_n].code = get_lexer_macro(
           code_macro[code_macro_n].code,
           line[i]
@@ -476,6 +477,8 @@ Program trl_lex(FILE *fp) {
       } else
         if (code_macro[code_macro_n].code.expr[code_macro_step_ctr].type 
             != NOOP) code_macro_step_ctr++;
+        else
+          code_macro[code_macro_n].code.steps--;
     }
     
     curr_line ++;
@@ -484,6 +487,7 @@ Program trl_lex(FILE *fp) {
   /*
   for (i = 0; i < code_macro_n; i++) {
     printf("Debug Tree for %s\n----------\n", code_macro[i].name);
+    iprintd(code_macro[i].code.steps);
     dbg_print_prog_tree(code_macro[i].code);
     printf("-------\n");
   }
@@ -492,6 +496,8 @@ Program trl_lex(FILE *fp) {
   if (in_macro)
     err("fatal: macro %s didn't end on EOF", code_macro[code_macro_n].name);
 
+  for (i = 0; i < code_macro_n; i++)
+    free_prog(code_macro[i].code);
   for (i = 0; i < nl; i++)
     free(line[i]);
   free(in);
