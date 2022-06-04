@@ -29,7 +29,8 @@ void dbg_print_prog_tree(Program p) {
       case NOOP:
         break;
       case LEX_STAT:
-        warn("step %d: !! !! !! LEXER MACRO", i);
+        warn("step %d: !! LEXER MACRO /w argc = %d (%s, %s)", i, 
+            p.expr[i].argc, p.expr[i].argv[0], p.expr[i].argv[1]);
         break;
       case NVAR:
         warn("step %d: new varaible %s", i, p.expr[i].argv[0]);
@@ -81,6 +82,7 @@ Program append_prog(Program prg1, Program prg2, int prg1_step) {
       j,
       k;
 
+  /* literally cannot happen - world would burn */
   if (prg1.steps < prg2.steps) {
     err("there was an error allocating memory");
   }
@@ -152,6 +154,7 @@ Program get_lexer_macro(Program prg, char *line) {
   LexerMacroType type;
   char *tmp;
   int i = 0,
+      fnd = -1,
       step_ctr_bak = step_ctr,
       step_ctr_bak_bak; /* fuck off */
 
@@ -207,7 +210,7 @@ Program get_lexer_macro(Program prg, char *line) {
       break;
     case LEX_DEFMACRO:
       if (in_macro)
-        err("fatal: %d: trying to define macro in a macro");
+        err("fatal: %d: trying to define macro in a macro", curr_line);
       in_macro = 1;
 
       i = 0;
@@ -230,6 +233,8 @@ Program get_lexer_macro(Program prg, char *line) {
       code_macro[code_macro_n].name[strlen(tmp)] = '\0';
 
       free(tmp);
+      
+      return prg;
 
       break;
     case LEX_ENDMACRO:
@@ -237,15 +242,46 @@ Program get_lexer_macro(Program prg, char *line) {
         err("fatal: %d: trying to end a macro not within a macro", curr_line);
 
       in_macro = 0;
+      /*code_macro[code_macro_n].code.steps--;*/
       code_macro_n ++;
       code_macro_step_ctr = 0;
 
+      prg.steps--;
+      /*iprintd(prg.steps);*/
+
+      return prg;
       break;
     case LEX_RUN:
+      i = 0;
+      tmp = line;
+      while (*tmp++ != '\0')
+        ++i;
+
+      tmp = malloc(sizeof(char) * (i+1));
+      strcpy(tmp, line);
+      tmp[i] = '\0';
+
+      for (i = 0; i < code_macro_n; i++)
+        if (strcmp(tmp, code_macro[i].name) == 0)
+          fnd = i;
+
+      if (fnd < 0)
+        err("fatal: %d: macro %s doesn't exist", curr_line, tmp);
+      
+      ret = realloc_prog(
+        prg,
+        prg.steps,
+        step_ctr,
+        prg.steps + code_macro[fnd].code.steps
+      );
+      ret = append_prog(ret, code_macro[fnd].code, step_ctr);
+
+      step_ctr += code_macro[fnd].code.steps;
+
+      return ret;
       break;
   }
 
-#warning YES I KNOW IT'S UNITIALISED
   return ret;
 }
 
@@ -418,13 +454,15 @@ Program trl_lex(FILE *fp) {
           step_ctr++;
 
     } else {
-      realloc_prog(
+      code_macro[code_macro_n].code = realloc_prog(
         code_macro[code_macro_n].code,
         code_macro[code_macro_n].code.steps,
         code_macro[code_macro_n].code.steps,
         code_macro[code_macro_n].code.steps+1
       );
 
+      /*iprintd(code_macro_step_ctr);*/
+      /*iprintd(code_macro[code_macro_n].code.steps);*/
       code_macro[code_macro_n].code.expr[code_macro_step_ctr] = 
         get_expr(line[i]);
 
@@ -443,10 +481,20 @@ Program trl_lex(FILE *fp) {
     curr_line ++;
   }
 
+  /*
+  for (i = 0; i < code_macro_n; i++) {
+    printf("Debug Tree for %s\n----------\n", code_macro[i].name);
+    dbg_print_prog_tree(code_macro[i].code);
+    printf("-------\n");
+  }
+  */
+
+  if (in_macro)
+    err("fatal: macro %s didn't end on EOF", code_macro[code_macro_n].name);
+
   for (i = 0; i < nl; i++)
     free(line[i]);
   free(in);
   free(line);
-  /*dbg_print_prog_tree(ret);*/
   return ret;
 }

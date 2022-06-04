@@ -42,7 +42,6 @@ KNOWN BUGS
 
 turtel:
 	- these things are not re-written yet:
-		- lexer macros and definitions
 		- the _* functions
 
 [ krzysckh 2021 - 2022 ]

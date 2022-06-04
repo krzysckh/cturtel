@@ -2,3 +2,5 @@
 	msg:str:siup:
 	print:str:msg:
 @endmacro
+
+@run test

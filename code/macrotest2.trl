@@ -1,0 +1,5 @@
+@defmacro a
+	@defmacro b
+	@endmacro
+@endmacro
+# should thow error

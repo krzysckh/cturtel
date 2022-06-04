@@ -3,6 +3,7 @@
 #define MAX_TRL_READ 1024
 
 #define iprintd(x) printf(#x " = %d\n", x)
+#define iprints(x) printf(#x " = %s\n", x)
 
 /* data structures */
 typedef enum {
