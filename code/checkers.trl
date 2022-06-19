@@ -65,4 +65,5 @@ gototag:main:
 				goto:_y_loop:
 
 	gototag:_end:
+		exit:
 		goto:_end:

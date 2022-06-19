@@ -85,7 +85,9 @@ int run(Program prog) {
   var_pt = 0; /* curr *var stack end ptr */
 
   for (i = 0; i < prog.steps; i++) {
-    if (prog.expr[i].type == NVAR || prog.expr[i].type == READ)
+    if (prog.expr[i].type == NVAR
+        || prog.expr[i].type == READ
+        || prog.expr[i].type == NOWEQU)
       n_var_approx ++;
   }
 
