@@ -2,9 +2,6 @@
 # krzysckh 2021
 # krzysckh.org
 
-true:num:1:
-false:num:0:
-
 _m:str:Podaj max -> :
 print:str:_m:
 
@@ -22,22 +19,22 @@ gototag:_loop:
 	nowequ:num:tmp:num:i:
 	mod:tmp:fizz:
 
-	if:tmp:eq:false:printFizz:_bak_fizz:
+	if:tmp:eq:0:printFizz:_bak_fizz:
 	gototag:_bak_fizz:
 
 	nowequ:num:tmp:num:i:
 	mod:tmp:buzz:
 
-	if:tmp:eq:false:printBuzz:_bak_buzz:
+	if:tmp:eq:0:printBuzz:_bak_buzz:
 	gototag:_bak_buzz:
 
-	if:pr_num:gt:false:printNum:_bak_num:
+	if:pr_num:gt:0:printNum:_bak_num:
 	gototag:_bak_num:
 
 	print:str:__newline:
 
 	if:i:eq:max:end::
-	add:i:true:
+	add:i:1:
 	goto:_loop:
 
 gototag:end:
@@ -46,16 +43,16 @@ gototag:end:
 gototag:printFizz:
 	_m:str:Fizz:
 	print:str:_m:
-	sub:pr_num:true:
+	sub:pr_num:1:
 	goto:_bak_fizz:
 
 gototag:printBuzz:
 	_m:str:Buzz:
 	print:str:_m:
-	sub:pr_num:true:
+	sub:pr_num:1:
 	goto:_bak_buzz:
 
 gototag:printNum:
 	print:num:i:
-	nowequ:num:pr_num:num:true:
+	nowequ:num:pr_num:num:1:
 	goto:_bak_num:

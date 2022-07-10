@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 int var_pt;
 Variable *var;
@@ -22,8 +23,9 @@ void freevar() {
   extern Variable *var;
 
   for (i = 0; i < var_pt; i++) {
-    free(var[i].content);
     free(var[i].name);
+    if (var[i].content != NULL)
+      free(var[i].content);
   }
   
   free(var);
@@ -34,6 +36,10 @@ char *getvar(char *name, Type type) {
   extern int var_pt;
   extern Variable *var;
 
+  /* if it's a number, just return it */
+  if (type == Num && (isdigit(name[0]) || name[0] == '-'))
+    return int_to_str(atoi(name));
+
   for (i = 0; i < var_pt; i++) {
     if (var[i].type == type)
       if (strcmp(var[i].name, name) == 0)
@@ -41,8 +47,9 @@ char *getvar(char *name, Type type) {
   }
   
   /* does not exist */
-  err("variable %s doesn't exist", name);
-  return NULL;
+  err("runtime: variable %s doesn't exist", name);
+  /* unreachable */
+  return "giga siur";
 }
 
 void setvar(char *name, Type type, char *value) {
@@ -54,6 +61,17 @@ void setvar(char *name, Type type, char *value) {
     if (var[i].type == type)
       if (strcmp(var[i].name, name) == 0) {
         free(var[i].content);
+
+        if (value == NULL) {
+          var[i].content = NULL;
+          return;
+        }
+        if ((int)strlen(value) == 0) {
+          var[i].content = NULL;
+          return;
+        }
+
+        /* else */
 
         var[i].content = malloc(sizeof(char) * (strlen(value) + 1));
         strcpy(var[i].content, value);

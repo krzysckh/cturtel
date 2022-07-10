@@ -3,7 +3,7 @@
 #define MAX_TRL_READ 1024
 
 #define iprintd(x) printf(#x " = %d\n", x)
-#define iprints(x) printf(#x " = %s\n", x)
+#define iprints(x) printf(#x " = \"%s\"\n", x)
 
 /* data structures */
 typedef enum {
@@ -72,6 +72,7 @@ int run(Program prog);
 void setvar(char *name, Type type, char *value);
 char *getvar(char *name, Type type);
 Type gettype(char *t);
+char *int_to_str(int);
 
 void dbg_print_prog_tree(Program p);
 

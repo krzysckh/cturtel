@@ -48,3 +48,10 @@
 	gototag:__strncmp_exit:
 @endmacro
 
+_strncmp_str1:str:bruh:
+_strncmp_str2:str:hurb:
+_strncmp_n:num:4:
+ 
+@run strncmp
+
+print:num:_strncmp_ret:

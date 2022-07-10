@@ -1,53 +1,30 @@
-# for some obscure reason
-# it does not work
-# something is wrong
-# i can feel it
-# ...
-# bruh
-
 @defmacro strlen
-	gototag:__strlen_loop:
-		_str_mv:_strlen_str:
-		goto:__strlen_loop:
+  _strlen_ret:num:0:
+
+  __strlen_nullptr:num:-1:
+  # nowequ NULL str to num == -1
+
+  __strlen_checkstr:str::
+  nowequ:str:__strlen_checkstr:str:_strlen_str:
+
+  __strlen_cs_fc:str::
+  __strlen_cs_fc:num::
+  gototag:__strlen_loop:
+    nowequ:str:__strlen_cs_fc:str:__strlen_checkstr:
+    _str_fc:__strlen_cs_fc:
+    nowequ:num:__strlen_cs_fc:str:__strlen_cs_fc:
+    if:__strlen_cs_fc:eq:__strlen_nullptr:__strlen_exit::
+    _str_mv:__strlen_checkstr:
+    add:_strlen_ret:1:
+    goto:__strlen_loop:
+    
+  gototag:__strlen_exit:
 @endmacro
 
-_strlen_str:str:Hello:
+_strlen_str:str:giga chad:
 @run strlen
 print:str:_strlen_str:
 print:str:__newline:
 print:num:_strlen_ret:
 print:str:__newline:
 
-exit:
-# unreachable
-# @defmacro strlen
-# 	__strlen_true:num:1:
-# 
-# 	__strlen_empty:str::
-# 	__strlen_empty:num::
-# 
-# 	_str_fc:__strlen_empty:
-# 	nowequ:num:__strlen_empty:str:__strlen_empty:
-# 
-# 	_strlen_ret:num:0:
-# 
-# 	__strlen_tmp:str::
-# 	nowequ:str:__strlen_tmp:str:_strlen_str:
-# 
-# 	__strlen_fc_tmp:str::
-# 	__strlen_fc_tmp:num::
-# 
-# 	gototag:__strlen_loop:
-# 		nowequ:str:__strlen_fc_tmp:str:__strlen_tmp:
-# 		_str_fc:__strlen_fc_tmp:
-# 		nowequ:num:__strlen_fc_tmp:str:__strlen_fc_tmp:
-# 
-# 		if:__strlen_fc_tmp:eq:__strlen_empty:__strlen_exit::
-# 		_str_mv:__strlen_tmp:
-# 		add:_strlen_ret:__strlen_true:
-# 		goto:__strlen_loop:
-# 
-# 	gototag:__strlen_exit:
-# 
-# @endmacro
-# 

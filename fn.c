@@ -2,6 +2,7 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 char *int_to_str(int d) {
   char *ret;
@@ -27,8 +28,15 @@ void trl_str_fc(int argc, char **argv) {
         argc);
   }
 
-  char val[2] = { getvar(argv[0], Str)[0], '\0' };
-  setvar(argv[0], Str, val);
+  if (getvar(argv[0], Str) == NULL) {
+    setvar(argv[0], Str, "-1");
+    /* yay! it's a NuLL ptr, or an empty empty string
+     * (it's -1 because fuck you) */
+  } else {
+    char *val = int_to_str((int)getvar(argv[0], Str)[0]);
+    setvar(argv[0], Str, val);
+    free(val);
+  }
 }
 
 void trl_str_mv(int argc, char **argv) {
@@ -37,13 +45,23 @@ void trl_str_mv(int argc, char **argv) {
         argc);
   }
 
-  char *val = getvar(argv[0], Str);
+  if (getvar(argv[0], Str) == NULL)
+    err("runtime: _str_mv %s is an empty variable. exiting.", argv[0]);
 
-  if (*val == '\0')
-    err("runtime: _str_fc trying to move empty variable %s. exiting to avoid "
-        "overflow", argv[0]);
+  /*printf("getvar argv[0] addr = %p\n", getvar(argv[0], Str));*/
+  /*printf("getvar argv[0] = \"%s\"\n", getvar(argv[0], Str));*/
 
-  ++val;
+  char *val = malloc(sizeof(char) * (strlen(getvar(argv[0], Str)) + 1));
+  strcpy(val, getvar(argv[0], Str));
+  val[strlen(val)] = '\0';
+  /*printf("val addr = %p\n", val);*/
+
+   ++val;
+  /*puts("after ↓");*/
+  /*printf("val addr: %p\n", val);*/
+  /*iprintd((int)strlen(val));*/
+  /*iprints(val);*/
+
   setvar(argv[0], Str, val);
 
   free(--val);
@@ -118,8 +136,12 @@ void trl_print(int argc, char **argv) {
         argc);
   }
   Type t = gettype(argv[0]);
+  char *v = getvar(argv[1], t);
 
-  printf("%s", getvar(argv[1], t));
+  printf("%s", v);
+  /*if (t == Num && isdigit(argv[1][0]))*/
+    /*free(v);*/
+  /* free printed ptr, only if it was allocated dynamically (is a digit) */
   fflush(stdout);
 }
 
@@ -132,6 +154,10 @@ void trl_nvar(int argc, char **argv) {
     /* variable name provided as argv[0] */
   }
 
+  if (t == Num && (isdigit(argv[0][0]) || argv[0][0] == '-'))
+    err("runtime: cannot write variables into numerical constants (%s)", 
+        argv[0]);
+
   setvar(argv[0], t, argv[2]);
 }
 
@@ -140,6 +166,9 @@ void trl_read(int argc, char **argv) {
     err("runtime: error using builtin read: expected 2 arguments, got %d", 
         argc);
   }
+
+  if (gettype(argv[0]) == Num && (isdigit(argv[1][0]) || argv[1][0] == '-'))
+    err("runtime: read: cannot read into numerical constants");
 
   char tread[MAX_TRL_READ] = { '\0' };
 

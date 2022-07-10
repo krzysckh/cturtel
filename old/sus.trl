@@ -1,0 +1,4 @@
+a:str::
+_str_mv:a:
+_str_fc:a:
+print:str:a:
